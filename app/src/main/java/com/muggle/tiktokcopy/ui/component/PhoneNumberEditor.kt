@@ -1,5 +1,6 @@
 package com.muggle.tiktokcopy.ui.component
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,6 +32,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
@@ -77,7 +80,7 @@ fun PhoneNumberEditor(
             // TODO: 复制粘贴功能
             BasicTextField(
                 modifier = Modifier
-                    .width(113.cdp)
+                    .wrapContentWidth()
                     .wrapContentHeight(),
                 value = curTextStr,
                 onValueChange = { text ->
@@ -90,6 +93,7 @@ fun PhoneNumberEditor(
                     color = Color(0xff161823)
                 ),
                 singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                 visualTransformation = object : VisualTransformation {
                     override fun filter(text: AnnotatedString): TransformedText {
                         var output = ""
@@ -144,7 +148,7 @@ fun PhoneNumberEditor(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Spacer(modifier = Modifier.width(309.33.cdp))
-                Icon(
+                Image(
                     modifier = Modifier
                         .size(18.cdp)
                         .clickable {

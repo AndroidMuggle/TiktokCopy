@@ -28,18 +28,18 @@ import com.muggle.tiktokcopy.utils.csp
  * @param hintText 提示文案
  */
 @Composable
-fun LoginToolBar(@DrawableRes resId: Int, hintText: String) {
+fun LoginToolBar(@DrawableRes resId: Int, hintText: String = "") {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(60.cdp)
-            .padding(horizontal = 13.33.cdp),
+            .padding(horizontal = 24.cdp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
             modifier = Modifier
-                .size(60.cdp),
+                .size(20.cdp),
             painter = painterResource(resId),
             contentScale = ContentScale.Crop,
             contentDescription = ""
@@ -47,10 +47,10 @@ fun LoginToolBar(@DrawableRes resId: Int, hintText: String) {
 
         Text(
             modifier = Modifier.wrapContentSize(),
-            fontSize = 20.csp,
+            fontSize = 14.csp,
             text = hintText,
             color = Color(0xff000000),
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Light
         )
     }
 }
