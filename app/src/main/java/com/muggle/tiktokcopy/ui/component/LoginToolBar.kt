@@ -1,0 +1,62 @@
+package com.muggle.tiktokcopy.ui.component
+
+import androidx.annotation.DrawableRes
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import com.muggle.tiktokcopy.R
+import com.muggle.tiktokcopy.utils.cdp
+import com.muggle.tiktokcopy.utils.csp
+
+/**
+ * 登录顶部状态栏
+ * @param resId 资源id
+ * @param hintText 提示文案
+ */
+@Composable
+fun LoginToolBar(@DrawableRes resId: Int, hintText: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(60.cdp)
+            .padding(horizontal = 13.33.cdp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Image(
+            modifier = Modifier
+                .size(60.cdp),
+            painter = painterResource(resId),
+            contentScale = ContentScale.Crop,
+            contentDescription = ""
+        )
+
+        Text(
+            modifier = Modifier.wrapContentSize(),
+            fontSize = 20.csp,
+            text = hintText,
+            color = Color(0xff000000),
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+@Preview()
+@Composable
+fun PreviewLoginToolBar() {
+    LoginToolBar(resId = R.mipmap.ic_launcher, hintText = "帮助")
+}
