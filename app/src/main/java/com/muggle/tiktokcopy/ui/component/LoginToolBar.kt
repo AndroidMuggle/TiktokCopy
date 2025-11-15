@@ -58,5 +58,5 @@ fun LoginToolBar(@DrawableRes resId: Int, hintText: String) {
 @Preview()
 @Composable
 fun PreviewLoginToolBar() {
-    LoginToolBar(resId = R.mipmap.ic_launcher, hintText = "帮助")
+    LoginToolBar(resId = R.drawable.login_down_arrow, hintText = "帮助")
 }
