@@ -30,7 +30,7 @@ import com.muggle.tiktokcopy.utils.cdp
 import com.muggle.tiktokcopy.utils.csp
 
 @Composable
-fun LoginByCaptchaCode() {
+fun LoginByCaptchaCodePage() {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -54,7 +54,7 @@ fun LoginByCaptchaCode() {
         )
         Spacer(modifier = Modifier.height(24.cdp))
         PhoneNumberEditor()
-        Spacer(modifier = Modifier.height(12.cdp))
+        Spacer(modifier = Modifier.height(8.cdp))
         SwitchToPasswordWidget()
         Spacer(modifier = Modifier.height(24.cdp))
         ConfirmButton(hintText = "验证并登录")
@@ -98,5 +98,5 @@ fun SwitchToPasswordWidget() {
 @Preview
 @Composable
 fun PreviewLoginByCaptchaCode() {
-    LoginByCaptchaCode()
+    LoginByCaptchaCodePage()
 }
