@@ -41,7 +41,7 @@ fun DirectLoginPage() {
             .padding(top = 30.cdp)
     ) {
         LoginToolBar(R.drawable.common_close, "帮助")
-        Spacer(modifier = Modifier.height(90.cdp))
+        Spacer(modifier = Modifier.height(60.cdp))
         Text(
             modifier = Modifier
                 .fillMaxWidth()
@@ -49,7 +49,8 @@ fun DirectLoginPage() {
             text = "登录后，体验完整功能",
             fontSize = 28.csp,
             fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            color = Color(0xff161823)
         )
         Spacer(modifier = Modifier.height(125.cdp))
         AsyncImage(
@@ -74,7 +75,8 @@ fun DirectLoginPage() {
             fontSize = 28.csp,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
+            color = Color(0xff161823)
         )
         Spacer(modifier = Modifier.height(48.cdp))
         ConfirmButton(isClickable = true, hintText = "一键登录")

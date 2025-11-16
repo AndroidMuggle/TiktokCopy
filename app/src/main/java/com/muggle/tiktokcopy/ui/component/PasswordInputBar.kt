@@ -1,5 +1,6 @@
 package com.muggle.tiktokcopy.ui.component
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -120,6 +121,22 @@ fun PasswordInputBar() {
             ) {
                 Spacer(modifier = Modifier.width(73.33.cdp))
                 Text(text = "请输入密码", fontSize = 14.csp, color = Color(0x7fababaf))
+            }
+        } else {
+            Row(
+                modifier = Modifier.fillMaxSize(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Spacer(modifier = Modifier.width(309.33.cdp))
+                Image(
+                    modifier = Modifier
+                        .size(18.cdp)
+                        .clickable {
+                            realInputStr = ""
+                        },
+                    painter = painterResource(R.drawable.login_clear_input),
+                    contentDescription = ""
+                )
             }
         }
     }
