@@ -45,13 +45,15 @@ fun LoginToolBar(@DrawableRes resId: Int, hintText: String = "") {
             contentDescription = ""
         )
 
-        Text(
-            modifier = Modifier.wrapContentSize(),
-            fontSize = 14.csp,
-            text = hintText,
-            color = Color(0xff000000),
-            fontWeight = FontWeight.Light
-        )
+        if (hintText.isNotEmpty()) {
+            Text(
+                modifier = Modifier.wrapContentSize(),
+                fontSize = 14.csp,
+                text = hintText,
+                color = Color(0xff000000),
+                fontWeight = FontWeight.Light
+            )
+        }
     }
 }
 

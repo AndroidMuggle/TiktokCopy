@@ -27,7 +27,9 @@ import com.muggle.tiktokcopy.utils.cdp
 import com.muggle.tiktokcopy.utils.csp
 
 @Composable
-fun PrivacyConfirmWidget() {
+fun PrivacyConfirmWidget(
+    horizontal: Arrangement.Horizontal = Arrangement.Center
+) {
     var isCheckedPrivacy by remember {
         mutableStateOf(false)
     }
@@ -38,7 +40,7 @@ fun PrivacyConfirmWidget() {
             .wrapContentHeight()
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
+        horizontalArrangement = horizontal
     ) {
         Image(
             modifier = Modifier
