@@ -42,14 +42,20 @@ import com.muggle.tiktokcopy.utils.cdp
 import com.muggle.tiktokcopy.utils.csp
 
 @Composable
-fun PasswordInputBar() {
+fun PasswordInputBar(
+    password: String = "",
+    passwordVisibility: Boolean = false,
+    onPasswordChangeAct: (String) -> Unit = {},
+    onChangePasswordVisibility: (Boolean) -> Unit = {},
+    onClearPassword: () -> Unit = {}
+) {
 
-    var isPreviewOpen by remember {
-        mutableStateOf(false)
+    var isPasswordVisible by remember {
+        mutableStateOf(passwordVisibility)
     }
 
     var realInputStr by remember {
-        mutableStateOf("")
+        mutableStateOf(password)
     }
 
     Box(
@@ -69,10 +75,11 @@ fun PasswordInputBar() {
                 modifier = Modifier
                     .size(18.cdp)
                     .clickable {
-                        isPreviewOpen = !isPreviewOpen
+                        isPasswordVisible = !isPasswordVisible
+                        onChangePasswordVisibility(isPasswordVisible)
                     },
                 painter = painterResource(
-                    if (isPreviewOpen) {
+                    if (isPasswordVisible) {
                         R.drawable.password_preview_open
                     } else {
                         R.drawable.password_preview_close
@@ -95,8 +102,9 @@ fun PasswordInputBar() {
                 value = realInputStr,
                 onValueChange = { pwd ->
                     // TODO: 密码合法性校验
-                    if (pwd.length < 20) {
+                    if (pwd.length <= 20) {
                         realInputStr = pwd
+                        onPasswordChangeAct(pwd)
                     }
                 },
                 textStyle = TextStyle(
@@ -106,7 +114,7 @@ fun PasswordInputBar() {
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 cursorBrush = SolidColor(Color(0xfffe2c55)),
-                visualTransformation = if (!isPreviewOpen) {
+                visualTransformation = if (!isPasswordVisible) {
                     PasswordVisualTransformation()
                 } else {
                     VisualTransformation.None
@@ -133,6 +141,7 @@ fun PasswordInputBar() {
                         .size(18.cdp)
                         .clickable {
                             realInputStr = ""
+                            onClearPassword()
                         },
                     painter = painterResource(R.drawable.login_clear_input),
                     contentDescription = ""

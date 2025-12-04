@@ -17,6 +17,10 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -24,7 +28,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.muggle.tiktokcopy.R
+import com.muggle.tiktokcopy.business.login.intent.LoginByPasswordEvent
+import com.muggle.tiktokcopy.business.login.vm.LoginByPasswordVm
 import com.muggle.tiktokcopy.ui.component.ConfirmButton
 import com.muggle.tiktokcopy.ui.component.LoginToolBar
 import com.muggle.tiktokcopy.ui.component.PasswordInputBar
@@ -34,14 +41,32 @@ import com.muggle.tiktokcopy.utils.cdp
 import com.muggle.tiktokcopy.utils.csp
 
 @Composable
-fun LoginByPassword() {
+fun LoginByPassword(loginByPasswordVm: LoginByPasswordVm = hiltViewModel()) {
+
+    val curState by remember {
+        mutableStateOf(loginByPasswordVm.loginByPasswordState)
+    }
+
+    val isConfirmBtnEnable by remember {
+        derivedStateOf { curState.value.isConfirmEnable }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .statusBarsPadding()
             .padding(top = 30.cdp)
     ) {
-        LoginToolBar(R.drawable.common_left, "帮助")
+        LoginToolBar(
+            resId = R.drawable.common_left,
+            hintText = "帮助",
+            onClickBack = {
+                loginByPasswordVm.onReceiveEvent(LoginByPasswordEvent.ClickBackBtn)
+            },
+            onClickHelp = {
+                loginByPasswordVm.onReceiveEvent(LoginByPasswordEvent.ClickHelpBtn)
+            }
+        )
         Spacer(modifier = Modifier.height(45.cdp))
         Text(
             modifier = Modifier.padding(start = 24.cdp),
@@ -50,15 +75,50 @@ fun LoginByPassword() {
             fontWeight = FontWeight.Bold
         )
         Spacer(modifier = Modifier.height(24.cdp))
-        PhoneNumberEditor()
+        PhoneNumberEditor(
+            phoneNumber = curState.value.curPhoneNumber,
+            onTextChangeAct = {
+                loginByPasswordVm.onReceiveEvent(LoginByPasswordEvent.InputPhoneNumber(it))
+            },
+            onClearAct = {
+                loginByPasswordVm.onReceiveEvent(LoginByPasswordEvent.ClearPhoneNumber)
+            }
+        )
         Spacer(modifier = Modifier.height(12.cdp))
-        PasswordInputBar()
+        PasswordInputBar(
+            password = curState.value.curPassword,
+            passwordVisibility = curState.value.isPasswordVisible,
+            onClearPassword = {
+                loginByPasswordVm.onReceiveEvent(LoginByPasswordEvent.ClearPassword)
+            },
+            onPasswordChangeAct = {
+                loginByPasswordVm.onReceiveEvent(LoginByPasswordEvent.InputPassword(it))
+            },
+            onChangePasswordVisibility = {
+                loginByPasswordVm.onReceiveEvent(
+                    LoginByPasswordEvent.ClickChangePasswordVisibility(
+                        it
+                    )
+                )
+            }
+        )
         Spacer(modifier = Modifier.height(8.cdp))
-        SwitchLoginWidget()
+        SwitchLoginWidget(
+            onClickCaptchaLogin = {
+                loginByPasswordVm.onReceiveEvent(LoginByPasswordEvent.ClickCaptchaLogin)
+            },
+            onClickForgetPassword = {
+                loginByPasswordVm.onReceiveEvent(LoginByPasswordEvent.ClickForgetPassword)
+            }
+        )
         Spacer(modifier = Modifier.height(24.cdp))
-        ConfirmButton()
+        ConfirmButton(isConfirmBtnEnable) {
+            loginByPasswordVm.onReceiveEvent(LoginByPasswordEvent.ClickConfirmBtn)
+        }
         Spacer(modifier = Modifier.height(24.cdp))
-        PrivacyConfirmWidget()
+        PrivacyConfirmWidget(curState.value.isPrivacySelected) {
+            loginByPasswordVm.onReceiveEvent(LoginByPasswordEvent.ClickConfirmPrivacy(it))
+        }
     }
 }
 
@@ -66,7 +126,10 @@ fun LoginByPassword() {
  * 切换登录方式插件
  */
 @Composable
-fun SwitchLoginWidget() {
+fun SwitchLoginWidget(
+    onClickCaptchaLogin: () -> Unit = {},
+    onClickForgetPassword: () -> Unit = {}
+) {
     Row(
         modifier = Modifier
             .padding(horizontal = 24.cdp)
@@ -78,7 +141,7 @@ fun SwitchLoginWidget() {
             modifier = Modifier
                 .wrapContentSize()
                 .clickable {
-                    // TODO: 点击切换到验证码登录
+                    onClickCaptchaLogin()
                 },
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -102,7 +165,7 @@ fun SwitchLoginWidget() {
             modifier = Modifier
                 .wrapContentSize()
                 .clickable {
-                    // TODO: 点击跳转到忘记密码页面
+                    onClickForgetPassword()
                 },
             text = "忘记密码",
             color = Color(0x6604498d),

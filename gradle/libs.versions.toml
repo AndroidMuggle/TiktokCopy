@@ -1,6 +1,6 @@
 [versions]
 agp = "8.10.1"
-kotlin = "2.0.21"
+kotlin = "2.2.0"
 coreKtx = "1.10.1"
 junit = "4.13.2"
 junitVersion = "1.1.5"
@@ -9,8 +9,10 @@ lifecycleRuntimeKtx = "2.6.1"
 activityCompose = "1.8.0"
 composeBom = "2024.09.00"
 hilt-plugin = "2.57.1"
-ksp = "2.0.21-1.0.25"
+hilt-compose = "1.3.0"
+ksp = "2.3.3"
 coil = "3.0.4"
+ktor-version = "3.3.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -29,8 +31,14 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt-plugin" }
 androidx-hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt-plugin" }
+androidx-hilt-nav = { group = "androidx.hilt", name = "hilt-lifecycle-viewmodel-compose", version.ref = "hilt-compose" }
 compose-coil = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
 compose-coil-network = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
+androidx-ktor-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor-version" }
+androidx-ktor-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor-version" }
+androidx-ktor-client = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktor-version" }
+androidx-ktor-gson = { group = "io.ktor", name = "ktor-serialization-gson-jvm", version.ref = "ktor-version" }
+androidx-ktor-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor-version" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

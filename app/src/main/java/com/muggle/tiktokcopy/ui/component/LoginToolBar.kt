@@ -2,6 +2,7 @@ package com.muggle.tiktokcopy.ui.component
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,7 +29,12 @@ import com.muggle.tiktokcopy.utils.csp
  * @param hintText 提示文案
  */
 @Composable
-fun LoginToolBar(@DrawableRes resId: Int, hintText: String = "") {
+fun LoginToolBar(
+    @DrawableRes resId: Int,
+    hintText: String = "",
+    onClickBack: () -> Unit = {},
+    onClickHelp: () -> Unit = {}
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -39,7 +45,10 @@ fun LoginToolBar(@DrawableRes resId: Int, hintText: String = "") {
     ) {
         Image(
             modifier = Modifier
-                .size(20.cdp),
+                .size(20.cdp)
+                .clickable {
+                    onClickBack()
+                },
             painter = painterResource(resId),
             contentScale = ContentScale.Crop,
             contentDescription = ""
@@ -47,7 +56,11 @@ fun LoginToolBar(@DrawableRes resId: Int, hintText: String = "") {
 
         if (hintText.isNotEmpty()) {
             Text(
-                modifier = Modifier.wrapContentSize(),
+                modifier = Modifier
+                    .wrapContentSize()
+                    .clickable {
+                        onClickHelp()
+                    },
                 fontSize = 14.csp,
                 text = hintText,
                 color = Color(0xff000000),

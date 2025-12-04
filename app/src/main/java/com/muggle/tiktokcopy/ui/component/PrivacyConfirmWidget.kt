@@ -28,10 +28,12 @@ import com.muggle.tiktokcopy.utils.csp
 
 @Composable
 fun PrivacyConfirmWidget(
-    horizontal: Arrangement.Horizontal = Arrangement.Center
+    isSelected: Boolean = false,
+    horizontal: Arrangement.Horizontal = Arrangement.Center,
+    onClickPrivacyAct: (Boolean) -> Unit = {}
 ) {
     var isCheckedPrivacy by remember {
-        mutableStateOf(false)
+        mutableStateOf(isSelected)
     }
 
     Row(
@@ -54,6 +56,7 @@ fun PrivacyConfirmWidget(
                 )
                 .clickable {
                     isCheckedPrivacy = !isCheckedPrivacy
+                    onClickPrivacyAct(isCheckedPrivacy)
                 },
             painter = painterResource(
                 if (isCheckedPrivacy) {

@@ -48,11 +48,12 @@ import com.muggle.tiktokcopy.utils.csp
  */
 @Composable
 fun PhoneNumberEditor(
-    phonePrefix: String = "+86",
-    onClearAct: () -> Unit = {},
+    phoneNumber: String = "",
+    onTextChangeAct: (String) -> Unit = {},
+    onClearAct: () -> Unit = {}
 ) {
     var curTextStr by remember {
-        mutableStateOf("")
+        mutableStateOf(phoneNumber)
     }
 
     Box(
@@ -86,6 +87,7 @@ fun PhoneNumberEditor(
                 onValueChange = { text ->
                     if (text.length <= 11) {
                         curTextStr = text
+                        onTextChangeAct(text)
                     }
                 },
                 textStyle = TextStyle(
@@ -197,5 +199,5 @@ fun PhoneNumberPrefix(
 @Preview
 @Composable
 fun PreviewPhoneNumberEditor() {
-    PhoneNumberEditor()
+//    PhoneNumberEditor()
 }

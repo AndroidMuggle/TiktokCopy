@@ -42,7 +42,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -59,7 +58,15 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.androidx.hilt)
+    implementation(libs.androidx.hilt.nav)
     ksp(libs.androidx.hilt.compiler)
     implementation(libs.compose.coil)
     implementation(libs.compose.coil.network)
+    implementation(libs.androidx.ktor.cio)
+    implementation(libs.androidx.ktor.core)
+    implementation(libs.androidx.ktor.client)
+    implementation(libs.androidx.ktor.gson)
+//    implementation(libs.androidx.ktor.json)
+    implementation(libs.androidx.ktor.negotiation)
+//    implementation(libs.androidx.viewmodel.ktx)
 }
