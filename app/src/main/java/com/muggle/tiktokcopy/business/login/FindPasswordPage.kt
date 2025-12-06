@@ -9,13 +9,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.muggle.tiktokcopy.R
+import com.muggle.tiktokcopy.business.login.intent.FindPasswordEvent
+import com.muggle.tiktokcopy.business.login.vm.FindPasswordPageVm
 import com.muggle.tiktokcopy.ui.component.ConfirmButton
 import com.muggle.tiktokcopy.ui.component.FindPasswordEditor
 import com.muggle.tiktokcopy.ui.component.LoginToolBar
@@ -24,14 +30,31 @@ import com.muggle.tiktokcopy.utils.cdp
 import com.muggle.tiktokcopy.utils.csp
 
 @Composable
-fun FindPasswordPage() {
+fun FindPasswordPage(findPasswordPageVm: FindPasswordPageVm = hiltViewModel()) {
+
+    val curState by remember {
+        findPasswordPageVm.findPasswordState
+    }
+
+    val isConfirmBtnEnable by remember {
+        derivedStateOf {
+            curState.isConfirmBtnEnable
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .statusBarsPadding()
             .padding(top = 30.cdp)
     ) {
-        LoginToolBar(R.drawable.common_left, "")
+        LoginToolBar(
+            resId = R.drawable.common_left,
+            hintText = "",
+            onClickBack = {
+                findPasswordPageVm.onReceiveEvent(FindPasswordEvent.ClickBackBtn)
+            }
+        )
         Spacer(modifier = Modifier.height(45.cdp))
         Text(
             modifier = Modifier.padding(start = 24.cdp),
@@ -41,20 +64,34 @@ fun FindPasswordPage() {
             color = Color.Black
         )
         Spacer(modifier = Modifier.height(11.cdp))
-        // TODO: 修改手机号码显示逻辑
         Text(
             modifier = Modifier.padding(start = 24.cdp),
-            text = "短信已发送至+86 182 1483 9928",
+            text = "短信已发送至${curState.phoneNumber}",
             fontSize = 14.csp,
             color = Color(0x7fababaf),
             style = TextStyle(baselineShift = BaselineShift.Subscript)
         )
         Spacer(modifier = Modifier.height(11.cdp))
-        FindPasswordEditor()
+        FindPasswordEditor(
+            curInput = curState.captchaCode,
+            onCaptchaCodeChange = {
+                findPasswordPageVm.onReceiveEvent(FindPasswordEvent.InputCaptchaCode(it))
+            },
+            onClickResend = {
+                findPasswordPageVm.onReceiveEvent(FindPasswordEvent.ClickResendBtn)
+            }
+        )
         Spacer(modifier = Modifier.height(8.cdp))
-        PrivacyConfirmWidget(horizontal = Arrangement.Start)
+        PrivacyConfirmWidget(
+            isSelected = curState.isPrivacySelect,
+            horizontal = Arrangement.Start,
+        ) {
+            findPasswordPageVm.onReceiveEvent(FindPasswordEvent.ClickPrivacyBtn(it))
+        }
         Spacer(modifier = Modifier.height(16.cdp))
-        ConfirmButton(hintText = "完成")
+        ConfirmButton(isClickable = isConfirmBtnEnable, hintText = "完成") {
+            findPasswordPageVm.onReceiveEvent(FindPasswordEvent.ClickConfirmBtn)
+        }
     }
 }
 

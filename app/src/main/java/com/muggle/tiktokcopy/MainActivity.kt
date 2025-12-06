@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.muggle.tiktokcopy.business.login.DirectLoginPage
+import com.muggle.tiktokcopy.business.login.FindPasswordPage
 import com.muggle.tiktokcopy.business.login.LoginByPassword
 import com.muggle.tiktokcopy.ui.theme.TiktokCopyTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,7 +21,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             TiktokCopyTheme {
-                DirectLoginPage()
+                FindPasswordPage()
             }
         }
     }

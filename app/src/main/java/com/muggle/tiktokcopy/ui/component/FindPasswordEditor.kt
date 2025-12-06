@@ -1,6 +1,7 @@
 package com.muggle.tiktokcopy.ui.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -36,9 +37,14 @@ import com.muggle.tiktokcopy.utils.csp
 import kotlinx.coroutines.delay
 
 @Composable
-fun FindPasswordEditor(countDownMillis: Long = 60 * 1000) {
+fun FindPasswordEditor(
+    curInput: String = "",
+    countDownMillis: Long = 60 * 1000,
+    onCaptchaCodeChange: (String) -> Unit = {},
+    onClickResend:()-> Unit = {}
+) {
     var curInputStr by remember {
-        mutableStateOf("")
+        mutableStateOf(curInput)
     }
 
     var countDownMs by remember {
@@ -51,8 +57,7 @@ fun FindPasswordEditor(countDownMillis: Long = 60 * 1000) {
 
     val softKeyBoard = LocalSoftwareKeyboardController.current
 
-
-    LaunchedEffect(Unit) {
+    LaunchedEffect(countDownMs) {
         while (countDownMs > 0) {
             delay(1000)
             countDownMs -= 1000
@@ -85,6 +90,7 @@ fun FindPasswordEditor(countDownMillis: Long = 60 * 1000) {
             onValueChange = {
                 if (it.length < 5) {
                     curInputStr = it
+                    onCaptchaCodeChange(it)
                 }
             },
             textStyle = TextStyle(
@@ -109,7 +115,13 @@ fun FindPasswordEditor(countDownMillis: Long = 60 * 1000) {
             Text(
                 modifier = Modifier
                     .wrapContentSize()
-                    .padding(end = 16.cdp),
+                    .padding(end = 16.cdp)
+                    .clickable {
+                        countDownMs = countDownMillis
+                        curInputStr = ""
+                        onCaptchaCodeChange("")
+                        onClickResend()
+                    },
                 text = "重新发送",
                 color = Color(0x6604498d),
                 fontSize = 14.csp

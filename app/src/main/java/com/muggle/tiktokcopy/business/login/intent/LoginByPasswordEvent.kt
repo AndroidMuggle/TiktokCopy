@@ -1,5 +1,8 @@
 package com.muggle.tiktokcopy.business.login.intent
 
+/**
+ * 登录密码页面event
+ */
 sealed interface LoginByPasswordEvent {
     /**
      * 清除电话号码
