@@ -55,7 +55,7 @@ class LoginByPasswordVm @Inject constructor(private val repo: LoginRepo) : ViewM
             is LoginByPasswordEvent.ClickConfirmBtn -> {
                 // TODO: 点击确认按钮，调用登录接口
                 viewModelScope.launch {
-                    repo.loginByPassword(
+                    val response = repo.loginByPassword(
                         LoginRequestBean(
                             avatar = "",
                             captchaCode = "",
@@ -78,6 +78,10 @@ class LoginByPasswordVm @Inject constructor(private val repo: LoginRepo) : ViewM
 
             is LoginByPasswordEvent.ClickHelpBtn -> {
                 // TODO: 点击帮助按钮
+            }
+
+            is LoginByPasswordEvent.ClickRegionCode -> {
+                // TODO: 点击切换区域编码
             }
         }
     }

@@ -77,11 +77,15 @@ fun LoginByPassword(loginByPasswordVm: LoginByPasswordVm = hiltViewModel()) {
         Spacer(modifier = Modifier.height(24.cdp))
         PhoneNumberEditor(
             phoneNumber = curState.value.curPhoneNumber,
+            regionCode = curState.value.regionCode,
             onTextChangeAct = {
                 loginByPasswordVm.onReceiveEvent(LoginByPasswordEvent.InputPhoneNumber(it))
             },
             onClearAct = {
                 loginByPasswordVm.onReceiveEvent(LoginByPasswordEvent.ClearPhoneNumber)
+            },
+            onClickRegionCodeAct = {
+                loginByPasswordVm.onReceiveEvent(LoginByPasswordEvent.ClickRegionCode)
             }
         )
         Spacer(modifier = Modifier.height(12.cdp))

@@ -9,7 +9,8 @@ data class LoginByPasswordState(
     val curPhoneNumber: String = "",
     val curPassword: String = "",
     val isPrivacySelected: Boolean = false,
-    val isPasswordVisible: Boolean = false
+    val isPasswordVisible: Boolean = false,
+    val regionCode: String = "+86"
 ) {
     /**
      * 确认按钮状态

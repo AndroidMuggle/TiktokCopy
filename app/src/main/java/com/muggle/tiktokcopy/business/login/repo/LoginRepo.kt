@@ -9,7 +9,9 @@ import io.ktor.client.request.setBody
 import io.ktor.http.HttpMethod
 import io.ktor.http.URLProtocol
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class LoginRepo @Inject constructor() {
 
     suspend fun loginByPassword(loginRequestBean: LoginRequestBean): CommonResponse<LoginResponseBean>? {

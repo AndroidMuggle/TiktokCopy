@@ -49,11 +49,17 @@ import com.muggle.tiktokcopy.utils.csp
 @Composable
 fun PhoneNumberEditor(
     phoneNumber: String = "",
+    regionCode: String = "+86",
     onTextChangeAct: (String) -> Unit = {},
-    onClearAct: () -> Unit = {}
+    onClearAct: () -> Unit = {},
+    onClickRegionCodeAct: () -> Unit = {}
 ) {
     var curTextStr by remember {
         mutableStateOf(phoneNumber)
+    }
+
+    var curRegionCode by remember {
+        mutableStateOf(regionCode)
     }
 
     Box(
@@ -69,7 +75,9 @@ fun PhoneNumberEditor(
         ) {
             Spacer(modifier = Modifier.width(18.cdp))
             // TODO: 添加点击选号码区域码功能
-            PhoneNumberPrefix()
+            PhoneNumberPrefix(curRegionCode) {
+                onClickRegionCodeAct()
+            }
             Spacer(modifier = Modifier.width(7.cdp))
             Spacer(
                 modifier = Modifier
@@ -170,24 +178,21 @@ fun PhoneNumberEditor(
  */
 @Composable
 fun PhoneNumberPrefix(
-    prefix: String = "+86", onClearAct: () -> Unit = {}
+    prefix: String = "+86", onClickRegionCodeAct: () -> Unit = {}
 ) {
     Row(
         modifier = Modifier
             .wrapContentWidth()
             .height(18.cdp)
             .clickable {
-                onClearAct()
+                onClickRegionCodeAct()
             }, verticalAlignment = Alignment.CenterVertically
     ) {
         Text(text = prefix, fontSize = 14.csp, color = Color(0xff161823))
         Spacer(modifier = Modifier.width(7.cdp))
         Icon(
             modifier = Modifier
-                .size(10.cdp)
-                .clickable {
-
-                },
+                .size(10.cdp),
             painter = painterResource(R.drawable.login_down_arrow),
             contentDescription = ""
         )

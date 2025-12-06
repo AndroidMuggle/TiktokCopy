@@ -1,5 +1,6 @@
 package com.muggle.tiktokcopy.business.login
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +13,10 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,9 +28,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.muggle.tiktokcopy.R
+import com.muggle.tiktokcopy.business.login.intent.LoginDirectEvent
+import com.muggle.tiktokcopy.business.login.vm.DirectLoginVm
 import com.muggle.tiktokcopy.ui.component.ConfirmButton
 import com.muggle.tiktokcopy.ui.component.LoginToolBar
 import com.muggle.tiktokcopy.ui.component.PrivacyConfirmWidget
@@ -33,14 +41,36 @@ import com.muggle.tiktokcopy.utils.cdp
 import com.muggle.tiktokcopy.utils.csp
 
 @Composable
-fun DirectLoginPage() {
+fun DirectLoginPage(directLoginVm: DirectLoginVm = hiltViewModel()) {
+
+    val curState by remember {
+        directLoginVm.directLoginState
+    }
+
+    val isConfirmBtnEnable by remember {
+        derivedStateOf { curState.isConfirmBtnEnable }
+    }
+
+    LaunchedEffect(Unit) {
+        // TODO: 进入页面读取缓存数据
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .statusBarsPadding()
             .padding(top = 30.cdp)
     ) {
-        LoginToolBar(R.drawable.common_close, "帮助")
+        LoginToolBar(
+            resId = R.drawable.common_close,
+            hintText = "帮助",
+            onClickBack = {
+                directLoginVm.onReceiveEvent(LoginDirectEvent.ClickBackBtn)
+            },
+            onClickHelp = {
+                directLoginVm.onReceiveEvent(LoginDirectEvent.ClickHelpBtn)
+            }
+        )
         Spacer(modifier = Modifier.height(60.cdp))
         Text(
             modifier = Modifier
@@ -59,19 +89,24 @@ fun DirectLoginPage() {
                 .clip(CircleShape)
                 .align(Alignment.CenterHorizontally),
             model = ImageRequest.Builder(LocalContext.current)
-                .data(R.drawable.common_checked)
+                .data(
+                    if (curState.userAvatar.isNotEmpty()) {
+                        curState.userAvatar
+                    } else {
+                        R.drawable.common_checked
+                    }
+                )
                 .build(),
             contentScale = ContentScale.Crop,
             placeholder = painterResource(R.drawable.common_checked),
             contentDescription = ""
         )
         Spacer(modifier = Modifier.height(18.cdp))
-        // TODO: 替换头像和用户名数据
         Text(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight(),
-            text = "用户名",
+            text = curState.userName,
             fontSize = 28.csp,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
@@ -79,15 +114,25 @@ fun DirectLoginPage() {
             color = Color(0xff161823)
         )
         Spacer(modifier = Modifier.height(48.cdp))
-        ConfirmButton(isClickable = true, hintText = "一键登录")
+        ConfirmButton(
+            isClickable = isConfirmBtnEnable,
+            hintText = "一键登录",
+            onConfirm = {
+                directLoginVm.onReceiveEvent(LoginDirectEvent.ClickConfirmBtn)
+            }
+        )
         Spacer(modifier = Modifier.height(18.cdp))
-        PrivacyConfirmWidget()
+        PrivacyConfirmWidget(isConfirmBtnEnable) {
+            directLoginVm.onReceiveEvent(LoginDirectEvent.ClickPrivacyBtn(it))
+        }
         Spacer(modifier = Modifier.height(149.cdp))
-        // TODO: 切换登录点击事件
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .wrapContentHeight(),
+                .wrapContentHeight()
+                .clickable {
+                    directLoginVm.onReceiveEvent(LoginDirectEvent.ClickChangeAccount)
+                },
             text = "登录其他账号",
             color = Color(0x6604498d),
             fontSize = 14.csp,

@@ -55,4 +55,9 @@ sealed interface LoginByPasswordEvent {
      * 点击隐私确认
      */
     class ClickConfirmPrivacy(val isSelected: Boolean) : LoginByPasswordEvent
+
+    /**
+     * 点击切换区号
+     */
+    object ClickRegionCode : LoginByPasswordEvent
 }
