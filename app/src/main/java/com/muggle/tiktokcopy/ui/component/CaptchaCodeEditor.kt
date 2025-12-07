@@ -40,9 +40,12 @@ import kotlinx.coroutines.delay
  * 验证码输入框
  */
 @Composable
-fun CaptchaCodeEditor() {
+fun CaptchaCodeEditor(
+    inputCode: String = "",
+    onCaptchaCodeChange: (String) -> Unit = {}
+) {
     var curCaptchaCode by remember {
-        mutableStateOf("")
+        mutableStateOf(inputCode)
     }
 
     val focusRequester = remember {
@@ -68,6 +71,7 @@ fun CaptchaCodeEditor() {
             // TODO: 验证码输入类型校验
             if (code.length <= 4) {
                 curCaptchaCode = code
+                onCaptchaCodeChange(code)
             }
         },
         singleLine = true,
