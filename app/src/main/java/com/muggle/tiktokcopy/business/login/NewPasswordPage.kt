@@ -16,10 +16,10 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,22 +29,30 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.muggle.tiktokcopy.R
+import com.muggle.tiktokcopy.business.login.intent.NewPasswordEvent
+import com.muggle.tiktokcopy.business.login.vm.NewPasswordVm
 import com.muggle.tiktokcopy.ui.component.ConfirmButton
 import com.muggle.tiktokcopy.ui.component.LoginToolBar
 import com.muggle.tiktokcopy.utils.cdp
 import com.muggle.tiktokcopy.utils.csp
 
 @Composable
-fun NewPasswordPage() {
+fun NewPasswordPage(
+    newPasswordVm: NewPasswordVm = hiltViewModel(),
+) {
 
-    var inputStr by remember {
-        mutableStateOf("")
+    val curState by remember {
+        mutableStateOf(newPasswordVm.newPasswordState)
+    }
+
+    val isConfirmEnable by remember {
+        derivedStateOf { curState.value.isConfirmEnable }
     }
 
     Column(
@@ -53,7 +61,12 @@ fun NewPasswordPage() {
             .statusBarsPadding()
             .padding(top = 30.cdp)
     ) {
-        LoginToolBar(R.drawable.common_left, "")
+        LoginToolBar(
+            resId = R.drawable.common_left,
+            onClickBack = {
+                newPasswordVm.onReceiveEvent(NewPasswordEvent.ClickBackBtn)
+            }
+        )
         Spacer(modifier = Modifier.height(45.cdp))
         Text(
             modifier = Modifier.padding(start = 24.cdp),
@@ -87,11 +100,11 @@ fun NewPasswordPage() {
                     .wrapContentHeight()
                     .align(Alignment.CenterStart)
                     .padding(16.cdp),
-                value = inputStr,
+                value = curState.value.newPassword,
                 onValueChange = { pwd ->
                     // TODO: 密码合法性校验
                     if (pwd.length < 20) {
-                        inputStr = pwd
+                        newPasswordVm.onReceiveEvent(NewPasswordEvent.InputPassword(pwd))
                     }
                 },
                 textStyle = TextStyle(
@@ -104,7 +117,7 @@ fun NewPasswordPage() {
                 visualTransformation = PasswordVisualTransformation()
             )
 
-            if (inputStr.isEmpty()) {
+            if (curState.value.newPassword.isEmpty()) {
                 Text(
                     modifier = Modifier
                         .align(Alignment.CenterStart)
@@ -116,7 +129,13 @@ fun NewPasswordPage() {
             }
         }
         Spacer(modifier = Modifier.height(14.cdp))
-        ConfirmButton(hintText = "完成")
+        ConfirmButton(
+            isClickable = isConfirmEnable,
+            hintText = "完成",
+            onConfirm = {
+                newPasswordVm.onReceiveEvent(NewPasswordEvent.ClickConfirmBtn)
+            }
+        )
     }
 }
 
