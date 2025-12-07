@@ -29,9 +29,12 @@ import com.muggle.tiktokcopy.utils.cdp
 import com.muggle.tiktokcopy.utils.csp
 
 @Composable
-fun CaptchaCodePrivacyWidget() {
+fun CaptchaCodePrivacyWidget(
+    isSelect: Boolean = false,
+    onSelectPrivacyAct: (Boolean) -> Unit = {}
+) {
     var isCheckedPrivacy by remember {
-        mutableStateOf(false)
+        mutableStateOf(isSelect)
     }
 
     Row(
@@ -54,6 +57,7 @@ fun CaptchaCodePrivacyWidget() {
                 )
                 .clickable {
                     isCheckedPrivacy = !isCheckedPrivacy
+                    onSelectPrivacyAct(isCheckedPrivacy)
                 },
             painter = painterResource(
                 if (isCheckedPrivacy) {

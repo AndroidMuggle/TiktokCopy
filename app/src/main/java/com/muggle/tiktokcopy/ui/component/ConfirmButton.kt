@@ -41,6 +41,8 @@ fun ConfirmButton(
             .clickable {
                 if (isClickable) {
                     onConfirm()
+                } else {
+                    // TODO: 不可点击状态提示用户
                 }
             },
         horizontalArrangement = Arrangement.Center,
