@@ -16,7 +16,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,11 +39,11 @@ import com.muggle.tiktokcopy.utils.csp
 fun LoginByCaptchaCodePage(loginByCaptchaCodeVm: LoginByCaptchaCodeVm = hiltViewModel()) {
 
     val curState by remember {
-        mutableStateOf(loginByCaptchaCodeVm.loginByCaptchaCodeState)
+        loginByCaptchaCodeVm.loginByCaptchaCodeState
     }
 
     val isConfirmEnable by remember {
-        derivedStateOf { curState.value.isConfirmBtnEnable }
+        derivedStateOf { curState.isConfirmBtnEnable }
     }
 
     Column(
@@ -79,8 +78,8 @@ fun LoginByCaptchaCodePage(loginByCaptchaCodeVm: LoginByCaptchaCodeVm = hiltView
         )
         Spacer(modifier = Modifier.height(24.cdp))
         PhoneNumberEditor(
-            phoneNumber = curState.value.phoneNumber,
-            regionCode = curState.value.regionCode,
+            phoneNumber = curState.phoneNumber,
+            regionCode = curState.regionCode,
             onTextChangeAct = {
                 loginByCaptchaCodeVm.onReceiveEvent(LoginByCaptchaCodeEvent.InputPhoneNumber(it))
             },
@@ -105,7 +104,7 @@ fun LoginByCaptchaCodePage(loginByCaptchaCodeVm: LoginByCaptchaCodeVm = hiltView
         )
         Spacer(modifier = Modifier.height(24.cdp))
         CaptchaCodePrivacyWidget(
-            isSelect = curState.value.isPrivacySelect,
+            isSelect = curState.isPrivacySelect,
             onSelectPrivacyAct = {
                 loginByCaptchaCodeVm.onReceiveEvent(LoginByCaptchaCodeEvent.ClickPrivacySelect(it))
             }

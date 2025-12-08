@@ -18,7 +18,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,11 +47,11 @@ fun NewPasswordPage(
 ) {
 
     val curState by remember {
-        mutableStateOf(newPasswordVm.newPasswordState)
+        newPasswordVm.newPasswordState
     }
 
     val isConfirmEnable by remember {
-        derivedStateOf { curState.value.isConfirmEnable }
+        derivedStateOf { curState.isConfirmEnable }
     }
 
     Column(
@@ -100,7 +99,7 @@ fun NewPasswordPage(
                     .wrapContentHeight()
                     .align(Alignment.CenterStart)
                     .padding(16.cdp),
-                value = curState.value.newPassword,
+                value = curState.newPassword,
                 onValueChange = { pwd ->
                     // TODO: 密码合法性校验
                     if (pwd.length < 20) {
@@ -117,7 +116,7 @@ fun NewPasswordPage(
                 visualTransformation = PasswordVisualTransformation()
             )
 
-            if (curState.value.newPassword.isEmpty()) {
+            if (curState.newPassword.isEmpty()) {
                 Text(
                     modifier = Modifier
                         .align(Alignment.CenterStart)

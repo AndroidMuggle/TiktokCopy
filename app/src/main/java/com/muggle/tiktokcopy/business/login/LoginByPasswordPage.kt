@@ -19,7 +19,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,14 +40,14 @@ import com.muggle.tiktokcopy.utils.cdp
 import com.muggle.tiktokcopy.utils.csp
 
 @Composable
-fun LoginByPassword(loginByPasswordVm: LoginByPasswordVm = hiltViewModel()) {
+fun LoginByPasswordPage(loginByPasswordVm: LoginByPasswordVm = hiltViewModel()) {
 
     val curState by remember {
-        mutableStateOf(loginByPasswordVm.loginByPasswordState)
+        loginByPasswordVm.loginByPasswordState
     }
 
     val isConfirmBtnEnable by remember {
-        derivedStateOf { curState.value.isConfirmEnable }
+        derivedStateOf { curState.isConfirmEnable }
     }
 
     Column(
@@ -76,8 +75,8 @@ fun LoginByPassword(loginByPasswordVm: LoginByPasswordVm = hiltViewModel()) {
         )
         Spacer(modifier = Modifier.height(24.cdp))
         PhoneNumberEditor(
-            phoneNumber = curState.value.curPhoneNumber,
-            regionCode = curState.value.regionCode,
+            phoneNumber = curState.curPhoneNumber,
+            regionCode = curState.regionCode,
             onTextChangeAct = {
                 loginByPasswordVm.onReceiveEvent(LoginByPasswordEvent.InputPhoneNumber(it))
             },
@@ -90,8 +89,8 @@ fun LoginByPassword(loginByPasswordVm: LoginByPasswordVm = hiltViewModel()) {
         )
         Spacer(modifier = Modifier.height(12.cdp))
         PasswordInputBar(
-            password = curState.value.curPassword,
-            passwordVisibility = curState.value.isPasswordVisible,
+            password = curState.curPassword,
+            passwordVisibility = curState.isPasswordVisible,
             onClearPassword = {
                 loginByPasswordVm.onReceiveEvent(LoginByPasswordEvent.ClearPassword)
             },
@@ -120,7 +119,7 @@ fun LoginByPassword(loginByPasswordVm: LoginByPasswordVm = hiltViewModel()) {
             loginByPasswordVm.onReceiveEvent(LoginByPasswordEvent.ClickConfirmBtn)
         }
         Spacer(modifier = Modifier.height(24.cdp))
-        PrivacyConfirmWidget(curState.value.isPrivacySelected) {
+        PrivacyConfirmWidget(curState.isPrivacySelected) {
             loginByPasswordVm.onReceiveEvent(LoginByPasswordEvent.ClickConfirmPrivacy(it))
         }
     }
@@ -182,5 +181,5 @@ fun SwitchLoginWidget(
 @Preview
 @Composable
 fun PreviewLoginByPassword() {
-    LoginByPassword()
+    LoginByPasswordPage()
 }

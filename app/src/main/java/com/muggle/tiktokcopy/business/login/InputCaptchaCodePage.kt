@@ -19,7 +19,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -47,11 +46,11 @@ import kotlinx.coroutines.delay
 fun InputCaptchaCodePage(inputCaptchaCodeVm: InputCaptchaCodeVm = hiltViewModel()) {
 
     val curState by remember {
-        mutableStateOf(inputCaptchaCodeVm.inputCaptchaCodeState)
+        inputCaptchaCodeVm.inputCaptchaCodeState
     }
 
     val isConfirmEnable by remember {
-        derivedStateOf { curState.value.isConfirmBtnEnable }
+        derivedStateOf { curState.isConfirmBtnEnable }
     }
 
     LaunchedEffect(Unit) {
@@ -83,10 +82,10 @@ fun InputCaptchaCodePage(inputCaptchaCodeVm: InputCaptchaCodeVm = hiltViewModel(
             color = Color.Black
         )
         Spacer(modifier = Modifier.height(10.cdp))
-        SendMessageHint(phoneNumber = curState.value.phoneNumber)
+        SendMessageHint(phoneNumber = curState.phoneNumber)
         Spacer(modifier = Modifier.height(27.cdp))
         CaptchaCodeEditor(
-            inputCode = curState.value.captchaCode,
+            inputCode = curState.captchaCode,
             onCaptchaCodeChange = {
                 inputCaptchaCodeVm.onReceiveEvent(InputCaptchaCodeEvent.InputCaptchaCode(it))
             }
