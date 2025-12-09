@@ -34,9 +34,9 @@ import coil3.request.ImageRequest
 import com.muggle.tiktokcopy.R
 import com.muggle.tiktokcopy.business.login.intent.LoginDirectEvent
 import com.muggle.tiktokcopy.business.login.vm.DirectLoginVm
-import com.muggle.tiktokcopy.ui.component.ConfirmButton
-import com.muggle.tiktokcopy.ui.component.LoginToolBar
-import com.muggle.tiktokcopy.ui.component.PrivacyConfirmWidget
+import com.muggle.tiktokcopy.ui.component.login.ConfirmButton
+import com.muggle.tiktokcopy.ui.component.login.LoginToolBar
+import com.muggle.tiktokcopy.ui.component.login.PrivacyConfirmWidget
 import com.muggle.tiktokcopy.utils.cdp
 import com.muggle.tiktokcopy.utils.csp
 

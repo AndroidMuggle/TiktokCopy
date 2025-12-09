@@ -31,11 +31,11 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.muggle.tiktokcopy.R
 import com.muggle.tiktokcopy.business.login.intent.LoginByPasswordEvent
 import com.muggle.tiktokcopy.business.login.vm.LoginByPasswordVm
-import com.muggle.tiktokcopy.ui.component.ConfirmButton
-import com.muggle.tiktokcopy.ui.component.LoginToolBar
-import com.muggle.tiktokcopy.ui.component.PasswordInputBar
-import com.muggle.tiktokcopy.ui.component.PhoneNumberEditor
-import com.muggle.tiktokcopy.ui.component.PrivacyConfirmWidget
+import com.muggle.tiktokcopy.ui.component.login.ConfirmButton
+import com.muggle.tiktokcopy.ui.component.login.LoginToolBar
+import com.muggle.tiktokcopy.ui.component.login.PasswordInputBar
+import com.muggle.tiktokcopy.ui.component.login.PhoneNumberEditor
+import com.muggle.tiktokcopy.ui.component.login.PrivacyConfirmWidget
 import com.muggle.tiktokcopy.utils.cdp
 import com.muggle.tiktokcopy.utils.csp
 

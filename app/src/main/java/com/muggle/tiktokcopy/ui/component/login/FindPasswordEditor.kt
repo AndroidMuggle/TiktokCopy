@@ -1,4 +1,4 @@
-package com.muggle.tiktokcopy.ui.component
+package com.muggle.tiktokcopy.ui.component.login
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

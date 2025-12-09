@@ -1,4 +1,4 @@
-package com.muggle.tiktokcopy.ui.component
+package com.muggle.tiktokcopy.ui.component.login
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image

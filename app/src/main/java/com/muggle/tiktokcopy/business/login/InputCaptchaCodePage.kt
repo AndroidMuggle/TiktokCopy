@@ -32,9 +32,9 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.muggle.tiktokcopy.R
 import com.muggle.tiktokcopy.business.login.intent.InputCaptchaCodeEvent
 import com.muggle.tiktokcopy.business.login.vm.InputCaptchaCodeVm
-import com.muggle.tiktokcopy.ui.component.CaptchaCodeEditor
-import com.muggle.tiktokcopy.ui.component.ConfirmButton
-import com.muggle.tiktokcopy.ui.component.LoginToolBar
+import com.muggle.tiktokcopy.ui.component.login.CaptchaCodeEditor
+import com.muggle.tiktokcopy.ui.component.login.ConfirmButton
+import com.muggle.tiktokcopy.ui.component.login.LoginToolBar
 import com.muggle.tiktokcopy.utils.cdp
 import com.muggle.tiktokcopy.utils.csp
 import kotlinx.coroutines.delay

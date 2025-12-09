@@ -28,10 +28,10 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.muggle.tiktokcopy.R
 import com.muggle.tiktokcopy.business.login.intent.LoginByCaptchaCodeEvent
 import com.muggle.tiktokcopy.business.login.vm.LoginByCaptchaCodeVm
-import com.muggle.tiktokcopy.ui.component.CaptchaCodePrivacyWidget
-import com.muggle.tiktokcopy.ui.component.ConfirmButton
-import com.muggle.tiktokcopy.ui.component.LoginToolBar
-import com.muggle.tiktokcopy.ui.component.PhoneNumberEditor
+import com.muggle.tiktokcopy.ui.component.login.CaptchaCodePrivacyWidget
+import com.muggle.tiktokcopy.ui.component.login.ConfirmButton
+import com.muggle.tiktokcopy.ui.component.login.LoginToolBar
+import com.muggle.tiktokcopy.ui.component.login.PhoneNumberEditor
 import com.muggle.tiktokcopy.utils.cdp
 import com.muggle.tiktokcopy.utils.csp
 

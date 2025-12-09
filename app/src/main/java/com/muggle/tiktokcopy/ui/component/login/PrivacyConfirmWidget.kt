@@ -1,4 +1,4 @@
-package com.muggle.tiktokcopy.ui.component
+package com.muggle.tiktokcopy.ui.component.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -21,20 +21,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.tooling.preview.Preview
 import com.muggle.tiktokcopy.R
 import com.muggle.tiktokcopy.utils.cdp
 import com.muggle.tiktokcopy.utils.csp
 
 @Composable
-fun CaptchaCodePrivacyWidget(
-    isSelect: Boolean = false,
-    onSelectPrivacyAct: (Boolean) -> Unit = {}
+fun PrivacyConfirmWidget(
+    isSelected: Boolean = false,
+    horizontal: Arrangement.Horizontal = Arrangement.Center,
+    onClickPrivacyAct: (Boolean) -> Unit = {}
 ) {
     var isCheckedPrivacy by remember {
-        mutableStateOf(isSelect)
+        mutableStateOf(isSelected)
     }
 
     Row(
@@ -42,8 +41,8 @@ fun CaptchaCodePrivacyWidget(
             .padding(horizontal = 24.cdp)
             .wrapContentHeight()
             .fillMaxWidth(),
-        verticalAlignment = Alignment.Top,
-        horizontalArrangement = Arrangement.Center
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = horizontal
     ) {
         Image(
             modifier = Modifier
@@ -57,7 +56,7 @@ fun CaptchaCodePrivacyWidget(
                 )
                 .clickable {
                     isCheckedPrivacy = !isCheckedPrivacy
-                    onSelectPrivacyAct(isCheckedPrivacy)
+                    onClickPrivacyAct(isCheckedPrivacy)
                 },
             painter = painterResource(
                 if (isCheckedPrivacy) {
@@ -73,16 +72,15 @@ fun CaptchaCodePrivacyWidget(
 
         // TODO: 富文本和跳转隐私协议
         Text(
-            text = "已阅读并同意用户协议和隐私政策以及运营商服务协议，运营商将对你提供的手机号进行验证",
+            text = "已阅读并同意用户协议和隐私政策",
             fontSize = 14.csp,
-            color = Color(0x7fababaf),
-            style = TextStyle(baselineShift = BaselineShift.Superscript)
+            color = Color(0x7fababaf)
         )
     }
 }
 
 @Preview
 @Composable
-fun PreviewCaptchaCodePrivacyWidget() {
-    CaptchaCodePrivacyWidget()
+fun PreviewConfirmWidget() {
+    PrivacyConfirmWidget()
 }
