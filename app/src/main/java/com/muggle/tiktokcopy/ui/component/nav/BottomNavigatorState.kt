@@ -1,4 +1,4 @@
-package com.muggle.tiktokcopy.ui.component.common.nav
+package com.muggle.tiktokcopy.ui.component.nav
 
 import androidx.annotation.DrawableRes
 

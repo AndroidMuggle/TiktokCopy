@@ -1,4 +1,4 @@
-package com.muggle.tiktokcopy.ui.component.common
+package com.muggle.tiktokcopy.ui.component.nav
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -29,7 +29,6 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.muggle.tiktokcopy.R
 import com.muggle.tiktokcopy.ui.component.common.constants.AppConst
-import com.muggle.tiktokcopy.ui.component.common.nav.BottomNavigatorState
 import com.muggle.tiktokcopy.utils.cdp
 import com.muggle.tiktokcopy.utils.csp
 
