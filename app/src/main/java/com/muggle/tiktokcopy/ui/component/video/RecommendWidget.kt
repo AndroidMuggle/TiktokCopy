@@ -87,7 +87,11 @@ private fun RecommendCountWidget(recommendState: RecommendState.RecommendCount) 
         Spacer(modifier = Modifier.width(4.cdp))
         Text(
             modifier = Modifier.wrapContentSize(),
-            text = "共${recommendState.count}人推荐",
+            text = if (recommendState.count != 0) {
+                "共${recommendState.count}人推荐"
+            } else {
+                "点击推荐"
+            },
             fontSize = 14.csp,
             color = Color.White
         )
