@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -47,19 +48,7 @@ fun AuthorWidget(authorWidgetType: AuthorWidgetType) {
         }
 
         is AuthorWidgetType.AuthorVerification -> {
-            when ((curType as AuthorWidgetType.AuthorVerification).verificationType) {
-                AuthorVerificationType.CompanyVerified -> {
-                    TODO()
-                }
-
-                AuthorVerificationType.FamousPersonVerified -> {
-                    TODO()
-                }
-
-                AuthorVerificationType.Government -> {
-                    TODO()
-                }
-            }
+            AuthorVerificationWidget((curType as AuthorWidgetType.AuthorVerification).verificationType)
         }
 
         is AuthorWidgetType.CreateTogether -> {
@@ -220,6 +209,29 @@ private fun VideoCreateDateWidget(videoCreateDate: AuthorWidgetType.VideoCreateD
         color = Color.White,
         fontSize = 12.csp,
         overflow = TextOverflow.Visible
+    )
+}
+
+@Composable
+private fun AuthorVerificationWidget(authorVerificationType: AuthorVerificationType) {
+    val resId = when (authorVerificationType) {
+        AuthorVerificationType.CompanyVerified -> {
+            R.drawable.video_author_verification_gov
+        }
+
+        AuthorVerificationType.FamousPersonVerified -> {
+            R.drawable.video_author_verification_famous_people
+        }
+
+        AuthorVerificationType.Government -> {
+            R.drawable.video_author_verification_company
+        }
+    }
+
+    Image(
+        modifier = Modifier.size(16.cdp),
+        painter = painterResource(resId),
+        contentDescription = ""
     )
 }
 
