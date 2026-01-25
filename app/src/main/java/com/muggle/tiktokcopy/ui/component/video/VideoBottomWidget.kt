@@ -141,7 +141,7 @@ private fun RelativeSearchWidget(relativeSearch: VideoBottomWidgetType.RelativeS
                 modifier = Modifier
                     .wrapContentSize()
                     .widthIn(max = 210.cdp),
-                text = "相关搜索 · ${relativeSearch.searchHintStr}",
+                text = "相关搜索·${relativeSearch.searchHintStr}",
                 fontSize = 14.csp,
                 color = Color.White,
                 fontWeight = FontWeight.Medium,
