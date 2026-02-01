@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -72,10 +73,16 @@ fun VideoProgressWidget(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .padding(horizontal = 11.cdp)
-            .background(color = Color(0x7f525252), shape = RoundedCornerShape(height)),
+            .padding(horizontal = 11.cdp),
         contentAlignment = Alignment.CenterStart
     ) {
+        Spacer(
+            modifier = Modifier
+                .height(height = height)
+                .fillMaxWidth(1f)
+                .background(color = Color(0x7f525252), shape = RoundedCornerShape(height))
+        )
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -102,19 +109,19 @@ fun VideoProgressWidget(
                         Color(0x7fffffff)
                     } else {
                         Color(0xcfffffff)
-                    },
-                    shape = RoundedCornerShape(height)
+                    }
                 )
         )
 
         Spacer(
             modifier = Modifier
-                .height(height = height + 2.cdp)
-                .width(height + 2.cdp)
+                .height(height = height + 3.cdp)
+                .width(height + 3.cdp)
                 .offset(((APP_DESIGN_WIDTH - 22).toFloat() * curFactor).cdp)
                 .background(color = Color(0xffffffff), shape = CircleShape)
 
         )
+        rememberLazyListState()
     }
 }
 

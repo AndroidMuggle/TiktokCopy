@@ -69,4 +69,8 @@ dependencies {
 //    implementation(libs.androidx.ktor.json)
     implementation(libs.androidx.ktor.negotiation)
 //    implementation(libs.androidx.viewmodel.ktx)
+    implementation(libs.androidx.media.compose)
+    implementation(libs.androidx.media.exoplayer)
+    implementation(libs.androidx.media.ui)
+    implementation(libs.androidx.media.common)
 }

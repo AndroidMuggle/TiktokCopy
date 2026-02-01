@@ -7,8 +7,11 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import com.muggle.tiktokcopy.business.login.NewPasswordPage
+import androidx.media3.exoplayer.ExoPlayer
+import com.muggle.tiktokcopy.ui.component.video.VideoPlayerWidget
 import com.muggle.tiktokcopy.ui.theme.TiktokCopyTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -19,7 +22,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             TiktokCopyTheme {
-                NewPasswordPage()
+                VideoPlayerWidget(
+                    player = ExoPlayer.Builder(LocalContext.current).build(),
+                    contentScale = ContentScale.FillWidth
+                )
             }
         }
     }
