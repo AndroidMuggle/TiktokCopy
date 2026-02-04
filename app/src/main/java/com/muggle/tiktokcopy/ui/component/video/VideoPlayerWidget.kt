@@ -5,14 +5,18 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -26,17 +30,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
+import androidx.media3.common.VideoSize
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.compose.ContentFrame
 import com.muggle.tiktokcopy.R
+import com.muggle.tiktokcopy.business.login.bean.LoginResponseBean
+import com.muggle.tiktokcopy.ui.component.video.bean.AuthorWidgetType
+import com.muggle.tiktokcopy.ui.component.video.bean.VideoBottomWidgetType
+import com.muggle.tiktokcopy.utils.VerticalDivider
 import com.muggle.tiktokcopy.utils.cdp
 import com.muggle.tiktokcopy.utils.csp
 
@@ -52,16 +59,69 @@ fun VideoPlayerWidget(
     contentScale: ContentScale
 ) {
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(760.cdp)
     ) {
         VideoPlayer(player = player, contentScale = contentScale)
-        Box(modifier = Modifier.fillMaxSize())
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .align(alignment = Alignment.BottomStart)
+        ) {
+            Column(
+                modifier = Modifier
+                    .widthIn(max = 276.cdp)
+                    .padding(start = 11.cdp)
+            ) {
+                DanmakuEditEntrance()
+                Spacer(modifier = Modifier.height(8.cdp))
+                RecommendWidget()
+                Spacer(modifier = Modifier.height(8.cdp))
+                VideoRelativeWidget()
+                Spacer(modifier = Modifier.height(8.cdp))
+                VideoAuthor(
+                    userName = "字节跳动",
+                    authorWidgetType = AuthorWidgetType.CreateTogether(
+                        authorList = createAuthorList()
+                    )
+                )
+                VerticalDivider(8.cdp)
+                VideoContentDesc("我的刀盾、比比拉布、我的刀盾、比比拉布、我的刀盾、比比拉布、我的刀盾、比比拉布、我的刀盾、比比拉布、")
+                VerticalDivider(8.cdp)
+            }
+            VideoBottomWidget(VideoBottomWidgetType.RelativeSearch("我的刀盾是什么梗"))
+//            VideoContentWarningWidget(VideoContentWarningType.ContentWarning("情节演绎，注意甄别"))
+//            VerticalDivider(8.cdp)
+            VideoProgressWidget(chapterSecList = listOf(5, 26, 78, 93))
+        }
+
+        Column(
+            modifier = Modifier
+                .wrapContentSize()
+                .align(alignment = Alignment.BottomEnd),
+        ) {
+            AuthorAvatarWidget()
+            VerticalDivider(8.cdp)
+            LikeWidget()
+            VerticalDivider(8.cdp)
+            CommentEntranceWidget()
+            VerticalDivider(8.cdp)
+            AddCollectWidget()
+            VerticalDivider(8.cdp)
+            ShareWidget()
+            VerticalDivider(8.cdp)
+            MusicAlbumEntrance()
+            // TODO: 根据bottomWidgetType确认竖向padding
+            VerticalDivider(54.cdp)
+        }
     }
 }
 
 @OptIn(UnstableApi::class)
 @Composable
-private fun VideoPlayer(
+private fun BoxScope.VideoPlayer(
     player: Player,
     contentScale: ContentScale
 ) {
@@ -107,6 +167,10 @@ private fun VideoPlayer(
             reason: Int
         ) {
             super.onPositionDiscontinuity(oldPosition, newPosition, reason)
+        }
+
+        override fun onVideoSizeChanged(videoSize: VideoSize) {
+            super.onVideoSizeChanged(videoSize)
         }
     }
 
@@ -198,8 +262,56 @@ private fun VideoPlayer(
 @Preview
 @Composable
 fun PreviewVideoPlayerWidget() {
-    VideoPlayer(
-        player = ExoPlayer.Builder(LocalContext.current).build(),
-        contentScale = ContentScale.FillWidth
-    )
+//    VideoPlayer(
+//        player = ExoPlayer.Builder(LocalContext.current).build(),
+//        contentScale = ContentScale.FillWidth
+//    )
+}
+
+private fun createAuthorList(): List<LoginResponseBean> {
+    return arrayListOf<LoginResponseBean>().apply {
+        add(
+            LoginResponseBean(
+                avatar = "",
+                password = "",
+                phoneNumber = "",
+                tiktokId = "",
+                userId = "",
+                username = "TODO()"
+            )
+        )
+
+        add(
+            LoginResponseBean(
+                avatar = "",
+                password = "",
+                phoneNumber = "",
+                tiktokId = "",
+                userId = "",
+                username = "PUBG"
+            )
+        )
+
+        add(
+            LoginResponseBean(
+                avatar = "",
+                password = "",
+                phoneNumber = "",
+                tiktokId = "",
+                userId = "",
+                username = "火影忍者"
+            )
+        )
+
+        add(
+            LoginResponseBean(
+                avatar = "",
+                password = "",
+                phoneNumber = "",
+                tiktokId = "",
+                userId = "",
+                username = "蜡笔小新"
+            )
+        )
+    }
 }

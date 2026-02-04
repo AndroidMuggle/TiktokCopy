@@ -122,7 +122,7 @@ private fun RelativeSearchWidget(relativeSearch: VideoBottomWidgetType.RelativeS
         modifier = Modifier
             .fillMaxWidth()
             .height(42.cdp)
-            .background(color = Color(0xff111111))
+            .background(color = Color(0x66666666))
             .padding(horizontal = 15.cdp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween

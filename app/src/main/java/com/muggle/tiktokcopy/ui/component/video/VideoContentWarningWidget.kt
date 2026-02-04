@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -52,7 +53,8 @@ private fun AuthorWarning(authorWarning: VideoContentWarningType.AuthorWarning) 
     Row(
         modifier = Modifier
             .wrapContentWidth()
-            .height(15.cdp),
+            .wrapContentHeight()
+            .padding(start = 11.cdp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
@@ -84,7 +86,8 @@ private fun ContentWarningWidget(contentWarning: VideoContentWarningType.Content
     Row(
         modifier = Modifier
             .wrapContentWidth()
-            .height(15.cdp),
+            .wrapContentHeight()
+            .padding(start = 11.cdp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {

@@ -73,6 +73,7 @@ fun VideoProgressWidget(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
+            .background(color = Color(0x66666666))
             .padding(horizontal = 11.cdp),
         contentAlignment = Alignment.CenterStart
     ) {

@@ -4,12 +4,16 @@ import android.annotation.SuppressLint
 import android.icu.text.SimpleDateFormat
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,13 +24,23 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
 import com.muggle.tiktokcopy.R
+import com.muggle.tiktokcopy.business.login.bean.LoginResponseBean
 import com.muggle.tiktokcopy.ui.component.video.bean.AuthorVerificationType
 import com.muggle.tiktokcopy.ui.component.video.bean.AuthorWidgetType
+import com.muggle.tiktokcopy.utils.HorizontalDivider
+import com.muggle.tiktokcopy.utils.VerticalDivider
 import com.muggle.tiktokcopy.utils.cdp
 import com.muggle.tiktokcopy.utils.csp
 import java.util.Date
@@ -37,7 +51,40 @@ import java.util.Date
  * @desc
  */
 @Composable
-fun AuthorWidget(authorWidgetType: AuthorWidgetType) {
+fun VideoAuthor(
+    userName: String = "",
+    authorWidgetType: AuthorWidgetType? = null
+) {
+    Column(modifier = Modifier.wrapContentSize()) {
+        Row(
+            modifier = Modifier
+                .widthIn(max = 276.cdp)
+                .height(20.cdp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                modifier = Modifier.widthIn(max = 276.cdp),
+                text = "@$userName",
+                fontSize = 15.csp,
+                color = Color.White,
+                overflow = TextOverflow.Ellipsis,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.width(4.cdp))
+            if (null != authorWidgetType) {
+                AuthorWidget(authorWidgetType)
+            }
+        }
+        Spacer(modifier = Modifier.height(8.cdp))
+
+        if (authorWidgetType is AuthorWidgetType.CreateTogether) {
+            CreateTogetherAuthorList(authorList = authorWidgetType.authorList)
+        }
+    }
+}
+
+@Composable
+private fun AuthorWidget(authorWidgetType: AuthorWidgetType) {
     val curType by remember {
         mutableStateOf(authorWidgetType)
     }
@@ -103,7 +150,8 @@ private fun CreateTogetherWidget(createTogether: AuthorWidgetType.CreateTogether
     Row(
         modifier = Modifier
             .wrapContentWidth()
-            .height(20.cdp),
+            .wrapContentHeight()
+            .background(color = Color(0x66666666), shape = RoundedCornerShape(4.cdp)),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
@@ -122,8 +170,10 @@ private fun CreateTogetherWidget(createTogether: AuthorWidgetType.CreateTogether
             text = "${createTogether.authorList.size}人共创",
             color = Color.White,
             fontSize = 12.csp,
-            overflow = TextOverflow.Visible
+            overflow = TextOverflow.Visible,
+            textAlign = TextAlign.Center,
         )
+        HorizontalDivider(5.cdp)
     }
 }
 
@@ -235,8 +285,77 @@ private fun AuthorVerificationWidget(authorVerificationType: AuthorVerificationT
     )
 }
 
+@Composable
+private fun CreateTogetherAuthorList(authorList: List<LoginResponseBean>) {
+    Row(
+        modifier = Modifier.wrapContentSize(),
+        verticalAlignment = Alignment.Top
+    ) {
+        if (authorList.size <= 3) {
+            authorList.forEach {
+                SingleAuthor(it)
+                HorizontalDivider(3.cdp)
+            }
+        } else {
+            authorList.take(3).forEach {
+                SingleAuthor(it)
+                HorizontalDivider(3.cdp)
+            }
+            HorizontalDivider(8.cdp)
+            MoreAuthor()
+        }
+    }
+}
+
+@Composable
+private fun SingleAuthor(author: LoginResponseBean) {
+    Column(
+        modifier = Modifier
+            .width(42.cdp)
+            .wrapContentHeight(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current).data(author.avatar).build(),
+            modifier = Modifier
+                .size(30.cdp)
+                .clip(
+                    shape = RoundedCornerShape(30.cdp)
+                )
+                .border(width = 1.cdp, color = Color.White),
+            contentDescription = "",
+            contentScale = ContentScale.Crop,
+            error = painterResource(R.drawable.common_nav_user_avatar_holder),
+            placeholder = painterResource(R.drawable.common_nav_user_avatar_holder)
+        )
+        VerticalDivider(3.cdp)
+        Text(
+            modifier = Modifier
+                .width(42.cdp)
+                .wrapContentHeight(),
+            text = author.username ?: "",
+            color = Color.White,
+            fontSize = 10.csp,
+            overflow = TextOverflow.Ellipsis
+        )
+    }
+}
+
+@Composable
+private fun MoreAuthor() {
+    Image(
+        modifier = Modifier
+            .size(30.cdp)
+            .clip(shape = RoundedCornerShape(30.cdp))
+            .background(color = Color(0x10FFFFFF)),
+        painter = painterResource(R.drawable.video_author_more),
+        contentScale = ContentScale.Crop,
+        contentDescription = ""
+    )
+}
+
 @Preview
 @Composable
 fun PreviewAuthorWidget() {
-
+    MoreAuthor()
 }
