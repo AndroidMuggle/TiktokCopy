@@ -1,0 +1,225 @@
+package com.muggle.tiktokcopy.ui.component.video
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import com.muggle.tiktokcopy.R
+import com.muggle.tiktokcopy.ui.component.video.bean.TabItemState
+import com.muggle.tiktokcopy.utils.VerticalDivider
+import com.muggle.tiktokcopy.utils.cdp
+import com.muggle.tiktokcopy.utils.csp
+import kotlinx.coroutines.delay
+
+/**
+ * @date 2026/2/8 22:34
+ * @author muggle
+ * @desc
+ */
+@Composable
+fun ScrollableTabList(
+    selectTabIndex: Int = 0,
+    tabList: List<TabItemState> = listOf()
+) {
+
+    val curTabList = remember {
+        mutableStateListOf<TabItemState>()
+    }
+    if (curTabList.isEmpty()) {
+        curTabList.addAll(tabList)
+    }
+
+    var curSelectIndex by remember {
+        mutableIntStateOf(selectTabIndex)
+    }
+
+    Box(
+        modifier = Modifier
+            .height(40.cdp)
+            .width(288.cdp)
+    ) {
+        LazyRow(
+            modifier = Modifier
+                .height(40.cdp)
+                .width(288.cdp)
+        ) {
+
+
+
+            item {  }
+        }
+    }
+
+}
+
+@Composable
+private fun TabItem(isSelected: Boolean, state: TabItemState) {
+    when (state) {
+        is TabItemState.Refreshing -> {
+            RefreshTabWidget()
+        }
+
+        is TabItemState.NormalTab -> {
+            NormalTabWidget(isSelected, state)
+        }
+    }
+}
+
+@Composable
+private fun RefreshTabWidget() {
+    var rotateDegree by remember {
+        mutableIntStateOf(0)
+    }
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(200)
+            if (rotateDegree >= 360) {
+                rotateDegree = 0
+            }
+            rotateDegree += 45
+        }
+    }
+    Box(
+        modifier = Modifier
+            .height(40.cdp)
+            .padding(horizontal = 7.cdp)
+            .wrapContentWidth()
+            .background(color = Color.Gray)
+    ) {
+        Image(
+            modifier = Modifier
+                .size(16.cdp)
+                .align(alignment = Alignment.Center)
+                .rotate(rotateDegree.toFloat()),
+            painter = painterResource(R.drawable.video_tab_refresh),
+            contentDescription = ""
+        )
+    }
+}
+
+@Composable
+private fun NormalTabWidget(
+    isSelected: Boolean = false,
+    state: TabItemState.NormalTab
+) {
+    Box(
+        modifier = Modifier
+            .height(40.cdp)
+            .wrapContentWidth()
+    ) {
+        Column(
+            modifier = Modifier
+                .height(30.cdp)
+                .padding(horizontal = 7.cdp)
+                .wrapContentWidth()
+                .align(Alignment.BottomCenter),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                modifier = Modifier.wrapContentSize(),
+                text = state.tabName,
+                color = if (isSelected) {
+                    Color.White
+                } else {
+                    Color(0xffc3c3c3)
+                },
+                fontSize = 20.csp,
+                fontWeight = if (state.isSpecialActivity) {
+                    FontWeight.Bold
+                } else {
+                    FontWeight.Normal
+                }
+            )
+
+            if (isSelected) {
+                VerticalDivider(height = 8.cdp)
+                Spacer(
+                    modifier = Modifier
+                        .height(2.cdp)
+                        .width(24.cdp)
+                        .background(color = Color.White)
+                )
+            }
+        }
+
+        if (state.message.isNotEmpty()) {
+            Column(
+                modifier = Modifier
+                    .wrapContentSize()
+                    .align(alignment = Alignment.TopEnd)
+            ) {
+                VerticalDivider(4.cdp)
+                Text(
+                    modifier = Modifier
+                        .height(16.cdp)
+                        .background(
+                            color = Color(0xfffe2c55),
+                            shape = RoundedCornerShape(24.cdp)
+                        )
+                        .padding(horizontal = 3.cdp),
+                    text = state.message,
+                    fontSize = 10.csp,
+                    color = Color.White,
+                )
+            }
+
+        } else if (state.hasRedDot) {
+            Column(
+                modifier = Modifier
+                    .wrapContentSize()
+                    .align(alignment = Alignment.TopEnd)
+            ) {
+                VerticalDivider(4.cdp)
+                Spacer(
+                    modifier = Modifier
+                        .size(9.cdp)
+                        .background(
+                            color = Color(0xfffe2c55),
+                            shape = RoundedCornerShape(9.cdp)
+                        )
+                )
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+fun PreviewScrollableTabList() {
+//    NormalTabWidget(
+//        true,
+//        state = TabItemState.NormalTab(
+//            tabName = "推荐",
+//            hasRedDot = false,
+//            message = "直播",
+//            isSpecialActivity = false
+//        ),
+//    )
+    RefreshTabWidget()
+}
