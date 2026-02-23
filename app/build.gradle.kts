@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.android.hilt)
     alias(libs.plugins.android.ksp)
+    alias(libs.plugins.kotlinx.serialzation)
 }
 
 android {
@@ -30,12 +31,12 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
+//    kotlinOptions {
+//        jvmTarget = "11"
+//    }
     buildFeatures {
         compose = true
     }
@@ -73,4 +74,5 @@ dependencies {
     implementation(libs.androidx.media.exoplayer)
     implementation(libs.androidx.media.ui)
     implementation(libs.androidx.media.common)
+    implementation(libs.androidx.navigation.compose)
 }

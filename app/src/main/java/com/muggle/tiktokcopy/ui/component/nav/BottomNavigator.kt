@@ -2,6 +2,7 @@ package com.muggle.tiktokcopy.ui.component.nav
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -13,8 +14,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,10 +25,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import androidx.navigation.NavOptions
+import androidx.navigation.compose.rememberNavController
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.muggle.tiktokcopy.R
 import com.muggle.tiktokcopy.ui.component.common.constants.AppConst
+import com.muggle.tiktokcopy.ui.screen.HomePage
 import com.muggle.tiktokcopy.utils.cdp
 import com.muggle.tiktokcopy.utils.csp
 
@@ -39,11 +43,16 @@ import com.muggle.tiktokcopy.utils.csp
  */
 @Composable
 fun BottomNavigator(
+    navController: NavController = rememberNavController(),
     navigatorStateList: List<BottomNavigatorState> = NAVIGATOR_DEFAULT_LIST
 ) {
 
-    val curState by remember {
-        mutableStateOf(navigatorStateList)
+    val curState = remember {
+        mutableStateListOf<BottomNavigatorState>()
+    }
+
+    if (curState.isEmpty()) {
+        curState.addAll(navigatorStateList)
     }
 
     Row(
@@ -62,7 +71,14 @@ fun BottomNavigator(
         ) {
             if (curState[0].navName == AppConst.NAV_NAME_HOME || !curState[0].isSelected) {
                 Text(
-                    modifier = Modifier.wrapContentSize(),
+                    modifier = Modifier
+                        .wrapContentSize()
+                        .clickable {
+                            navController.navigate(
+                                route = HomePage,
+                                navOptions = NavOptions.Builder().setLaunchSingleTop(true).build()
+                            )
+                        },
                     text = AppConst.NAV_NAME_HOME,
                     fontSize = 20.csp,
                     fontWeight = FontWeight.Bold,
@@ -124,9 +140,7 @@ fun BottomNavigator(
                         .align(alignment = Alignment.TopEnd),
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(
-                            if (curState[1].avatarIcon.isNotEmpty()) {
-                                curState[1].avatarIcon
-                            } else {
+                            curState[1].avatarIcon.ifEmpty {
                                 R.drawable.common_nav_user_avatar_holder
                             }
                         )
@@ -189,7 +203,7 @@ fun BottomNavigator(
 @Composable
 @Preview
 fun PreviewBottomNavigator() {
-    BottomNavigator()
+//    BottomNavigator()
 }
 
 private val NAVIGATOR_DEFAULT_LIST =

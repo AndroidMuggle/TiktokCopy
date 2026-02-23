@@ -12,7 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.muggle.tiktokcopy.R
 import com.muggle.tiktokcopy.ui.component.video.bean.TabItemState
+import com.muggle.tiktokcopy.ui.screen.getTabItemList
 import com.muggle.tiktokcopy.utils.VerticalDivider
 import com.muggle.tiktokcopy.utils.cdp
 import com.muggle.tiktokcopy.utils.csp
@@ -46,6 +47,7 @@ fun ScrollableTabList(
     selectTabIndex: Int = 0,
     tabList: List<TabItemState> = listOf()
 ) {
+    // TODO: 滑动到第四个展示右滑箭头
 
     val curTabList = remember {
         mutableStateListOf<TabItemState>()
@@ -68,10 +70,22 @@ fun ScrollableTabList(
                 .height(40.cdp)
                 .width(288.cdp)
         ) {
+            itemsIndexed(
+                items = tabList,
+                key = { _: Int, item: TabItemState ->
+                    when (item) {
+                        is TabItemState.NormalTab -> {
+                            item.tabName
+                        }
 
-
-
-            item {  }
+                        is TabItemState.Refreshing -> {
+                            item.tabName
+                        }
+                    }
+                }
+            ) { index: Int, item: TabItemState ->
+                TabItem(curSelectIndex == index, item)
+            }
         }
     }
 
@@ -135,7 +149,7 @@ private fun NormalTabWidget(
     ) {
         Column(
             modifier = Modifier
-                .height(30.cdp)
+                .height(40.cdp)
                 .padding(horizontal = 7.cdp)
                 .wrapContentWidth()
                 .align(Alignment.BottomCenter),
@@ -149,7 +163,7 @@ private fun NormalTabWidget(
                 } else {
                     Color(0xffc3c3c3)
                 },
-                fontSize = 20.csp,
+                fontSize = 16.csp,
                 fontWeight = if (state.isSpecialActivity) {
                     FontWeight.Bold
                 } else {
@@ -221,5 +235,6 @@ fun PreviewScrollableTabList() {
 //            isSpecialActivity = false
 //        ),
 //    )
-    RefreshTabWidget()
+//    RefreshTabWidget()
+    ScrollableTabList(0, getTabItemList())
 }
