@@ -2,8 +2,6 @@ package com.muggle.tiktokcopy.ui.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,43 +23,38 @@ import com.muggle.tiktokcopy.utils.cdp
 @Composable
 fun AppScreen() {
     val controller = rememberNavController()
-    Column(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize()) {
         Box(
             modifier = Modifier
-                .height(760.cdp)
+                .height(84.cdp)
                 .fillMaxWidth()
-        ) {
-            NavHost(
-                modifier = Modifier.fillMaxSize(),
-                navController = controller,
-                startDestination = HomePage
-            ) {
-                composable<HomePage> {
-                    HomeScreen()
-                }
-                composable<FriendPage> {
-                    FriendScreen()
-                }
-                composable<CreateVideoPage> {
-                    CreateVideoScreen()
-                }
-                composable<MessagePage> {
-                    MessageScreen()
-                }
-                composable<MinePage> {
-                    MineScreen()
-                }
-            }
-        }
-
-        Box(
-            modifier = Modifier
-                .fillMaxHeight()
-                .fillMaxWidth()
-                .background(color = Color(0xff181818)),
+                .background(color = Color(0xff181818))
+                .align(alignment = Alignment.BottomCenter),
             contentAlignment = Alignment.Center
         ) {
             BottomNavigator(navController = controller)
+        }
+
+        NavHost(
+            modifier = Modifier.fillMaxSize(),
+            navController = controller,
+            startDestination = HomePage
+        ) {
+            composable<HomePage> {
+                HomeScreen()
+            }
+            composable<FriendPage> {
+                FriendScreen()
+            }
+            composable<CreateVideoPage> {
+                CreateVideoScreen()
+            }
+            composable<MessagePage> {
+                MessageScreen()
+            }
+            composable<MinePage> {
+                MineScreen()
+            }
         }
     }
 }

@@ -6,10 +6,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
@@ -59,13 +61,14 @@ fun BottomNavigator(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 11.cdp)
-            .height(38.cdp),
+            .height(84.cdp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-
         Row(
-            modifier = Modifier.wrapContentSize(),
+            modifier = Modifier
+                .fillMaxHeight()
+                .width(58.cdp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -117,7 +120,11 @@ fun BottomNavigator(
             }
         }
 
-        Box(modifier = Modifier.wrapContentSize()) {
+        Box(
+            modifier = Modifier
+                .fillMaxHeight()
+                .width(58.cdp)
+        ) {
             Text(
                 modifier = Modifier
                     .wrapContentSize()
@@ -152,13 +159,27 @@ fun BottomNavigator(
             }
         }
 
-        Image(
-            modifier = Modifier.size(37.cdp),
-            painter = painterResource(curState[2].navIcon),
-            contentDescription = null
-        )
+        Box(
+            modifier = Modifier
+                .fillMaxHeight()
+                .width(58.cdp),
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                modifier = Modifier.size(37.cdp),
+                painter = painterResource(curState[2].navIcon),
+                contentDescription = null
+            )
+        }
 
-        Box(modifier = Modifier.wrapContentSize()) {
+
+
+        Box(
+            modifier = Modifier
+                .fillMaxHeight()
+                .width(58.cdp),
+            contentAlignment = Alignment.Center
+        ) {
             Text(
                 modifier = Modifier
                     .wrapContentSize()
@@ -184,26 +205,32 @@ fun BottomNavigator(
             }
         }
 
-        Text(
+        Box(
             modifier = Modifier
-                .wrapContentSize(),
-            text = curState[4].navName,
-            fontSize = 20.csp,
-            fontWeight = FontWeight.Bold,
-            color = if (curState[4].isSelected) {
-                Color(0xffffffff)
-            } else {
-                Color(0xff979797)
-            }
-        )
-
+                .fillMaxHeight()
+                .width(58.cdp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                modifier = Modifier
+                    .wrapContentSize(),
+                text = curState[4].navName,
+                fontSize = 20.csp,
+                fontWeight = FontWeight.Bold,
+                color = if (curState[4].isSelected) {
+                    Color(0xffffffff)
+                } else {
+                    Color(0xff979797)
+                }
+            )
+        }
     }
 }
 
 @Composable
 @Preview
 fun PreviewBottomNavigator() {
-//    BottomNavigator()
+    BottomNavigator()
 }
 
 private val NAVIGATOR_DEFAULT_LIST =

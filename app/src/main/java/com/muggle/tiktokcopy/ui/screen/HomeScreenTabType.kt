@@ -1,4 +1,4 @@
-package com.muggle.tiktokcopy.ui.component.video.bean
+package com.muggle.tiktokcopy.ui.screen
 
 /**
  * @author Muggle
