@@ -16,6 +16,7 @@ import androidx.compose.foundation.pager.PagerScope
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -48,6 +49,10 @@ fun HomeScreen() {
         }
 
         val horPageState = rememberPagerState(getTabItemList().lastIndex) { horPageCount }
+
+        LaunchedEffect(horPageState.currentPage) {
+
+        }
 
         HorizontalPager(
             modifier = Modifier

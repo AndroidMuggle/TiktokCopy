@@ -52,6 +52,13 @@ fun VideoProgressWidget(
                 ProgressWidgetType.Playing -> {
                     1.cdp
                 }
+
+                ProgressWidgetType.Dragging -> {
+                    4.cdp
+                }
+                ProgressWidgetType.Hide -> {
+                    1.cdp
+                }
             }
         )
     }

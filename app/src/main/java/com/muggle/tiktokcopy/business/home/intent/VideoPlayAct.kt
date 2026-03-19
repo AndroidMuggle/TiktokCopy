@@ -126,4 +126,9 @@ sealed interface VideoPlayAct {
      * 点击自动旋转
      */
     class ClickAutoRotate(val isAutoRotate: Boolean) : VideoPlayAct
+
+    /**
+     * 点击发送弹幕
+     */
+    class ClickSendDanmaku(val danmakuStr: String) : VideoPlayAct
 }

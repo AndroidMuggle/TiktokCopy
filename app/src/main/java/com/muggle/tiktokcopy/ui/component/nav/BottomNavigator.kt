@@ -233,7 +233,7 @@ fun PreviewBottomNavigator() {
     BottomNavigator()
 }
 
-private val NAVIGATOR_DEFAULT_LIST =
+val NAVIGATOR_DEFAULT_LIST =
     listOf<BottomNavigatorState>(
         BottomNavigatorState(
             navName = AppConst.NAV_NAME_HOME,

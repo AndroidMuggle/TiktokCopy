@@ -5,11 +5,11 @@ package com.muggle.tiktokcopy.ui.component.video.bean
  * @author muggle
  * @desc 视频相关内容（精选、定位、图文）
  */
-sealed interface VideoRelativeContent {
+sealed interface VideoRelativeContentType {
     /**
      * 抖音精选
      */
-    object SpecialSelect : VideoRelativeContent
+    object SpecialSelect : VideoRelativeContentType
 
     /**
      * 定位
@@ -18,7 +18,7 @@ sealed interface VideoRelativeContent {
         val title: String,
         val locationName: String?,
         val subDescriptions: List<String>?
-    ) : VideoRelativeContent
+    ) : VideoRelativeContentType
 
     /**
      * 图文
@@ -28,5 +28,5 @@ sealed interface VideoRelativeContent {
         val title: String,
         val typeName: String?,
         val subDescriptions: List<String>?
-    ) : VideoRelativeContent
+    ) : VideoRelativeContentType
 }

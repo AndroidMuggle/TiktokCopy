@@ -16,4 +16,14 @@ sealed interface ProgressWidgetType {
      * 暂停
      */
     object Pause : ProgressWidgetType
+
+    /**
+     * 拖拽中
+     */
+    object Dragging : ProgressWidgetType
+
+    /**
+     *
+     */
+    object Hide : ProgressWidgetType
 }

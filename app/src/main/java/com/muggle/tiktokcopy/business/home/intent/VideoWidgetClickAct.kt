@@ -107,4 +107,14 @@ sealed interface VideoWidgetClickAct {
      * 长按视频进度条插件区域
      */
     class LongClickVideoProgressWidget(val progress: Long) : VideoWidgetClickAct
+
+    /**
+     * 点击搜索icon
+     */
+    object ClickSearchIcon : VideoWidgetClickAct
+
+    /**
+     * 点击左侧抽屉菜单
+     */
+    object ClickDrawerMenu : VideoWidgetClickAct
 }

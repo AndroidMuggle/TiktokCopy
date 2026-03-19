@@ -33,7 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.muggle.tiktokcopy.R
-import com.muggle.tiktokcopy.ui.component.video.bean.VideoRelativeContent
+import com.muggle.tiktokcopy.ui.component.video.bean.VideoRelativeContentType
 import com.muggle.tiktokcopy.utils.cdp
 import com.muggle.tiktokcopy.utils.csp
 
@@ -43,21 +43,21 @@ import com.muggle.tiktokcopy.utils.csp
  * @desc
  */
 @Composable
-fun VideoRelativeWidget(state: VideoRelativeContent = VideoRelativeContent.SpecialSelect) {
+fun VideoRelativeWidget(state: VideoRelativeContentType = VideoRelativeContentType.SpecialSelect) {
     val curState by remember {
         mutableStateOf(state)
     }
 
     when (curState) {
-        is VideoRelativeContent.ImageWithDescription -> {
+        is VideoRelativeContentType.ImageWithDescription -> {
             ImageWithDescriptionWidget()
         }
 
-        is VideoRelativeContent.Location -> {
-            LocationWidget(curState as VideoRelativeContent.Location)
+        is VideoRelativeContentType.Location -> {
+            LocationWidget(curState as VideoRelativeContentType.Location)
         }
 
-        VideoRelativeContent.SpecialSelect -> {
+        VideoRelativeContentType.SpecialSelect -> {
             SpecialSelectWidget()
         }
     }
@@ -99,7 +99,7 @@ private fun SpecialSelectWidget() {
 
 @Composable
 private fun LocationWidget(
-    location: VideoRelativeContent.Location = VideoRelativeContent.Location(
+    location: VideoRelativeContentType.Location = VideoRelativeContentType.Location(
         title = "北京",
         locationName = "天安门",
         subDescriptions = listOf(
@@ -206,7 +206,7 @@ private fun LocationWidget(
 
 @Composable
 private fun ImageWithDescriptionWidget(
-    imageWithDescription: VideoRelativeContent.ImageWithDescription = VideoRelativeContent.ImageWithDescription(
+    imageWithDescription: VideoRelativeContentType.ImageWithDescription = VideoRelativeContentType.ImageWithDescription(
         imgUrl = "",
         title = "附近",
         typeName = "肯德基召楼星天地",
