@@ -1,5 +1,7 @@
 package com.muggle.tiktokcopy.business.home.state
 
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import com.muggle.tiktokcopy.business.home.bean.HomePageClickType
 import com.muggle.tiktokcopy.ui.component.nav.BottomNavigatorState
 import com.muggle.tiktokcopy.ui.component.nav.NAVIGATOR_DEFAULT_LIST
 import com.muggle.tiktokcopy.ui.component.video.bean.AuthorWidgetType
@@ -41,6 +43,7 @@ data class HomeScreenState(
     val videoContentWarningType: VideoContentWarningType? = null,
     val videoBottomWidgetType: VideoBottomWidgetType? = null,
     val progressWidgetType: ProgressWidgetType = ProgressWidgetType.Hide,
-    val bottomNavigatorState: List<BottomNavigatorState> = NAVIGATOR_DEFAULT_LIST
+    val bottomNavigatorState: SnapshotStateList<BottomNavigatorState> = NAVIGATOR_DEFAULT_LIST,
+    val curHomePageVideoType: HomePageClickType = HomePageClickType.SingleVideo
 ) {
 }

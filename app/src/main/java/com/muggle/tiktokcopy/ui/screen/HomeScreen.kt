@@ -31,6 +31,7 @@ import com.muggle.tiktokcopy.R
 import com.muggle.tiktokcopy.ui.component.video.ScrollableTabList
 import com.muggle.tiktokcopy.ui.component.video.VideoPlayerWidget
 import com.muggle.tiktokcopy.ui.component.video.bean.TabItemState
+import com.muggle.tiktokcopy.ui.screen.bean.HomeScreenTabType
 import com.muggle.tiktokcopy.utils.HorizontalDivider
 import com.muggle.tiktokcopy.utils.cdp
 

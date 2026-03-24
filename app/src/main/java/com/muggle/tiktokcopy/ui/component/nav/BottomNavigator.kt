@@ -27,12 +27,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.rememberNavController
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.muggle.tiktokcopy.R
+import com.muggle.tiktokcopy.business.home.bean.HomePageClickType
+import com.muggle.tiktokcopy.business.home.intent.BottomNavigatorClickAct
+import com.muggle.tiktokcopy.business.home.vm.HomeScreenVm
 import com.muggle.tiktokcopy.ui.component.common.constants.AppConst
 import com.muggle.tiktokcopy.ui.screen.HomePage
 import com.muggle.tiktokcopy.utils.cdp
@@ -45,16 +49,12 @@ import com.muggle.tiktokcopy.utils.csp
  */
 @Composable
 fun BottomNavigator(
-    navController: NavController = rememberNavController(),
-    navigatorStateList: List<BottomNavigatorState> = NAVIGATOR_DEFAULT_LIST
+    homeScreenVm: HomeScreenVm = hiltViewModel(),
+    navController: NavController = rememberNavController()
 ) {
 
     val curState = remember {
-        mutableStateListOf<BottomNavigatorState>()
-    }
-
-    if (curState.isEmpty()) {
-        curState.addAll(navigatorStateList)
+        homeScreenVm.homeScreenState.value.bottomNavigatorState
     }
 
     Row(
@@ -68,20 +68,46 @@ fun BottomNavigator(
         Row(
             modifier = Modifier
                 .fillMaxHeight()
-                .width(58.cdp),
+                .width(58.cdp)
+                .clickable {
+                    navController.navigate(
+                        route = HomePage,
+                        navOptions = NavOptions.Builder().setLaunchSingleTop(true).build()
+                    )
+
+                    when (homeScreenVm.homeScreenState.value.curHomePageVideoType) {
+                        HomePageClickType.SingleVideo -> {
+                            if (curState[0].isSelected) {
+                                homeScreenVm.onReceiveBottomNaviClickAct(
+                                    BottomNavigatorClickAct.ClickHomePage(HomePageClickType.VideoList)
+                                )
+                            } else {
+                                homeScreenVm.onReceiveBottomNaviClickAct(
+                                    BottomNavigatorClickAct.ClickHomePage(HomePageClickType.SingleVideo)
+                                )
+                            }
+                        }
+
+                        HomePageClickType.VideoList -> {
+                            if (curState[0].isSelected) {
+                                homeScreenVm.onReceiveBottomNaviClickAct(
+                                    BottomNavigatorClickAct.ClickHomePage(HomePageClickType.SingleVideo)
+                                )
+                            } else {
+                                homeScreenVm.onReceiveBottomNaviClickAct(
+                                    BottomNavigatorClickAct.ClickHomePage(HomePageClickType.VideoList)
+                                )
+                            }
+                        }
+                    }
+                },
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (curState[0].navName == AppConst.NAV_NAME_HOME || !curState[0].isSelected) {
                 Text(
                     modifier = Modifier
-                        .wrapContentSize()
-                        .clickable {
-                            navController.navigate(
-                                route = HomePage,
-                                navOptions = NavOptions.Builder().setLaunchSingleTop(true).build()
-                            )
-                        },
+                        .wrapContentSize(),
                     text = AppConst.NAV_NAME_HOME,
                     fontSize = 20.csp,
                     fontWeight = FontWeight.Bold,
@@ -124,6 +150,9 @@ fun BottomNavigator(
             modifier = Modifier
                 .fillMaxHeight()
                 .width(58.cdp)
+                .clickable {
+                    homeScreenVm.onReceiveBottomNaviClickAct(BottomNavigatorClickAct.ClickFriendPage)
+                }
         ) {
             Text(
                 modifier = Modifier
@@ -162,7 +191,10 @@ fun BottomNavigator(
         Box(
             modifier = Modifier
                 .fillMaxHeight()
-                .width(58.cdp),
+                .width(58.cdp)
+                .clickable {
+                    homeScreenVm.onReceiveBottomNaviClickAct(BottomNavigatorClickAct.ClickCreateVideoPage)
+                },
             contentAlignment = Alignment.Center
         ) {
             Image(
@@ -177,7 +209,10 @@ fun BottomNavigator(
         Box(
             modifier = Modifier
                 .fillMaxHeight()
-                .width(58.cdp),
+                .width(58.cdp)
+                .clickable {
+                    homeScreenVm.onReceiveBottomNaviClickAct(BottomNavigatorClickAct.ClickMessagePage)
+                },
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -208,7 +243,10 @@ fun BottomNavigator(
         Box(
             modifier = Modifier
                 .fillMaxHeight()
-                .width(58.cdp),
+                .width(58.cdp)
+                .clickable {
+                    homeScreenVm.onReceiveBottomNaviClickAct(BottomNavigatorClickAct.ClickMinePage)
+                },
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -234,7 +272,7 @@ fun PreviewBottomNavigator() {
 }
 
 val NAVIGATOR_DEFAULT_LIST =
-    listOf<BottomNavigatorState>(
+    mutableStateListOf<BottomNavigatorState>(
         BottomNavigatorState(
             navName = AppConst.NAV_NAME_HOME,
             navIcon = R.drawable.common_nav_switch,
