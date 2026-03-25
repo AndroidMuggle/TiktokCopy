@@ -7,7 +7,7 @@ import androidx.annotation.DrawableRes
  * @author muggle
  * @desc 底部导航按钮状态
  */
-data class BottomNavigatorState(
+data class SingleBottomNavigatorState(
     val navName: String = "",
     @DrawableRes val navIcon: Int = -1,
     val isSelected: Boolean = false,

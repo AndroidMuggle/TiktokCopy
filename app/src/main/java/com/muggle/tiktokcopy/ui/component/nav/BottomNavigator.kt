@@ -16,7 +16,9 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,6 +30,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.rememberNavController
@@ -36,7 +39,8 @@ import coil3.request.ImageRequest
 import com.muggle.tiktokcopy.R
 import com.muggle.tiktokcopy.business.home.bean.HomePageClickType
 import com.muggle.tiktokcopy.business.home.intent.BottomNavigatorClickAct
-import com.muggle.tiktokcopy.business.home.vm.HomeScreenVm
+import com.muggle.tiktokcopy.business.home.state.BottomNavState
+import com.muggle.tiktokcopy.business.home.vm.BottomNavigatorVm
 import com.muggle.tiktokcopy.ui.component.common.constants.AppConst
 import com.muggle.tiktokcopy.ui.screen.HomePage
 import com.muggle.tiktokcopy.utils.cdp
@@ -49,12 +53,72 @@ import com.muggle.tiktokcopy.utils.csp
  */
 @Composable
 fun BottomNavigator(
-    homeScreenVm: HomeScreenVm = hiltViewModel(),
+    bottomNavigatorVm: BottomNavigatorVm = hiltViewModel(),
     navController: NavController = rememberNavController()
 ) {
+    val curState by bottomNavigatorVm.bottomNavState.collectAsStateWithLifecycle()
 
-    val curState = remember {
-        homeScreenVm.homeScreenState.value.bottomNavigatorState
+    BottomNavigator(
+        state = curState,
+        onClickHomePage = {
+            navController.navigate(
+                route = HomePage,
+                navOptions = NavOptions.Builder().setLaunchSingleTop(true).build()
+            )
+
+            when (bottomNavigatorVm.bottomNavState.value.curHomePageVideoType) {
+                HomePageClickType.SingleVideo -> {
+                    if (curState.bottomNavigatorState[0].isSelected) {
+                        bottomNavigatorVm.onReceiveBottomNaviClickAct(
+                            BottomNavigatorClickAct.ClickHomePage(HomePageClickType.VideoList)
+                        )
+                    } else {
+                        bottomNavigatorVm.onReceiveBottomNaviClickAct(
+                            BottomNavigatorClickAct.ClickHomePage(HomePageClickType.SingleVideo)
+                        )
+                    }
+                }
+
+                HomePageClickType.VideoList -> {
+                    if (curState.bottomNavigatorState[0].isSelected) {
+                        bottomNavigatorVm.onReceiveBottomNaviClickAct(
+                            BottomNavigatorClickAct.ClickHomePage(HomePageClickType.SingleVideo)
+                        )
+                    } else {
+                        bottomNavigatorVm.onReceiveBottomNaviClickAct(
+                            BottomNavigatorClickAct.ClickHomePage(HomePageClickType.VideoList)
+                        )
+                    }
+                }
+            }
+        },
+        onClickFriendPage = {
+            bottomNavigatorVm.onReceiveBottomNaviClickAct(BottomNavigatorClickAct.ClickFriendPage)
+        },
+        onClickCreateVideoPage = {
+            bottomNavigatorVm.onReceiveBottomNaviClickAct(BottomNavigatorClickAct.ClickCreateVideoPage)
+        },
+        onClickMessagePage = {
+            bottomNavigatorVm.onReceiveBottomNaviClickAct(BottomNavigatorClickAct.ClickMessagePage)
+        },
+        onClickMinePage = {
+            bottomNavigatorVm.onReceiveBottomNaviClickAct(BottomNavigatorClickAct.ClickMinePage)
+        }
+    )
+}
+
+@Composable
+internal fun BottomNavigator(
+    state: BottomNavState = BottomNavState(),
+    onClickHomePage: () -> Unit = {},
+    onClickFriendPage: () -> Unit = {},
+    onClickCreateVideoPage: () -> Unit = {},
+    onClickMessagePage: () -> Unit = {},
+    onClickMinePage: () -> Unit = {}
+) {
+
+    val curState by remember {
+        mutableStateOf(state)
     }
 
     Row(
@@ -70,65 +134,36 @@ fun BottomNavigator(
                 .fillMaxHeight()
                 .width(58.cdp)
                 .clickable {
-                    navController.navigate(
-                        route = HomePage,
-                        navOptions = NavOptions.Builder().setLaunchSingleTop(true).build()
-                    )
-
-                    when (homeScreenVm.homeScreenState.value.curHomePageVideoType) {
-                        HomePageClickType.SingleVideo -> {
-                            if (curState[0].isSelected) {
-                                homeScreenVm.onReceiveBottomNaviClickAct(
-                                    BottomNavigatorClickAct.ClickHomePage(HomePageClickType.VideoList)
-                                )
-                            } else {
-                                homeScreenVm.onReceiveBottomNaviClickAct(
-                                    BottomNavigatorClickAct.ClickHomePage(HomePageClickType.SingleVideo)
-                                )
-                            }
-                        }
-
-                        HomePageClickType.VideoList -> {
-                            if (curState[0].isSelected) {
-                                homeScreenVm.onReceiveBottomNaviClickAct(
-                                    BottomNavigatorClickAct.ClickHomePage(HomePageClickType.SingleVideo)
-                                )
-                            } else {
-                                homeScreenVm.onReceiveBottomNaviClickAct(
-                                    BottomNavigatorClickAct.ClickHomePage(HomePageClickType.VideoList)
-                                )
-                            }
-                        }
-                    }
+                    onClickHomePage()
                 },
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (curState[0].navName == AppConst.NAV_NAME_HOME || !curState[0].isSelected) {
+            if (curState.bottomNavigatorState[0].navName == AppConst.NAV_NAME_HOME || !curState.bottomNavigatorState[0].isSelected) {
                 Text(
                     modifier = Modifier
                         .wrapContentSize(),
                     text = AppConst.NAV_NAME_HOME,
                     fontSize = 20.csp,
                     fontWeight = FontWeight.Bold,
-                    color = if (curState[0].isSelected) {
+                    color = if (curState.bottomNavigatorState[0].isSelected) {
                         Color(0xffffffff)
                     } else {
                         Color(0xff979797)
                     }
                 )
-                if (curState[0].isSelected) {
+                if (curState.bottomNavigatorState[0].isSelected) {
                     Image(
                         modifier = Modifier.size(10.cdp),
-                        painter = painterResource(curState[0].navIcon),
+                        painter = painterResource(curState.bottomNavigatorState[0].navIcon),
                         contentDescription = null
                     )
                 }
             } else {
-                if (curState[0].isSelected) {
+                if (curState.bottomNavigatorState[0].isSelected) {
                     Image(
                         modifier = Modifier.size(10.cdp),
-                        painter = painterResource(curState[0].navIcon),
+                        painter = painterResource(curState.bottomNavigatorState[0].navIcon),
                         contentDescription = null
                     )
                 }
@@ -137,7 +172,7 @@ fun BottomNavigator(
                     fontSize = 20.csp,
                     fontWeight = FontWeight.Bold,
                     text = AppConst.NAV_NAME_BACK,
-                    color = if (curState[0].isSelected) {
+                    color = if (curState.bottomNavigatorState[0].isSelected) {
                         Color(0xffffffff)
                     } else {
                         Color(0xff979797)
@@ -151,24 +186,24 @@ fun BottomNavigator(
                 .fillMaxHeight()
                 .width(58.cdp)
                 .clickable {
-                    homeScreenVm.onReceiveBottomNaviClickAct(BottomNavigatorClickAct.ClickFriendPage)
+                    onClickFriendPage()
                 }
         ) {
             Text(
                 modifier = Modifier
                     .wrapContentSize()
                     .align(alignment = Alignment.Center),
-                text = curState[1].navName,
+                text = curState.bottomNavigatorState[1].navName,
                 fontSize = 20.csp,
                 fontWeight = FontWeight.Bold,
-                color = if (curState[1].isSelected) {
+                color = if (curState.bottomNavigatorState[1].isSelected) {
                     Color(0xffffffff)
                 } else {
                     Color(0xff979797)
                 }
             )
 
-            if (curState[1].avatarIcon.isNotEmpty()) {
+            if (curState.bottomNavigatorState[1].avatarIcon.isNotEmpty()) {
                 AsyncImage(
                     modifier = Modifier
                         .size(18.cdp)
@@ -176,7 +211,7 @@ fun BottomNavigator(
                         .align(alignment = Alignment.TopEnd),
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(
-                            curState[1].avatarIcon.ifEmpty {
+                            curState.bottomNavigatorState[1].avatarIcon.ifEmpty {
                                 R.drawable.common_nav_user_avatar_holder
                             }
                         )
@@ -193,13 +228,13 @@ fun BottomNavigator(
                 .fillMaxHeight()
                 .width(58.cdp)
                 .clickable {
-                    homeScreenVm.onReceiveBottomNaviClickAct(BottomNavigatorClickAct.ClickCreateVideoPage)
+                    onClickCreateVideoPage()
                 },
             contentAlignment = Alignment.Center
         ) {
             Image(
                 modifier = Modifier.size(37.cdp),
-                painter = painterResource(curState[2].navIcon),
+                painter = painterResource(curState.bottomNavigatorState[2].navIcon),
                 contentDescription = null
             )
         }
@@ -211,7 +246,7 @@ fun BottomNavigator(
                 .fillMaxHeight()
                 .width(58.cdp)
                 .clickable {
-                    homeScreenVm.onReceiveBottomNaviClickAct(BottomNavigatorClickAct.ClickMessagePage)
+                    onClickMessagePage()
                 },
             contentAlignment = Alignment.Center
         ) {
@@ -219,21 +254,21 @@ fun BottomNavigator(
                 modifier = Modifier
                     .wrapContentSize()
                     .align(alignment = Alignment.Center),
-                text = curState[3].navName,
+                text = curState.bottomNavigatorState[3].navName,
                 fontSize = 20.csp,
                 fontWeight = FontWeight.Bold,
-                color = if (curState[3].isSelected) {
+                color = if (curState.bottomNavigatorState[3].isSelected) {
                     Color(0xffffffff)
                 } else {
                     Color(0xff979797)
                 }
             )
-            if (curState[3].newMessageCount > 0) {
+            if (curState.bottomNavigatorState[3].newMessageCount > 0) {
                 Text(
                     modifier = Modifier
                         .wrapContentSize(align = Alignment.TopEnd)
                         .background(color = Color(0xfffe2c55), shape = CircleShape),
-                    text = curState[3].newMessageCount.toString(),
+                    text = curState.bottomNavigatorState[3].newMessageCount.toString(),
                     color = Color.White,
                     fontSize = 18.csp
                 )
@@ -245,17 +280,17 @@ fun BottomNavigator(
                 .fillMaxHeight()
                 .width(58.cdp)
                 .clickable {
-                    homeScreenVm.onReceiveBottomNaviClickAct(BottomNavigatorClickAct.ClickMinePage)
+                    onClickMinePage()
                 },
             contentAlignment = Alignment.Center
         ) {
             Text(
                 modifier = Modifier
                     .wrapContentSize(),
-                text = curState[4].navName,
+                text = curState.bottomNavigatorState[4].navName,
                 fontSize = 20.csp,
                 fontWeight = FontWeight.Bold,
-                color = if (curState[4].isSelected) {
+                color = if (curState.bottomNavigatorState[4].isSelected) {
                     Color(0xffffffff)
                 } else {
                     Color(0xff979797)
@@ -272,34 +307,34 @@ fun PreviewBottomNavigator() {
 }
 
 val NAVIGATOR_DEFAULT_LIST =
-    mutableStateListOf<BottomNavigatorState>(
-        BottomNavigatorState(
+    mutableStateListOf<SingleBottomNavigatorState>(
+        SingleBottomNavigatorState(
             navName = AppConst.NAV_NAME_HOME,
             navIcon = R.drawable.common_nav_switch,
             isSelected = true,
             newMessageCount = 0,
             avatarIcon = ""
         ),
-        BottomNavigatorState(
+        SingleBottomNavigatorState(
             navName = AppConst.NAV_NAME_FRIEND,
             navIcon = R.drawable.common_nav_left,
             isSelected = false,
             newMessageCount = 0,
             avatarIcon = ""
         ),
-        BottomNavigatorState(
+        SingleBottomNavigatorState(
             navName = AppConst.NAV_NAME_CREATION,
             navIcon = R.drawable.common_nav_add,
             isSelected = false,
             newMessageCount = 0,
             avatarIcon = ""
-        ), BottomNavigatorState(
+        ), SingleBottomNavigatorState(
             navName = AppConst.NAV_NAME_MESSAGE,
             navIcon = 0,
             isSelected = false,
             newMessageCount = 0,
             avatarIcon = ""
-        ), BottomNavigatorState(
+        ), SingleBottomNavigatorState(
             navName = AppConst.NAV_NAME_ME,
             navIcon = 0,
             isSelected = false,

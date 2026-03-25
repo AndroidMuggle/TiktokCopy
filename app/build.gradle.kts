@@ -75,4 +75,5 @@ dependencies {
     implementation(libs.androidx.media.ui)
     implementation(libs.androidx.media.common)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.lifecycle.compose)
 }
