@@ -1,5 +1,6 @@
 package com.muggle.tiktokcopy.ui.screen
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.animateScrollBy
@@ -48,7 +49,7 @@ import com.muggle.tiktokcopy.ui.screen.bean.HomeScreenTabType
 import com.muggle.tiktokcopy.utils.HorizontalDivider
 import com.muggle.tiktokcopy.utils.cdp
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 
 /**
@@ -103,29 +104,35 @@ internal fun HomeScreen(
     LaunchedEffect(horPageState) {
         snapshotFlow {
             horPageState.settledPage
-        }.distinctUntilChanged()
-            .collect {
-                onSelectTabChange(it)
+        }.debounce(500).collect {
+            onSelectTabChange(it)
 
-                if (it in 0 until 3) {
-                    tabListState.animateScrollToItem(0)
-                }
+            if (it in 0 until 3) {
+                tabListState.animateScrollToItem(0)
+            }
 
-                if (it in horPageCount - 3 until horPageCount) {
-                    tabListState.animateScrollToItem(horPageCount - 1)
-                }
+            if (it in horPageCount - 3 until horPageCount) {
+                tabListState.animateScrollToItem(horPageCount - 1)
+            }
 
-                val visibleItemsInfo = tabListState.layoutInfo.visibleItemsInfo
-                val middlePixels =
-                    (tabListState.layoutInfo.viewportEndOffset + tabListState.layoutInfo.viewportStartOffset) / 2
-                visibleItemsInfo.forEachIndexed { index, info ->
-                    if (it == info.index && index in 1 until visibleItemsInfo.size - 1) {
-                        val offsetPixels =
-                            (info.offset + visibleItemsInfo[index + 1].offset) / 2 - middlePixels
-                        tabListState.animateScrollBy(offsetPixels.toFloat())
-                    }
+            val visibleItemsInfo = tabListState.layoutInfo.visibleItemsInfo
+            val middlePixels =
+                (tabListState.layoutInfo.viewportEndOffset + tabListState.layoutInfo.viewportStartOffset) / 2
+            visibleItemsInfo.forEachIndexed { index, info ->
+                if (it == info.index && index in 0 until visibleItemsInfo.size - 1) {
+                    val offsetPixels =
+                        (info.offset + visibleItemsInfo[index + 1].offset) / 2 - middlePixels
+                    Log.i(
+                        "TAG",
+                        "zzzz HomeScreen: info.offset = ${info.offset}," +
+                                "next.offset = ${visibleItemsInfo[index + 1].offset}," +
+                                "middlePixels = $middlePixels"
+                    )
+                    tabListState.animateScrollBy(offsetPixels.toFloat())
                 }
             }
+
+        }
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -148,29 +155,31 @@ internal fun HomeScreen(
         ) {
             Image(
                 modifier = Modifier
-                    .height(32.cdp)
+                    .height(27.cdp)
+                    .padding(top = 4.cdp)
                     .wrapContentWidth(),
                 painter = painterResource(R.drawable.video_more_menu),
                 contentDescription = ""
             )
-            HorizontalDivider(4.cdp)
+            HorizontalDivider(10.cdp)
             ScrollableTabList(
                 selectedIndex = horPageState.currentPage,
                 tabList = curState.tabItemList,
                 lazyListState = tabListState,
                 onSelectTabChange = {
-                    onSelectTabChange(it)
                     scope.launch {
+                        onSelectTabChange(it)
                         horPageState.animateScrollToPage(it)
                     }
                 },
                 onRefreshTab = onRefreshTab,
                 onLongClickTab = onLongClickTab
             )
-            HorizontalDivider(4.cdp)
+            HorizontalDivider(10.cdp)
             Image(
                 modifier = Modifier
-                    .height(32.cdp)
+                    .height(27.cdp)
+                    .padding(top = 4.cdp)
                     .wrapContentWidth(),
                 painter = painterResource(R.drawable.video_search),
                 contentDescription = ""

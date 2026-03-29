@@ -1,5 +1,6 @@
 package com.muggle.tiktokcopy.ui.component.video
 
+import android.text.TextUtils
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -56,6 +58,15 @@ fun ScrollableTabList(
     onLongClickTab: () -> Unit = {}
 ) {
 
+    val isShowScrollToEnd by remember {
+        derivedStateOf {
+            !TextUtils.equals(
+                lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.key?.toString(),
+                tabList.getOrNull(selectedIndex)?.tabName
+            )
+        }
+    }
+
     Box(
         modifier = Modifier
             .height(40.cdp)
@@ -85,18 +96,33 @@ fun ScrollableTabList(
                     index = index,
                     isSelected = item.isSelected,
                     state = item,
-                    onSelectTabChange = onSelectTabChange,
-                    onRefreshTab = onRefreshTab,
-                    onLongClickTab = onLongClickTab
+                    onSelectTabChange = {
+                        if (lazyListState.isScrollInProgress) {
+                            return@TabItem
+                        }
+                        onSelectTabChange(it)
+                    },
+                    onRefreshTab = {
+                        if (lazyListState.isScrollInProgress) {
+                            return@TabItem
+                        }
+                        onRefreshTab(it)
+                    },
+                    onLongClickTab = {
+                        if (lazyListState.isScrollInProgress) {
+                            return@TabItem
+                        }
+                        onLongClickTab()
+                    }
                 )
             }
         }
 
-        if (selectedIndex < tabList.size - 3) {
+        if (isShowScrollToEnd) {
             Box(
                 modifier = Modifier
                     .height(40.cdp)
-                    .width(30.cdp)
+                    .width(40.cdp)
                     .padding(top = 5.cdp)
                     .background(
                         brush = Brush.horizontalGradient(
@@ -108,6 +134,9 @@ fun ScrollableTabList(
                     )
                     .align(Alignment.TopEnd)
                     .clickable {
+                        if (lazyListState.isScrollInProgress) {
+                            return@clickable
+                        }
                         onSelectTabChange(tabList.lastIndex)
                     }
             ) {
