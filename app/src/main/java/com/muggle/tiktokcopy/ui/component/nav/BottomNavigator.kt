@@ -17,9 +17,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -117,10 +114,6 @@ internal fun BottomNavigator(
     onClickMinePage: () -> Unit = {}
 ) {
 
-    val curState by remember {
-        mutableStateOf(state)
-    }
-
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -139,31 +132,31 @@ internal fun BottomNavigator(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (curState.bottomNavigatorState[0].navName == AppConst.NAV_NAME_HOME || !curState.bottomNavigatorState[0].isSelected) {
+            if (state.bottomNavigatorState[0].navName == AppConst.NAV_NAME_HOME || !state.bottomNavigatorState[0].isSelected) {
                 Text(
                     modifier = Modifier
                         .wrapContentSize(),
                     text = AppConst.NAV_NAME_HOME,
                     fontSize = 20.csp,
                     fontWeight = FontWeight.Bold,
-                    color = if (curState.bottomNavigatorState[0].isSelected) {
+                    color = if (state.bottomNavigatorState[0].isSelected) {
                         Color(0xffffffff)
                     } else {
                         Color(0xff979797)
                     }
                 )
-                if (curState.bottomNavigatorState[0].isSelected) {
+                if (state.bottomNavigatorState[0].isSelected) {
                     Image(
                         modifier = Modifier.size(10.cdp),
-                        painter = painterResource(curState.bottomNavigatorState[0].navIcon),
+                        painter = painterResource(state.bottomNavigatorState[0].navIcon),
                         contentDescription = null
                     )
                 }
             } else {
-                if (curState.bottomNavigatorState[0].isSelected) {
+                if (state.bottomNavigatorState[0].isSelected) {
                     Image(
                         modifier = Modifier.size(10.cdp),
-                        painter = painterResource(curState.bottomNavigatorState[0].navIcon),
+                        painter = painterResource(state.bottomNavigatorState[0].navIcon),
                         contentDescription = null
                     )
                 }
@@ -172,7 +165,7 @@ internal fun BottomNavigator(
                     fontSize = 20.csp,
                     fontWeight = FontWeight.Bold,
                     text = AppConst.NAV_NAME_BACK,
-                    color = if (curState.bottomNavigatorState[0].isSelected) {
+                    color = if (state.bottomNavigatorState[0].isSelected) {
                         Color(0xffffffff)
                     } else {
                         Color(0xff979797)
@@ -193,17 +186,17 @@ internal fun BottomNavigator(
                 modifier = Modifier
                     .wrapContentSize()
                     .align(alignment = Alignment.Center),
-                text = curState.bottomNavigatorState[1].navName,
+                text = state.bottomNavigatorState[1].navName,
                 fontSize = 20.csp,
                 fontWeight = FontWeight.Bold,
-                color = if (curState.bottomNavigatorState[1].isSelected) {
+                color = if (state.bottomNavigatorState[1].isSelected) {
                     Color(0xffffffff)
                 } else {
                     Color(0xff979797)
                 }
             )
 
-            if (curState.bottomNavigatorState[1].avatarIcon.isNotEmpty()) {
+            if (state.bottomNavigatorState[1].avatarIcon.isNotEmpty()) {
                 AsyncImage(
                     modifier = Modifier
                         .size(18.cdp)
@@ -211,7 +204,7 @@ internal fun BottomNavigator(
                         .align(alignment = Alignment.TopEnd),
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(
-                            curState.bottomNavigatorState[1].avatarIcon.ifEmpty {
+                            state.bottomNavigatorState[1].avatarIcon.ifEmpty {
                                 R.drawable.common_nav_user_avatar_holder
                             }
                         )
@@ -234,7 +227,7 @@ internal fun BottomNavigator(
         ) {
             Image(
                 modifier = Modifier.size(37.cdp),
-                painter = painterResource(curState.bottomNavigatorState[2].navIcon),
+                painter = painterResource(state.bottomNavigatorState[2].navIcon),
                 contentDescription = null
             )
         }
@@ -254,21 +247,21 @@ internal fun BottomNavigator(
                 modifier = Modifier
                     .wrapContentSize()
                     .align(alignment = Alignment.Center),
-                text = curState.bottomNavigatorState[3].navName,
+                text = state.bottomNavigatorState[3].navName,
                 fontSize = 20.csp,
                 fontWeight = FontWeight.Bold,
-                color = if (curState.bottomNavigatorState[3].isSelected) {
+                color = if (state.bottomNavigatorState[3].isSelected) {
                     Color(0xffffffff)
                 } else {
                     Color(0xff979797)
                 }
             )
-            if (curState.bottomNavigatorState[3].newMessageCount > 0) {
+            if (state.bottomNavigatorState[3].newMessageCount > 0) {
                 Text(
                     modifier = Modifier
                         .wrapContentSize(align = Alignment.TopEnd)
                         .background(color = Color(0xfffe2c55), shape = CircleShape),
-                    text = curState.bottomNavigatorState[3].newMessageCount.toString(),
+                    text = state.bottomNavigatorState[3].newMessageCount.toString(),
                     color = Color.White,
                     fontSize = 18.csp
                 )
@@ -287,10 +280,10 @@ internal fun BottomNavigator(
             Text(
                 modifier = Modifier
                     .wrapContentSize(),
-                text = curState.bottomNavigatorState[4].navName,
+                text = state.bottomNavigatorState[4].navName,
                 fontSize = 20.csp,
                 fontWeight = FontWeight.Bold,
-                color = if (curState.bottomNavigatorState[4].isSelected) {
+                color = if (state.bottomNavigatorState[4].isSelected) {
                     Color(0xffffffff)
                 } else {
                     Color(0xff979797)
@@ -307,7 +300,7 @@ fun PreviewBottomNavigator() {
 }
 
 val NAVIGATOR_DEFAULT_LIST =
-    mutableStateListOf<SingleBottomNavigatorState>(
+    listOf<SingleBottomNavigatorState>(
         SingleBottomNavigatorState(
             navName = AppConst.NAV_NAME_HOME,
             navIcon = R.drawable.common_nav_switch,

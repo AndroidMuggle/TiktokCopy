@@ -29,111 +29,82 @@ class BottomNavigatorVm @Inject constructor(private val repo: BottomNavRepo) : V
             }
 
             BottomNavigatorClickAct.ClickFriendPage -> {
-                _bottomNavState.update {
-                    it.copy(
-                        bottomNavigatorState = _bottomNavState.value.bottomNavigatorState.apply {
-                            forEachIndexed { index, state ->
-                                if (state.isSelected) {
-                                    set(index, state.copy(isSelected = false))
-                                }
-                            }
-                            set(0, first().copy(navName = "首页"))
-                            set(1, get(1).copy(isSelected = true, newMessageCount = 0))
+                _bottomNavState.update { currentState ->
+                    val newList = currentState.bottomNavigatorState.mapIndexed { index, state ->
+                        when (index) {
+                            0 -> state.copy(navName = "首页", isSelected = false)
+                            1 -> state.copy(isSelected = true, newMessageCount = 0)
+                            else -> state.copy(isSelected = false)
                         }
-                    )
+                    }
+                    currentState.copy(bottomNavigatorState = newList)
                 }
             }
 
             is BottomNavigatorClickAct.ClickHomePage -> {
-                _bottomNavState.update {
-                    it.copy(
-                        bottomNavigatorState = _bottomNavState.value.bottomNavigatorState.apply {
-                            if (first().isSelected) {
+                _bottomNavState.update { currentState ->
+                    val isHomeSelected = currentState.bottomNavigatorState.firstOrNull()?.isSelected == true
+                    val newList = currentState.bottomNavigatorState.mapIndexed { index, state ->
+                        if (index == 0) {
+                            if (isHomeSelected) {
                                 when (bottomNaviClickAct.homePageType) {
-                                    HomePageClickType.SingleVideo -> {
-                                        set(
-                                            0, first().copy(
-                                                navIcon = R.drawable.common_nav_switch,
-                                                navName = "首页"
-                                            )
-                                        )
-                                    }
-
-                                    HomePageClickType.VideoList -> {
-                                        set(
-                                            0,
-                                            first().copy(
-                                                navIcon = R.drawable.common_nav_left,
-                                                navName = "返回"
-                                            )
-                                        )
-                                    }
+                                    HomePageClickType.SingleVideo -> state.copy(
+                                        navIcon = R.drawable.common_nav_switch,
+                                        navName = "首页"
+                                    )
+                                    HomePageClickType.VideoList -> state.copy(
+                                        navIcon = R.drawable.common_nav_left,
+                                        navName = "返回"
+                                    )
                                 }
-
                             } else {
-                                forEachIndexed { index, state ->
-                                    if (state.isSelected) {
-                                        set(index, state.copy(isSelected = false))
-                                    }
-                                }
                                 when (bottomNaviClickAct.homePageType) {
-                                    HomePageClickType.SingleVideo -> {
-                                        set(
-                                            0, first().copy(
-                                                navIcon = R.drawable.common_nav_switch,
-                                                navName = "首页",
-                                                isSelected = true
-                                            )
-                                        )
-                                    }
-
-                                    HomePageClickType.VideoList -> {
-                                        set(
-                                            0,
-                                            first().copy(
-                                                navIcon = R.drawable.common_nav_left,
-                                                navName = "返回",
-                                                isSelected = true
-                                            )
-                                        )
-                                    }
+                                    HomePageClickType.SingleVideo -> state.copy(
+                                        navIcon = R.drawable.common_nav_switch,
+                                        navName = "首页",
+                                        isSelected = true
+                                    )
+                                    HomePageClickType.VideoList -> state.copy(
+                                        navIcon = R.drawable.common_nav_left,
+                                        navName = "返回",
+                                        isSelected = true
+                                    )
                                 }
                             }
-                        },
+                        } else {
+                            state.copy(isSelected = false)
+                        }
+                    }
+                    currentState.copy(
+                        bottomNavigatorState = newList,
                         curHomePageVideoType = bottomNaviClickAct.homePageType
                     )
                 }
             }
 
             BottomNavigatorClickAct.ClickMessagePage -> {
-                _bottomNavState.update {
-                    it.copy(
-                        bottomNavigatorState = _bottomNavState.value.bottomNavigatorState.apply {
-                            forEachIndexed { index, state ->
-                                if (state.isSelected) {
-                                    set(index, state.copy(isSelected = false))
-                                }
-                            }
-                            set(0, first().copy(navName = "首页"))
-                            set(3, get(3).copy(isSelected = true))
+                _bottomNavState.update { currentState ->
+                    val newList = currentState.bottomNavigatorState.mapIndexed { index, state ->
+                        when (index) {
+                            0 -> state.copy(navName = "首页", isSelected = false)
+                            3 -> state.copy(isSelected = true)
+                            else -> state.copy(isSelected = false)
                         }
-                    )
+                    }
+                    currentState.copy(bottomNavigatorState = newList)
                 }
             }
 
             BottomNavigatorClickAct.ClickMinePage -> {
-                _bottomNavState.update {
-                    it.copy(
-                        bottomNavigatorState = _bottomNavState.value.bottomNavigatorState.apply {
-                            forEachIndexed { index, state ->
-                                if (state.isSelected) {
-                                    set(index, state.copy(isSelected = false))
-                                }
-                            }
-                            set(0, first().copy(navName = "首页"))
-                            set(4, get(4).copy(isSelected = true))
+                _bottomNavState.update { currentState ->
+                    val newList = currentState.bottomNavigatorState.mapIndexed { index, state ->
+                        when (index) {
+                            0 -> state.copy(navName = "首页", isSelected = false)
+                            4 -> state.copy(isSelected = true)
+                            else -> state.copy(isSelected = false)
                         }
-                    )
+                    }
+                    currentState.copy(bottomNavigatorState = newList)
                 }
             }
         }

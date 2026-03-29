@@ -41,7 +41,7 @@ fun AppScreen() {
             startDestination = HomePage
         ) {
             composable<HomePage> {
-                HomeScreen()
+                HomeScreen(navHostController = controller)
             }
             composable<FriendPage> {
                 FriendScreen()

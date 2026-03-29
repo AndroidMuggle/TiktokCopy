@@ -1,12 +1,15 @@
 package com.muggle.tiktokcopy.business.home.vm
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.muggle.tiktokcopy.business.home.intent.ScrollTabClickAct
 import com.muggle.tiktokcopy.business.home.intent.VideoPlayAct
 import com.muggle.tiktokcopy.business.home.intent.VideoWidgetClickAct
 import com.muggle.tiktokcopy.business.home.repo.HomeScreenRepo
 import com.muggle.tiktokcopy.business.home.state.HomeScreenState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 /**
@@ -16,8 +19,8 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class HomeScreenVm @Inject constructor(private val repo: HomeScreenRepo) : ViewModel() {
-    private val _homeScreenState = mutableStateOf(HomeScreenState())
-    val homeScreenState = _homeScreenState
+    private val _homeScreenState = MutableStateFlow(HomeScreenState())
+    val homeScreenState: StateFlow<HomeScreenState> = _homeScreenState
 
     fun onReceiveVideoPlayAct(videoPlayAct: VideoPlayAct) {
         when (videoPlayAct) {
@@ -194,6 +197,34 @@ class HomeScreenVm @Inject constructor(private val repo: HomeScreenRepo) : ViewM
             }
 
             is VideoWidgetClickAct.LongClickVideoProgressWidget -> {
+                TODO()
+            }
+        }
+    }
+
+    fun onReceiveScrollTabClickAct(scrollTabClickAct: ScrollTabClickAct) {
+        when (scrollTabClickAct) {
+            ScrollTabClickAct.LongClickTab -> {
+                TODO()
+            }
+
+            is ScrollTabClickAct.SelectTab -> {
+                _homeScreenState.update {
+                    it.copy(tabItemList = it.tabItemList.apply {
+                        forEachIndexed { index, state ->
+                            if (state.isSelected) {
+                                set(index, state.copy(isSelected = false))
+                            }
+                        }
+                        set(
+                            scrollTabClickAct.index,
+                            get(scrollTabClickAct.index).copy(isSelected = true)
+                        )
+                    })
+                }
+            }
+
+            is ScrollTabClickAct.RefreshTab -> {
                 TODO()
             }
         }

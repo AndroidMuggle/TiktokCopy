@@ -9,16 +9,11 @@ sealed interface TabItemState {
     /**
      * 普通态(todo 特殊活动的时候，实际切换tab到经验时，特殊活动tab栏的颜色会变)
      */
-    class NormalTab(
-        val tabName: String,
-        val hasRedDot: Boolean,
-        val message: String,
-        val isSpecialActivity: Boolean
-    ) : TabItemState
+    object NormalTab : TabItemState
 
     /**
      * 刷新状态
      */
-    class Refreshing(val tabName: String) : TabItemState
+    object Refreshing : TabItemState
 
 }

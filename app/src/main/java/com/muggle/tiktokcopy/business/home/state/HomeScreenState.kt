@@ -1,5 +1,6 @@
 package com.muggle.tiktokcopy.business.home.state
 
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.muggle.tiktokcopy.ui.component.video.bean.AuthorWidgetType
 import com.muggle.tiktokcopy.ui.component.video.bean.CollectState
 import com.muggle.tiktokcopy.ui.component.video.bean.LikeState
@@ -11,6 +12,7 @@ import com.muggle.tiktokcopy.ui.component.video.bean.VideoAlbumState
 import com.muggle.tiktokcopy.ui.component.video.bean.VideoBottomWidgetType
 import com.muggle.tiktokcopy.ui.component.video.bean.VideoContentWarningType
 import com.muggle.tiktokcopy.ui.component.video.bean.VideoRelativeContentType
+import com.muggle.tiktokcopy.ui.screen.getTabItemList
 
 /**
  * @date 2026/3/13 0:57
@@ -19,7 +21,7 @@ import com.muggle.tiktokcopy.ui.component.video.bean.VideoRelativeContentType
  */
 data class HomeScreenState(
     val moreMenuDotCount: Int = 0,
-    val tabItemList: MutableList<TabItemState> = mutableListOf(),
+    val tabItemList: SnapshotStateList<SingleTabState> = getTabItemList(),
     val authorAvatarUrl: String = "",
     val subscribeState: SubscribeState = SubscribeState.Unsubscribe,
     val likeCountStr: String = "0",

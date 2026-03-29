@@ -2,6 +2,8 @@ package com.muggle.tiktokcopy.ui.component.video
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,19 +22,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.muggle.tiktokcopy.R
+import com.muggle.tiktokcopy.business.home.state.SingleTabState
 import com.muggle.tiktokcopy.ui.component.video.bean.TabItemState
-import com.muggle.tiktokcopy.ui.screen.getTabItemList
 import com.muggle.tiktokcopy.utils.VerticalDivider
 import com.muggle.tiktokcopy.utils.cdp
 import com.muggle.tiktokcopy.utils.csp
@@ -44,36 +48,29 @@ import kotlinx.coroutines.delay
  */
 @Composable
 fun ScrollableTabList(
-    selectTabIndex: Int = 0,
-    tabList: List<TabItemState> = listOf()
+    selectedIndex: Int = 0,
+    tabList: SnapshotStateList<SingleTabState>,
+    lazyListState: LazyListState,
+    onSelectTabChange: (Int) -> Unit = {},
+    onRefreshTab: (Int) -> Unit = {},
+    onLongClickTab: () -> Unit = {}
 ) {
-    // TODO: 滑动到第四个展示右滑箭头
-
-    val curTabList = remember {
-        mutableStateListOf<TabItemState>()
-    }
-    if (curTabList.isEmpty()) {
-        curTabList.addAll(tabList)
-    }
-
-    var curSelectIndex by remember {
-        mutableIntStateOf(selectTabIndex)
-    }
 
     Box(
         modifier = Modifier
             .height(40.cdp)
-            .width(288.cdp)
+            .width(288.cdp),
     ) {
         LazyRow(
             modifier = Modifier
                 .height(40.cdp)
-                .width(288.cdp)
+                .width(288.cdp),
+            state = lazyListState
         ) {
             itemsIndexed(
                 items = tabList,
-                key = { _: Int, item: TabItemState ->
-                    when (item) {
+                key = { _: Int, item: SingleTabState ->
+                    when (item.tabItemState) {
                         is TabItemState.NormalTab -> {
                             item.tabName
                         }
@@ -83,8 +80,48 @@ fun ScrollableTabList(
                         }
                     }
                 }
-            ) { index: Int, item: TabItemState ->
-                TabItem(curSelectIndex == index, item)
+            ) { index: Int, item: SingleTabState ->
+                TabItem(
+                    index = index,
+                    isSelected = item.isSelected,
+                    state = item,
+                    onSelectTabChange = onSelectTabChange,
+                    onRefreshTab = onRefreshTab,
+                    onLongClickTab = onLongClickTab
+                )
+            }
+        }
+
+        if (selectedIndex < tabList.size - 3) {
+            Box(
+                modifier = Modifier
+                    .height(40.cdp)
+                    .width(30.cdp)
+                    .padding(top = 5.cdp)
+                    .background(
+                        brush = Brush.horizontalGradient(
+                            listOf(
+                                Color(0x99000000),
+                                Color.Black
+                            )
+                        )
+                    )
+                    .align(Alignment.TopEnd)
+                    .clickable {
+                        onSelectTabChange(tabList.lastIndex)
+                    }
+            ) {
+                Image(
+                    modifier = Modifier
+                        .size(20.cdp)
+                        .background(
+                            color = Color(0xffffffff),
+                            shape = RoundedCornerShape(20.cdp)
+                        )
+                        .align(Alignment.TopEnd),
+                    painter = painterResource(R.drawable.video_common_right_arrow),
+                    contentDescription = ""
+                )
             }
         }
     }
@@ -92,20 +129,34 @@ fun ScrollableTabList(
 }
 
 @Composable
-private fun TabItem(isSelected: Boolean, state: TabItemState) {
-    when (state) {
+private fun TabItem(
+    index: Int,
+    isSelected: Boolean,
+    state: SingleTabState,
+    onSelectTabChange: (Int) -> Unit = {},
+    onRefreshTab: (Int) -> Unit = {},
+    onLongClickTab: () -> Unit = {}
+) {
+    when (state.tabItemState) {
         is TabItemState.Refreshing -> {
-            RefreshTabWidget()
+            RefreshTabWidget(index)
         }
 
         is TabItemState.NormalTab -> {
-            NormalTabWidget(isSelected, state)
+            NormalTabWidget(
+                index = index,
+                isSelected = isSelected,
+                state = state,
+                onSelectTabChange = onSelectTabChange,
+                onRefreshTab = onRefreshTab,
+                onLongClickTab = onLongClickTab
+            )
         }
     }
 }
 
 @Composable
-private fun RefreshTabWidget() {
+private fun RefreshTabWidget(index: Int) {
     var rotateDegree by remember {
         mutableIntStateOf(0)
     }
@@ -139,13 +190,29 @@ private fun RefreshTabWidget() {
 
 @Composable
 private fun NormalTabWidget(
+    index: Int,
     isSelected: Boolean = false,
-    state: TabItemState.NormalTab
+    state: SingleTabState,
+    onSelectTabChange: (Int) -> Unit = {},
+    onRefreshTab: (Int) -> Unit = {},
+    onLongClickTab: () -> Unit = {}
 ) {
     Box(
         modifier = Modifier
             .height(40.cdp)
             .wrapContentWidth()
+            .combinedClickable(
+                onClick = {
+                    if (isSelected) {
+                        onRefreshTab(index)
+                    } else {
+                        onSelectTabChange(index)
+                    }
+                },
+                onLongClick = {
+                    onLongClickTab()
+                }
+            )
     ) {
         Column(
             modifier = Modifier
@@ -236,5 +303,5 @@ fun PreviewScrollableTabList() {
 //        ),
 //    )
 //    RefreshTabWidget()
-    ScrollableTabList(0, getTabItemList())
+//    ScrollableTabList(0, getTabItemList())
 }
