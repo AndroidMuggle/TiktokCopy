@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.animateScrollBy
+import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -104,15 +105,15 @@ internal fun HomeScreen(
     LaunchedEffect(horPageState) {
         snapshotFlow {
             horPageState.settledPage
-        }.debounce(500).collect {
+        }.collect {
             onSelectTabChange(it)
 
             if (it in 0 until 3) {
-                tabListState.animateScrollToItem(0)
+                tabListState.scrollToItem(0)
             }
 
             if (it in horPageCount - 3 until horPageCount) {
-                tabListState.animateScrollToItem(horPageCount - 1)
+                tabListState.scrollToItem(horPageCount - 1)
             }
 
             val visibleItemsInfo = tabListState.layoutInfo.visibleItemsInfo
@@ -128,7 +129,7 @@ internal fun HomeScreen(
                                 "next.offset = ${visibleItemsInfo[index + 1].offset}," +
                                 "middlePixels = $middlePixels"
                     )
-                    tabListState.animateScrollBy(offsetPixels.toFloat())
+                    tabListState.scrollBy(offsetPixels.toFloat())
                 }
             }
 
