@@ -5,7 +5,7 @@ import com.muggle.tiktokcopy.business.home.intent.ScrollTabClickAct
 import com.muggle.tiktokcopy.business.home.intent.VideoPlayAct
 import com.muggle.tiktokcopy.business.home.intent.VideoWidgetClickAct
 import com.muggle.tiktokcopy.business.home.repo.HomeScreenRepo
-import com.muggle.tiktokcopy.business.home.state.HomeScreenState
+import com.muggle.tiktokcopy.business.home.state.HomeScreenUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,8 +19,8 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class HomeScreenVm @Inject constructor(private val repo: HomeScreenRepo) : ViewModel() {
-    private val _homeScreenState = MutableStateFlow(HomeScreenState())
-    val homeScreenState: StateFlow<HomeScreenState> = _homeScreenState
+    private val _homeScreenUiState = MutableStateFlow(HomeScreenUiState())
+    val homeScreenUiState: StateFlow<HomeScreenUiState> = _homeScreenUiState
 
     fun onReceiveVideoPlayAct(videoPlayAct: VideoPlayAct) {
         when (videoPlayAct) {
@@ -209,7 +209,7 @@ class HomeScreenVm @Inject constructor(private val repo: HomeScreenRepo) : ViewM
             }
 
             is ScrollTabClickAct.SelectTab -> {
-                _homeScreenState.update {
+                _homeScreenUiState.update {
                     it.copy(tabItemList = it.tabItemList.apply {
                         forEachIndexed { index, state ->
                             if (state.isSelected) {

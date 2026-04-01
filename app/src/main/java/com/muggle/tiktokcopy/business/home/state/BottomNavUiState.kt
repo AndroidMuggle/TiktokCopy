@@ -9,7 +9,7 @@ import com.muggle.tiktokcopy.ui.component.nav.SingleBottomNavigatorState
  * @author muggle
  * @desc
  */
-data class BottomNavState(
+data class BottomNavUiState(
     val bottomNavigatorState: List<SingleBottomNavigatorState> = NAVIGATOR_DEFAULT_LIST,
     val curHomePageVideoType: HomePageClickType = HomePageClickType.SingleVideo
 )

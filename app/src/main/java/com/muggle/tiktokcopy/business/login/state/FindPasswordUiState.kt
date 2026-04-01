@@ -2,7 +2,7 @@ package com.muggle.tiktokcopy.business.login.state
 
 import androidx.core.text.isDigitsOnly
 
-data class FindPasswordState(
+data class FindPasswordUiState(
     val phoneNumber: String = "",
     val captchaCode: String = "",
     val isPrivacySelect: Boolean = false

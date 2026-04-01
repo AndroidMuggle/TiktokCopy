@@ -5,14 +5,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.muggle.tiktokcopy.business.login.intent.FindPasswordEvent
 import com.muggle.tiktokcopy.business.login.repo.LoginRepo
-import com.muggle.tiktokcopy.business.login.state.FindPasswordState
+import com.muggle.tiktokcopy.business.login.state.FindPasswordUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class FindPasswordPageVm @Inject constructor(val repo: LoginRepo) : ViewModel() {
-    private val _findPasswordState = mutableStateOf(FindPasswordState())
-    val findPasswordState: State<FindPasswordState> = _findPasswordState
+    private val _findPasswordUiState = mutableStateOf(FindPasswordUiState())
+    val findPasswordUiState: State<FindPasswordUiState> = _findPasswordUiState
 
     fun onReceiveEvent(event: FindPasswordEvent) {
         when (event) {
@@ -25,8 +25,8 @@ class FindPasswordPageVm @Inject constructor(val repo: LoginRepo) : ViewModel() 
             }
 
             is FindPasswordEvent.ClickPrivacyBtn -> {
-                _findPasswordState.value =
-                    _findPasswordState.value.copy(isPrivacySelect = event.isSelect)
+                _findPasswordUiState.value =
+                    _findPasswordUiState.value.copy(isPrivacySelect = event.isSelect)
             }
 
             FindPasswordEvent.ClickResendBtn -> {
@@ -34,7 +34,7 @@ class FindPasswordPageVm @Inject constructor(val repo: LoginRepo) : ViewModel() 
             }
 
             is FindPasswordEvent.InputCaptchaCode -> {
-                _findPasswordState.value = _findPasswordState.value.copy(captchaCode = event.code)
+                _findPasswordUiState.value = _findPasswordUiState.value.copy(captchaCode = event.code)
             }
         }
     }

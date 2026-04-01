@@ -36,7 +36,7 @@ import coil3.request.ImageRequest
 import com.muggle.tiktokcopy.R
 import com.muggle.tiktokcopy.business.home.bean.HomePageClickType
 import com.muggle.tiktokcopy.business.home.intent.BottomNavigatorClickAct
-import com.muggle.tiktokcopy.business.home.state.BottomNavState
+import com.muggle.tiktokcopy.business.home.state.BottomNavUiState
 import com.muggle.tiktokcopy.business.home.vm.BottomNavigatorVm
 import com.muggle.tiktokcopy.ui.component.common.constants.AppConst
 import com.muggle.tiktokcopy.ui.screen.HomePage
@@ -53,7 +53,7 @@ fun BottomNavigator(
     bottomNavigatorVm: BottomNavigatorVm = hiltViewModel(),
     navController: NavController = rememberNavController()
 ) {
-    val curState by bottomNavigatorVm.bottomNavState.collectAsStateWithLifecycle()
+    val curState by bottomNavigatorVm.bottomNavUiState.collectAsStateWithLifecycle()
 
     BottomNavigator(
         state = curState,
@@ -63,7 +63,7 @@ fun BottomNavigator(
                 navOptions = NavOptions.Builder().setLaunchSingleTop(true).build()
             )
 
-            when (bottomNavigatorVm.bottomNavState.value.curHomePageVideoType) {
+            when (bottomNavigatorVm.bottomNavUiState.value.curHomePageVideoType) {
                 HomePageClickType.SingleVideo -> {
                     if (curState.bottomNavigatorState[0].isSelected) {
                         bottomNavigatorVm.onReceiveBottomNaviClickAct(
@@ -106,7 +106,7 @@ fun BottomNavigator(
 
 @Composable
 internal fun BottomNavigator(
-    state: BottomNavState = BottomNavState(),
+    state: BottomNavUiState = BottomNavUiState(),
     onClickHomePage: () -> Unit = {},
     onClickFriendPage: () -> Unit = {},
     onClickCreateVideoPage: () -> Unit = {},

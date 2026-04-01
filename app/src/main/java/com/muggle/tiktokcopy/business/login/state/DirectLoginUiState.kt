@@ -1,6 +1,6 @@
 package com.muggle.tiktokcopy.business.login.state
 
-data class DirectLoginState(
+data class DirectLoginUiState(
     val phoneNumber: String = "18214839999",
     val userAvatar: String = "",
     val userName: String = "tiktok",

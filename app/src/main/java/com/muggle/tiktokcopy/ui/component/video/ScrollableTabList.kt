@@ -1,6 +1,5 @@
 package com.muggle.tiktokcopy.ui.component.video
 
-import android.text.TextUtils
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -36,7 +35,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.muggle.tiktokcopy.R
-import com.muggle.tiktokcopy.business.home.state.SingleTabState
+import com.muggle.tiktokcopy.business.home.state.SingleTabUiState
 import com.muggle.tiktokcopy.ui.component.video.bean.TabItemState
 import com.muggle.tiktokcopy.utils.VerticalDivider
 import com.muggle.tiktokcopy.utils.cdp
@@ -51,19 +50,16 @@ import kotlinx.coroutines.delay
 @Composable
 fun ScrollableTabList(
     selectedIndex: Int = 0,
-    tabList: SnapshotStateList<SingleTabState>,
+    tabList: SnapshotStateList<SingleTabUiState>,
     lazyListState: LazyListState,
     onSelectTabChange: (Int) -> Unit = {},
     onRefreshTab: (Int) -> Unit = {},
     onLongClickTab: () -> Unit = {}
 ) {
 
-    val isShowScrollToEnd by remember {
+    val lastVisibleItemIndex by remember {
         derivedStateOf {
-            !TextUtils.equals(
-                lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.key?.toString(),
-                tabList.getOrNull(selectedIndex)?.tabName
-            )
+            lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
         }
     }
 
@@ -80,7 +76,7 @@ fun ScrollableTabList(
         ) {
             itemsIndexed(
                 items = tabList,
-                key = { _: Int, item: SingleTabState ->
+                key = { _: Int, item: SingleTabUiState ->
                     when (item.tabItemState) {
                         is TabItemState.NormalTab -> {
                             item.tabName
@@ -91,7 +87,7 @@ fun ScrollableTabList(
                         }
                     }
                 }
-            ) { index: Int, item: SingleTabState ->
+            ) { index: Int, item: SingleTabUiState ->
                 TabItem(
                     index = index,
                     isSelected = item.isSelected,
@@ -118,7 +114,7 @@ fun ScrollableTabList(
             }
         }
 
-        if (isShowScrollToEnd) {
+        if (lastVisibleItemIndex != tabList.lastIndex) {
             Box(
                 modifier = Modifier
                     .height(40.cdp)
@@ -161,7 +157,7 @@ fun ScrollableTabList(
 private fun TabItem(
     index: Int,
     isSelected: Boolean,
-    state: SingleTabState,
+    state: SingleTabUiState,
     onSelectTabChange: (Int) -> Unit = {},
     onRefreshTab: (Int) -> Unit = {},
     onLongClickTab: () -> Unit = {}
@@ -221,7 +217,7 @@ private fun RefreshTabWidget(index: Int) {
 private fun NormalTabWidget(
     index: Int,
     isSelected: Boolean = false,
-    state: SingleTabState,
+    state: SingleTabUiState,
     onSelectTabChange: (Int) -> Unit = {},
     onRefreshTab: (Int) -> Unit = {},
     onLongClickTab: () -> Unit = {}

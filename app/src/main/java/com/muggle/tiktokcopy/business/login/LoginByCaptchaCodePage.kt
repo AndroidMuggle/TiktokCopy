@@ -39,7 +39,7 @@ import com.muggle.tiktokcopy.utils.csp
 fun LoginByCaptchaCodePage(loginByCaptchaCodeVm: LoginByCaptchaCodeVm = hiltViewModel()) {
 
     val curState by remember {
-        loginByCaptchaCodeVm.loginByCaptchaCodeState
+        loginByCaptchaCodeVm.loginByCaptchaCodeUiState
     }
 
     val isConfirmEnable by remember {

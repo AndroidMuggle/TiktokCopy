@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.muggle.tiktokcopy.business.login.intent.InputCaptchaCodeEvent
 import com.muggle.tiktokcopy.business.login.repo.LoginRepo
-import com.muggle.tiktokcopy.business.login.state.InputCaptchaCodeState
+import com.muggle.tiktokcopy.business.login.state.InputCaptchaCodeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -16,8 +16,8 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class InputCaptchaCodeVm @Inject constructor(private val repo: LoginRepo) : ViewModel() {
-    private val _inputCaptchaCodeState = mutableStateOf(InputCaptchaCodeState())
-    val inputCaptchaCodeState: State<InputCaptchaCodeState> = _inputCaptchaCodeState
+    private val _inputCaptchaCodeUiState = mutableStateOf(InputCaptchaCodeUiState())
+    val inputCaptchaCodeUiState: State<InputCaptchaCodeUiState> = _inputCaptchaCodeUiState
 
     fun onReceiveEvent(event: InputCaptchaCodeEvent) {
         when (event) {
@@ -42,8 +42,8 @@ class InputCaptchaCodeVm @Inject constructor(private val repo: LoginRepo) : View
             }
 
             is InputCaptchaCodeEvent.InputCaptchaCode -> {
-                _inputCaptchaCodeState.value =
-                    _inputCaptchaCodeState.value.copy(captchaCode = event.code)
+                _inputCaptchaCodeUiState.value =
+                    _inputCaptchaCodeUiState.value.copy(captchaCode = event.code)
             }
         }
     }

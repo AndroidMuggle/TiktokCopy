@@ -33,7 +33,7 @@ import com.muggle.tiktokcopy.utils.csp
 fun FindPasswordPage(findPasswordPageVm: FindPasswordPageVm = hiltViewModel()) {
 
     val curState by remember {
-        findPasswordPageVm.findPasswordState
+        findPasswordPageVm.findPasswordUiState
     }
 
     val isConfirmBtnEnable by remember {

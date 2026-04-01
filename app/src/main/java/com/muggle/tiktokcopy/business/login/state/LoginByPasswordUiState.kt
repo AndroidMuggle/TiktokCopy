@@ -5,7 +5,7 @@ import androidx.core.text.isDigitsOnly
 /**
  * 密码登录页面状态
  */
-data class LoginByPasswordState(
+data class LoginByPasswordUiState(
     val curPhoneNumber: String = "",
     val curPassword: String = "",
     val isPrivacySelected: Boolean = false,

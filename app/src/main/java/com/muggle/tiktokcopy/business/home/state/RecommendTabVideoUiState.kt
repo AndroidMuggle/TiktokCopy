@@ -1,27 +1,22 @@
 package com.muggle.tiktokcopy.business.home.state
 
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.muggle.tiktokcopy.ui.component.video.bean.AuthorWidgetType
 import com.muggle.tiktokcopy.ui.component.video.bean.CollectState
 import com.muggle.tiktokcopy.ui.component.video.bean.LikeState
 import com.muggle.tiktokcopy.ui.component.video.bean.ProgressWidgetType
 import com.muggle.tiktokcopy.ui.component.video.bean.RecommendState
 import com.muggle.tiktokcopy.ui.component.video.bean.SubscribeState
-import com.muggle.tiktokcopy.ui.component.video.bean.TabItemState
 import com.muggle.tiktokcopy.ui.component.video.bean.VideoAlbumState
 import com.muggle.tiktokcopy.ui.component.video.bean.VideoBottomWidgetType
 import com.muggle.tiktokcopy.ui.component.video.bean.VideoContentWarningType
 import com.muggle.tiktokcopy.ui.component.video.bean.VideoRelativeContentType
-import com.muggle.tiktokcopy.ui.screen.getTabItemList
 
 /**
- * @date 2026/3/13 0:57
+ * @date 2026/4/2 0:13
  * @author muggle
  * @desc
  */
-data class HomeScreenState(
-    val moreMenuDotCount: Int = 0,
-    val tabItemList: SnapshotStateList<SingleTabState> = getTabItemList(),
+data class RecommendTabVideoUiState(
     val authorAvatarUrl: String = "",
     val subscribeState: SubscribeState = SubscribeState.Unsubscribe,
     val likeCountStr: String = "0",
@@ -32,7 +27,8 @@ data class HomeScreenState(
     val shareCountStr: String = "0",
     val shareBoardShowing: Boolean = false,
     val musicAlbumState: VideoAlbumState = VideoAlbumState.AlbumImage,
-    val isShowDanmakuEntrance: Boolean = false, // todo 弹幕库列表
+    val isShowDanmakuEntrance: Boolean = false,
+    // todo 弹幕库列表
     val recommendState: RecommendState? = null,
     val videoRelativeContentType: VideoRelativeContentType? = null,
     val authorName: String = "",

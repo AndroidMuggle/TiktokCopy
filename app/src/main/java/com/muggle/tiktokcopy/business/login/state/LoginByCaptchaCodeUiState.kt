@@ -7,7 +7,7 @@ import androidx.core.text.isDigitsOnly
  * @author muggle
  * @desc 验证码手机号输入页面状态
  */
-data class LoginByCaptchaCodeState(
+data class LoginByCaptchaCodeUiState(
     val phoneNumber: String = "",
     val regionCode: String = "+86",
     val isPrivacySelect: Boolean = false,

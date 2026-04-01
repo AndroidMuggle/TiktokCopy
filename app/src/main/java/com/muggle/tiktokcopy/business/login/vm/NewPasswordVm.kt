@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.muggle.tiktokcopy.business.login.intent.NewPasswordEvent
 import com.muggle.tiktokcopy.business.login.repo.LoginRepo
-import com.muggle.tiktokcopy.business.login.state.NewPasswordState
+import com.muggle.tiktokcopy.business.login.state.NewPasswordUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -17,8 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class NewPasswordVm @Inject constructor(private val repo: LoginRepo) : ViewModel() {
 
-    private val _newPasswordState = mutableStateOf(NewPasswordState())
-    val newPasswordState: State<NewPasswordState> = _newPasswordState
+    private val _newPasswordUiState = mutableStateOf(NewPasswordUiState())
+    val newPasswordUiState: State<NewPasswordUiState> = _newPasswordUiState
 
     fun onReceiveEvent(event: NewPasswordEvent) {
         when (event) {
@@ -31,7 +31,7 @@ class NewPasswordVm @Inject constructor(private val repo: LoginRepo) : ViewModel
             }
 
             is NewPasswordEvent.InputPassword -> {
-                _newPasswordState.value = _newPasswordState.value.copy(newPassword = event.password)
+                _newPasswordUiState.value = _newPasswordUiState.value.copy(newPassword = event.password)
             }
         }
     }

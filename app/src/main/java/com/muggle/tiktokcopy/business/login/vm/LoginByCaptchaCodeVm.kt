@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.muggle.tiktokcopy.business.login.intent.LoginByCaptchaCodeEvent
 import com.muggle.tiktokcopy.business.login.repo.LoginRepo
-import com.muggle.tiktokcopy.business.login.state.LoginByCaptchaCodeState
+import com.muggle.tiktokcopy.business.login.state.LoginByCaptchaCodeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -17,8 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginByCaptchaCodeVm @Inject constructor(private val repo: LoginRepo) : ViewModel() {
 
-    private val _loginByCaptchaCodeState = mutableStateOf(LoginByCaptchaCodeState())
-    val loginByCaptchaCodeState: State<LoginByCaptchaCodeState> = _loginByCaptchaCodeState
+    private val _loginByCaptchaCodeUiState = mutableStateOf(LoginByCaptchaCodeUiState())
+    val loginByCaptchaCodeUiState: State<LoginByCaptchaCodeUiState> = _loginByCaptchaCodeUiState
 
     fun onReceiveEvent(event: LoginByCaptchaCodeEvent) {
         when (event) {
@@ -43,13 +43,13 @@ class LoginByCaptchaCodeVm @Inject constructor(private val repo: LoginRepo) : Vi
             }
 
             is LoginByCaptchaCodeEvent.ClickPrivacySelect -> {
-                _loginByCaptchaCodeState.value =
-                    _loginByCaptchaCodeState.value.copy(isPrivacySelect = event.isSelect)
+                _loginByCaptchaCodeUiState.value =
+                    _loginByCaptchaCodeUiState.value.copy(isPrivacySelect = event.isSelect)
             }
 
             is LoginByCaptchaCodeEvent.InputPhoneNumber -> {
-                _loginByCaptchaCodeState.value =
-                    _loginByCaptchaCodeState.value.copy(phoneNumber = event.phoneNumber)
+                _loginByCaptchaCodeUiState.value =
+                    _loginByCaptchaCodeUiState.value.copy(phoneNumber = event.phoneNumber)
             }
         }
     }

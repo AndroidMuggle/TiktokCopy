@@ -47,7 +47,7 @@ fun NewPasswordPage(
 ) {
 
     val curState by remember {
-        newPasswordVm.newPasswordState
+        newPasswordVm.newPasswordUiState
     }
 
     val isConfirmEnable by remember {

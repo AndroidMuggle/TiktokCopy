@@ -5,7 +5,7 @@ import com.muggle.tiktokcopy.R
 import com.muggle.tiktokcopy.business.home.bean.HomePageClickType
 import com.muggle.tiktokcopy.business.home.intent.BottomNavigatorClickAct
 import com.muggle.tiktokcopy.business.home.repo.BottomNavRepo
-import com.muggle.tiktokcopy.business.home.state.BottomNavState
+import com.muggle.tiktokcopy.business.home.state.BottomNavUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,8 +19,8 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class BottomNavigatorVm @Inject constructor(private val repo: BottomNavRepo) : ViewModel() {
-    private val _bottomNavState = MutableStateFlow(BottomNavState())
-    val bottomNavState: StateFlow<BottomNavState> = _bottomNavState
+    private val _bottomNavUiState = MutableStateFlow(BottomNavUiState())
+    val bottomNavUiState: StateFlow<BottomNavUiState> = _bottomNavUiState
 
     fun onReceiveBottomNaviClickAct(bottomNaviClickAct: BottomNavigatorClickAct) {
         when (bottomNaviClickAct) {
@@ -29,7 +29,7 @@ class BottomNavigatorVm @Inject constructor(private val repo: BottomNavRepo) : V
             }
 
             BottomNavigatorClickAct.ClickFriendPage -> {
-                _bottomNavState.update { currentState ->
+                _bottomNavUiState.update { currentState ->
                     val newList = currentState.bottomNavigatorState.mapIndexed { index, state ->
                         when (index) {
                             0 -> state.copy(navName = "首页", isSelected = false)
@@ -42,7 +42,7 @@ class BottomNavigatorVm @Inject constructor(private val repo: BottomNavRepo) : V
             }
 
             is BottomNavigatorClickAct.ClickHomePage -> {
-                _bottomNavState.update { currentState ->
+                _bottomNavUiState.update { currentState ->
                     val isHomeSelected = currentState.bottomNavigatorState.firstOrNull()?.isSelected == true
                     val newList = currentState.bottomNavigatorState.mapIndexed { index, state ->
                         if (index == 0) {
@@ -83,7 +83,7 @@ class BottomNavigatorVm @Inject constructor(private val repo: BottomNavRepo) : V
             }
 
             BottomNavigatorClickAct.ClickMessagePage -> {
-                _bottomNavState.update { currentState ->
+                _bottomNavUiState.update { currentState ->
                     val newList = currentState.bottomNavigatorState.mapIndexed { index, state ->
                         when (index) {
                             0 -> state.copy(navName = "首页", isSelected = false)
@@ -96,7 +96,7 @@ class BottomNavigatorVm @Inject constructor(private val repo: BottomNavRepo) : V
             }
 
             BottomNavigatorClickAct.ClickMinePage -> {
-                _bottomNavState.update { currentState ->
+                _bottomNavUiState.update { currentState ->
                     val newList = currentState.bottomNavigatorState.mapIndexed { index, state ->
                         when (index) {
                             0 -> state.copy(navName = "首页", isSelected = false)

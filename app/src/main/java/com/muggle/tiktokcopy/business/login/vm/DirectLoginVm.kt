@@ -5,15 +5,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.muggle.tiktokcopy.business.login.intent.LoginDirectEvent
 import com.muggle.tiktokcopy.business.login.repo.LoginRepo
-import com.muggle.tiktokcopy.business.login.state.DirectLoginState
+import com.muggle.tiktokcopy.business.login.state.DirectLoginUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class DirectLoginVm @Inject constructor(private val repo: LoginRepo) : ViewModel() {
 
-    private val _directLoginState = mutableStateOf(DirectLoginState())
-    val directLoginState: State<DirectLoginState> = _directLoginState
+    private val _directLoginUiState = mutableStateOf(DirectLoginUiState())
+    val directLoginUiState: State<DirectLoginUiState> = _directLoginUiState
 
     fun onReceiveEvent(event: LoginDirectEvent) {
         when (event) {
@@ -30,8 +30,8 @@ class DirectLoginVm @Inject constructor(private val repo: LoginRepo) : ViewModel
             }
 
             is LoginDirectEvent.ClickPrivacyBtn -> {
-                _directLoginState.value =
-                    _directLoginState.value.copy(isPrivacySelected = event.isSelected)
+                _directLoginUiState.value =
+                    _directLoginUiState.value.copy(isPrivacySelected = event.isSelected)
             }
 
             is LoginDirectEvent.ClickChangeAccount -> {

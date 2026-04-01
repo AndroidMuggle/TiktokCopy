@@ -7,7 +7,7 @@ import androidx.core.text.isDigitsOnly
  * @author muggle
  * @desc 输入新密码的界面状态
  */
-data class NewPasswordState(
+data class NewPasswordUiState(
     val newPassword: String = "",
     val phoneNumber: String = ""
 ) {

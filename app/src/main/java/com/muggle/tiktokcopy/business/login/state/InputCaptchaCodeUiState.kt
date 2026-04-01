@@ -7,7 +7,7 @@ import androidx.core.text.isDigitsOnly
  * @author muggle
  * @desc
  */
-data class InputCaptchaCodeState(
+data class InputCaptchaCodeUiState(
     val phoneNumber: String = "",
     val captchaCode: String = "",
 ) {

@@ -44,7 +44,7 @@ import com.muggle.tiktokcopy.utils.csp
 fun DirectLoginPage(directLoginVm: DirectLoginVm = hiltViewModel()) {
 
     val curState by remember {
-        directLoginVm.directLoginState
+        directLoginVm.directLoginUiState
     }
 
     val isConfirmBtnEnable by remember {

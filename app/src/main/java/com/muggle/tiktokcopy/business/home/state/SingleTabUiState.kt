@@ -7,7 +7,7 @@ import com.muggle.tiktokcopy.ui.component.video.bean.TabItemState
  * @author muggle
  * @desc
  */
-data class SingleTabState(
+data class SingleTabUiState(
     val tabName: String,
     val hasRedDot: Boolean,
     val message: String,

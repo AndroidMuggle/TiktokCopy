@@ -3,7 +3,6 @@ package com.muggle.tiktokcopy.ui.screen
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,8 +39,8 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.NavHostController
 import com.muggle.tiktokcopy.R
 import com.muggle.tiktokcopy.business.home.intent.ScrollTabClickAct
-import com.muggle.tiktokcopy.business.home.state.HomeScreenState
-import com.muggle.tiktokcopy.business.home.state.SingleTabState
+import com.muggle.tiktokcopy.business.home.state.HomeScreenUiState
+import com.muggle.tiktokcopy.business.home.state.SingleTabUiState
 import com.muggle.tiktokcopy.business.home.vm.HomeScreenVm
 import com.muggle.tiktokcopy.ui.component.video.ScrollableTabList
 import com.muggle.tiktokcopy.ui.component.video.VideoPlayerWidget
@@ -50,7 +49,6 @@ import com.muggle.tiktokcopy.ui.screen.bean.HomeScreenTabType
 import com.muggle.tiktokcopy.utils.HorizontalDivider
 import com.muggle.tiktokcopy.utils.cdp
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 
 /**
@@ -63,7 +61,7 @@ fun HomeScreen(
     navHostController: NavHostController,
     homeScreenVm: HomeScreenVm = hiltViewModel()
 ) {
-    val homeScreenState by homeScreenVm.homeScreenState.collectAsStateWithLifecycle()
+    val homeScreenState by homeScreenVm.homeScreenUiState.collectAsStateWithLifecycle()
 
     HomeScreen(
         homeScreenState,
@@ -81,13 +79,13 @@ fun HomeScreen(
 
 @Composable
 internal fun HomeScreen(
-    homeScreenState: HomeScreenState,
+    homeScreenUiState: HomeScreenUiState,
     onSelectTabChange: (Int) -> Unit = {},
     onRefreshTab: (Int) -> Unit = {},
     onLongClickTab: () -> Unit = {}
 ) {
     val curState by remember {
-        mutableStateOf(homeScreenState)
+        mutableStateOf(homeScreenUiState)
     }
 
     val horPageCount by remember {
@@ -337,10 +335,10 @@ private fun PagerScope.GroupCouponTab() {
 
 }
 
-fun getTabItemList(): SnapshotStateList<SingleTabState> {
-    return SnapshotStateList<SingleTabState>().apply {
+fun getTabItemList(): SnapshotStateList<SingleTabUiState> {
+    return SnapshotStateList<SingleTabUiState>().apply {
         add(
-            SingleTabState(
+            SingleTabUiState(
                 tabName = "团购",
                 hasRedDot = false,
                 message = "",
@@ -350,7 +348,7 @@ fun getTabItemList(): SnapshotStateList<SingleTabState> {
             )
         )
         add(
-            SingleTabState(
+            SingleTabUiState(
                 tabName = "宿松",
                 hasRedDot = false,
                 message = "",
@@ -360,7 +358,7 @@ fun getTabItemList(): SnapshotStateList<SingleTabState> {
             )
         )
         add(
-            SingleTabState(
+            SingleTabUiState(
                 tabName = "经验",
                 hasRedDot = false,
                 message = "",
@@ -371,7 +369,7 @@ fun getTabItemList(): SnapshotStateList<SingleTabState> {
         )
 
         add(
-            SingleTabState(
+            SingleTabUiState(
                 tabName = "精选",
                 hasRedDot = false,
                 message = "",
@@ -382,7 +380,7 @@ fun getTabItemList(): SnapshotStateList<SingleTabState> {
         )
 
         add(
-            SingleTabState(
+            SingleTabUiState(
                 tabName = "集福气",
                 hasRedDot = false,
                 message = "",
@@ -393,7 +391,7 @@ fun getTabItemList(): SnapshotStateList<SingleTabState> {
         )
 
         add(
-            SingleTabState(
+            SingleTabUiState(
                 tabName = "直播",
                 hasRedDot = false,
                 message = "",
@@ -404,7 +402,7 @@ fun getTabItemList(): SnapshotStateList<SingleTabState> {
         )
 
         add(
-            SingleTabState(
+            SingleTabUiState(
                 tabName = "热点",
                 hasRedDot = false,
                 message = "",
@@ -415,7 +413,7 @@ fun getTabItemList(): SnapshotStateList<SingleTabState> {
         )
 
         add(
-            SingleTabState(
+            SingleTabUiState(
                 tabName = "关注",
                 hasRedDot = false,
                 message = "",
@@ -426,7 +424,7 @@ fun getTabItemList(): SnapshotStateList<SingleTabState> {
         )
 
         add(
-            SingleTabState(
+            SingleTabUiState(
                 tabName = "商城",
                 hasRedDot = false,
                 message = "",
@@ -437,7 +435,7 @@ fun getTabItemList(): SnapshotStateList<SingleTabState> {
         )
 
         add(
-            SingleTabState(
+            SingleTabUiState(
                 tabName = "推荐",
                 hasRedDot = false,
                 message = "",

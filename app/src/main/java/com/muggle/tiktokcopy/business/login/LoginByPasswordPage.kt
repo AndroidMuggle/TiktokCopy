@@ -43,7 +43,7 @@ import com.muggle.tiktokcopy.utils.csp
 fun LoginByPasswordPage(loginByPasswordVm: LoginByPasswordVm = hiltViewModel()) {
 
     val curState by remember {
-        loginByPasswordVm.loginByPasswordState
+        loginByPasswordVm.loginByPasswordUiState
     }
 
     val isConfirmBtnEnable by remember {

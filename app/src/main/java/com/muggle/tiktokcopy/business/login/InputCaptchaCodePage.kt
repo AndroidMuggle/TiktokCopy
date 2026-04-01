@@ -46,7 +46,7 @@ import kotlinx.coroutines.delay
 fun InputCaptchaCodePage(inputCaptchaCodeVm: InputCaptchaCodeVm = hiltViewModel()) {
 
     val curState by remember {
-        inputCaptchaCodeVm.inputCaptchaCodeState
+        inputCaptchaCodeVm.inputCaptchaCodeUiState
     }
 
     val isConfirmEnable by remember {
