@@ -1,6 +1,5 @@
 package com.muggle.tiktokcopy.ui.screen
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.scrollBy
@@ -42,6 +41,7 @@ import com.muggle.tiktokcopy.business.home.intent.ScrollTabClickAct
 import com.muggle.tiktokcopy.business.home.state.HomeScreenUiState
 import com.muggle.tiktokcopy.business.home.state.SingleTabUiState
 import com.muggle.tiktokcopy.business.home.vm.HomeScreenVm
+import com.muggle.tiktokcopy.business.home.vm.RecommendVideoVm
 import com.muggle.tiktokcopy.ui.component.video.ScrollableTabList
 import com.muggle.tiktokcopy.ui.component.video.VideoPlayerWidget
 import com.muggle.tiktokcopy.ui.component.video.bean.TabItemState
@@ -121,12 +121,6 @@ internal fun HomeScreen(
                 if (it == info.index && index in 0 until visibleItemsInfo.size - 1) {
                     val offsetPixels =
                         (info.offset + visibleItemsInfo[index + 1].offset) / 2 - middlePixels
-                    Log.i(
-                        "TAG",
-                        "zzzz HomeScreen: info.offset = ${info.offset}," +
-                                "next.offset = ${visibleItemsInfo[index + 1].offset}," +
-                                "middlePixels = $middlePixels"
-                    )
                     tabListState.scrollBy(offsetPixels.toFloat())
                 }
             }
@@ -242,13 +236,33 @@ private fun PagerContent(
  * 推荐tab
  */
 @Composable
-private fun RecommendTab() {
+private fun RecommendTab(
+    recommendVideoVm: RecommendVideoVm = hiltViewModel()
+) {
+
+    val ctx = LocalContext.current
+
+    val curState by recommendVideoVm.recommendTabVideoUiState.collectAsStateWithLifecycle()
+
     val pageCount by remember {
         derivedStateOf {
-            5
+            curState.videoUiStateList.size
         }
     }
     val pagerState = rememberPagerState(0) { pageCount }
+
+    val player = remember {
+        ExoPlayer.Builder(ctx).build()
+    }
+
+    LaunchedEffect(pagerState) {
+        snapshotFlow {
+            pagerState.currentPage
+        }.collect {
+            // TODO: 添加切换视频的逻辑
+        }
+    }
+
     VerticalPager(
         modifier = Modifier
             .height(760.cdp)
@@ -257,8 +271,15 @@ private fun RecommendTab() {
         state = pagerState
     ) {
         VideoPlayerWidget(
-            player = ExoPlayer.Builder(LocalContext.current).build(),
-            contentScale = ContentScale.FillWidth
+            player = player,
+            contentScale = ContentScale.FillWidth,
+            singleVideoUiState = curState.videoUiStateList[pagerState.currentPage],
+            onPlayerCallback = {
+                recommendVideoVm.onReceivePlayerEvent(it)
+            },
+            onReceiveWidgetClickAct = {
+                recommendVideoVm.onReceiveWidgetClickAct(it)
+            }
         )
     }
 }

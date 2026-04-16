@@ -7,6 +7,7 @@ import com.muggle.tiktokcopy.business.home.bean.RecommendEntranceClickType
 import com.muggle.tiktokcopy.business.home.bean.VideoAuthorAvatarClickType
 import com.muggle.tiktokcopy.business.home.bean.VideoContentWarningWidgetClickType
 import com.muggle.tiktokcopy.business.home.bean.VideoRelativeWidgetClickType
+import com.muggle.tiktokcopy.business.login.bean.LoginResponseBean
 
 /**
  * @author Muggle
@@ -34,7 +35,7 @@ sealed interface VideoWidgetClickAct {
     /**
      * 点击添加收藏按钮
      */
-    class ClickAddToClickWidget(val isCurCollect: Boolean) : VideoWidgetClickAct
+    class ClickAddToCollectWidget(val isCurCollect: Boolean) : VideoWidgetClickAct
 
     /**
      * 点击分享按钮
@@ -82,7 +83,7 @@ sealed interface VideoWidgetClickAct {
     /**
      * 点击共创作者头像 todo: 作者信息
      */
-    class ClickCreateTogetherAuthorAvatar() : VideoWidgetClickAct
+    class ClickCreateTogetherAuthorAvatar(val loginResponseBean: LoginResponseBean) : VideoWidgetClickAct
 
     /**
      * 点击共创作者列表后面的更多按钮

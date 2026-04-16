@@ -1,5 +1,6 @@
 package com.muggle.tiktokcopy.ui.component.video
 
+import android.text.TextUtils
 import androidx.annotation.OptIn
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -22,6 +23,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,13 +38,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
+import androidx.media3.common.Timeline
 import androidx.media3.common.VideoSize
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.compose.ContentFrame
+import coil3.compose.AsyncImage
 import com.muggle.tiktokcopy.R
+import com.muggle.tiktokcopy.business.home.intent.VideoWidgetClickAct
+import com.muggle.tiktokcopy.business.home.state.SingleVideoUiState
 import com.muggle.tiktokcopy.business.login.bean.LoginResponseBean
 import com.muggle.tiktokcopy.ui.component.video.bean.AuthorWidgetType
-import com.muggle.tiktokcopy.ui.component.video.bean.VideoBottomWidgetType
+import com.muggle.tiktokcopy.ui.component.video.bean.PlayerEventType
 import com.muggle.tiktokcopy.utils.VerticalDivider
 import com.muggle.tiktokcopy.utils.cdp
 import com.muggle.tiktokcopy.utils.csp
@@ -52,18 +58,33 @@ import com.muggle.tiktokcopy.utils.csp
  * @author muggle
  * @desc
  */
-
 @Composable
 fun VideoPlayerWidget(
     player: Player,
-    contentScale: ContentScale
+    contentScale: ContentScale,
+    singleVideoUiState: SingleVideoUiState,
+    onPlayerCallback: (PlayerEventType) -> Unit = {},
+    onReceiveWidgetClickAct: (VideoWidgetClickAct) -> Unit = {}
 ) {
+
+    val videoState by remember {
+        mutableStateOf(singleVideoUiState)
+    }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(760.cdp)
     ) {
-        VideoPlayer(player = player, contentScale = contentScale)
+        VideoPlayer(
+            player = player,
+            contentScale = contentScale,
+            videoUrl = videoState.videoUrl,
+            videoCoverUrl = videoState.videoCoverUrl,
+            onPlayerCallback = {
+                onPlayerCallback(it)
+            }
+        )
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -75,26 +96,61 @@ fun VideoPlayerWidget(
                     .widthIn(max = 276.cdp)
                     .padding(start = 11.cdp)
             ) {
-                DanmakuEditEntrance()
-                Spacer(modifier = Modifier.height(8.cdp))
-                RecommendWidget()
-                Spacer(modifier = Modifier.height(8.cdp))
-                VideoRelativeWidget()
+                DanmakuEditEntrance(
+                    onClick = {
+                        onReceiveWidgetClickAct(VideoWidgetClickAct.ClickDanmakuEditEntrance)
+                    }
+                )
+                if (null != singleVideoUiState.recommendState) {
+                    Spacer(modifier = Modifier.height(8.cdp))
+                    RecommendWidget(
+                        state = singleVideoUiState.recommendState,
+                        onClick = {
+                            onReceiveWidgetClickAct(VideoWidgetClickAct.ClickRecommendEntrance(it))
+                        }
+                    )
+                }
+                if (null != singleVideoUiState.videoRelativeContentType) {
+                    Spacer(modifier = Modifier.height(8.cdp))
+                    VideoRelativeWidget(
+                        state = singleVideoUiState.videoRelativeContentType,
+                        onClick = {
+                            onReceiveWidgetClickAct(VideoWidgetClickAct.ClickVideoRelativeWidget(it))
+                        }
+                    )
+                }
+
                 Spacer(modifier = Modifier.height(8.cdp))
                 VideoAuthor(
                     userName = "字节跳动",
                     authorWidgetType = AuthorWidgetType.CreateTogether(
                         authorList = createAuthorList()
-                    )
+                    ),
+                    onClickAct = {
+                        onReceiveWidgetClickAct(it)
+                    }
                 )
-                VerticalDivider(8.cdp)
-                VideoContentDesc("我的刀盾、比比拉布、我的刀盾、比比拉布、我的刀盾、比比拉布、我的刀盾、比比拉布、我的刀盾、比比拉布、")
-                VerticalDivider(8.cdp)
+                if (!TextUtils.isEmpty(videoState.videoContentDesc)) {
+                    // TODO 点击事件
+                    VerticalDivider(8.cdp)
+                    VideoContentDesc(videoState.videoContentDesc)
+                }
             }
-            VideoBottomWidget(VideoBottomWidgetType.RelativeSearch("我的刀盾是什么梗"))
-//            VideoContentWarningWidget(VideoContentWarningType.ContentWarning("情节演绎，注意甄别"))
-//            VerticalDivider(8.cdp)
-            VideoProgressWidget(chapterSecList = listOf(5, 26, 78, 93))
+            if (videoState.videoBottomWidgetType != null) {
+                VerticalDivider(8.cdp)
+                VideoBottomWidget(videoState.videoBottomWidgetType!!)
+            }
+            if (videoState.videoContentWarningType != null) {
+                VerticalDivider(8.cdp)
+                VideoContentWarningWidget(videoState.videoContentWarningType!!)
+            }
+            if (videoState.totalDurationMs > 15 * 1000) {
+                // TODO: 进度条处理，添加数据字段
+                VerticalDivider(8.cdp)
+                VideoProgressWidget(chapterSecList = listOf(5, 26, 78, 93))
+            } else {
+                // TODO: 滑动条透明响应区域
+            }
         }
 
         Column(
@@ -123,54 +179,104 @@ fun VideoPlayerWidget(
 @Composable
 private fun BoxScope.VideoPlayer(
     player: Player,
-    contentScale: ContentScale
+    contentScale: ContentScale,
+    videoUrl: String = "",
+    videoCoverUrl: String = "",
+    onPlayerCallback: (PlayerEventType) -> Unit = {}
 ) {
 
-    val playerListener = object : Player.Listener {
-        override fun onEvents(
-            player: Player,
-            events: Player.Events
-        ) {
-            super.onEvents(player, events)
-        }
+    val playerListener = remember {
+        object : Player.Listener {
+            override fun onEvents(
+                player: Player,
+                events: Player.Events
+            ) {
+                super.onEvents(player, events)
+                onPlayerCallback(PlayerEventType.Event(events))
+            }
 
-        override fun onPlaybackStateChanged(playbackState: Int) {
-            super.onPlaybackStateChanged(playbackState)
-        }
+            override fun onPlaybackStateChanged(playbackState: Int) {
+                super.onPlaybackStateChanged(playbackState)
+                onPlayerCallback(PlayerEventType.PlayBackStateChange(playbackState))
+            }
 
-        override fun onIsPlayingChanged(isPlaying: Boolean) {
-            super.onIsPlayingChanged(isPlaying)
-        }
+            override fun onIsPlayingChanged(isPlaying: Boolean) {
+                super.onIsPlayingChanged(isPlaying)
+                onPlayerCallback(PlayerEventType.IsPlayingChanged(isPlaying))
+            }
 
-        override fun onPlayerError(error: PlaybackException) {
-            super.onPlayerError(error)
-        }
+            override fun onPlayerError(error: PlaybackException) {
+                super.onPlayerError(error)
+                onPlayerCallback(PlayerEventType.PlayerError(error))
+            }
 
-        override fun onMediaItemTransition(
-            mediaItem: MediaItem?,
-            reason: Int
-        ) {
-            super.onMediaItemTransition(mediaItem, reason)
-        }
+            override fun onRepeatModeChanged(repeatMode: Int) {
+                super.onRepeatModeChanged(repeatMode)
+                onPlayerCallback(PlayerEventType.RepeatModeChanged(repeatMode))
+            }
 
-        override fun onRepeatModeChanged(repeatMode: Int) {
-            super.onRepeatModeChanged(repeatMode)
-        }
+            override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+                super.onPlayWhenReadyChanged(playWhenReady, reason)
+                onPlayerCallback(PlayerEventType.PlayWhenReadyChanged(playWhenReady, reason))
+            }
 
-        override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
-            super.onPlayWhenReadyChanged(playWhenReady, reason)
-        }
+            override fun onPositionDiscontinuity(
+                oldPosition: Player.PositionInfo,
+                newPosition: Player.PositionInfo,
+                reason: Int
+            ) {
+                super.onPositionDiscontinuity(oldPosition, newPosition, reason)
+                onPlayerCallback(
+                    PlayerEventType.PositionDiscontinuity(
+                        oldPosition,
+                        newPosition,
+                        reason
+                    )
+                )
+            }
 
-        override fun onPositionDiscontinuity(
-            oldPosition: Player.PositionInfo,
-            newPosition: Player.PositionInfo,
-            reason: Int
-        ) {
-            super.onPositionDiscontinuity(oldPosition, newPosition, reason)
-        }
+            override fun onVideoSizeChanged(videoSize: VideoSize) {
+                super.onVideoSizeChanged(videoSize)
+                onPlayerCallback(PlayerEventType.VideoSizeChanged(videoSize))
+            }
 
-        override fun onVideoSizeChanged(videoSize: VideoSize) {
-            super.onVideoSizeChanged(videoSize)
+            override fun onTimelineChanged(
+                timeline: Timeline,
+                reason: Int
+            ) {
+                super.onTimelineChanged(timeline, reason)
+                onPlayerCallback(PlayerEventType.TimelineChanged(timeline, reason))
+            }
+
+            override fun onIsLoadingChanged(isLoading: Boolean) {
+                super.onIsLoadingChanged(isLoading)
+                onPlayerCallback(PlayerEventType.IsPlayingChanged(isLoading))
+            }
+
+            override fun onPlayerErrorChanged(error: PlaybackException?) {
+                super.onPlayerErrorChanged(error)
+                onPlayerCallback(PlayerEventType.PlayerErrorChanged(error))
+            }
+
+            override fun onVolumeChanged(volume: Float) {
+                super.onVolumeChanged(volume)
+                onPlayerCallback(PlayerEventType.VolumeChanged(volume))
+            }
+
+            override fun onDeviceVolumeChanged(volume: Int, muted: Boolean) {
+                super.onDeviceVolumeChanged(volume, muted)
+                onPlayerCallback(PlayerEventType.DeviceVolumeChanged(volume, muted))
+            }
+
+            override fun onSurfaceSizeChanged(width: Int, height: Int) {
+                super.onSurfaceSizeChanged(width, height)
+                onPlayerCallback(PlayerEventType.SurfaceSizeChanged(width, height))
+            }
+
+            override fun onRenderedFirstFrame() {
+                super.onRenderedFirstFrame()
+                onPlayerCallback(PlayerEventType.RenderedFirstFrame)
+            }
         }
     }
 
@@ -187,6 +293,15 @@ private fun BoxScope.VideoPlayer(
         onDispose {
             player.removeListener(curPlayerListener)
         }
+    }
+
+    LaunchedEffect(videoUrl) {
+        player.setMediaItem(MediaItem.fromUri(videoUrl))
+        player.prepare()
+    }
+
+    LaunchedEffect(Unit) {
+
     }
 
     Box(
@@ -206,6 +321,14 @@ private fun BoxScope.VideoPlayer(
             modifier = Modifier.fillMaxSize(),
             player = player,
             contentScale = contentScale,
+            shutter = {
+                AsyncImage(
+                    model = videoCoverUrl,
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+            }
         )
 
         if (!isPlaying) {

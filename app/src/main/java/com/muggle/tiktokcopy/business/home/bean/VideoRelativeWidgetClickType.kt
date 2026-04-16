@@ -1,5 +1,7 @@
 package com.muggle.tiktokcopy.business.home.bean
 
+import com.muggle.tiktokcopy.ui.component.video.bean.VideoRelativeContentType
+
 /**
  * @author Muggle
  * @date 2026/3/7 20:10
@@ -9,12 +11,12 @@ sealed interface VideoRelativeWidgetClickType {
     /**
      * 位置定位
      */
-    object Location : VideoRelativeWidgetClickType
+    class Location(val videoRelativeContentType: VideoRelativeContentType) : VideoRelativeWidgetClickType
 
     /**
      * 图文描述
      */
-    object ImageWithDescription : VideoRelativeWidgetClickType
+    class ImageWithDescription(val videoRelativeContentType: VideoRelativeContentType) : VideoRelativeWidgetClickType
 
     /**
      * 抖音精选

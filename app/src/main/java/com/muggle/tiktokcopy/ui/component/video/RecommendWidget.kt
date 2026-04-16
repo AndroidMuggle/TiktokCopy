@@ -2,6 +2,7 @@ package com.muggle.tiktokcopy.ui.component.video
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -30,6 +31,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import coil3.compose.AsyncImage
 import com.muggle.tiktokcopy.R
+import com.muggle.tiktokcopy.business.home.bean.RecommendEntranceClickType
+import com.muggle.tiktokcopy.business.home.bean.SelfRecommendClickType
 import com.muggle.tiktokcopy.ui.component.video.bean.RecommendState
 import com.muggle.tiktokcopy.utils.cdp
 import com.muggle.tiktokcopy.utils.csp
@@ -41,7 +44,8 @@ import com.muggle.tiktokcopy.utils.csp
  */
 @Composable
 fun RecommendWidget(
-    state: RecommendState = RecommendState.RecommendCount(0)
+    state: RecommendState = RecommendState.RecommendCount(0),
+    onClick: (RecommendEntranceClickType) -> Unit = {}
 ) {
     var curState by remember {
         mutableStateOf(state)
@@ -49,7 +53,7 @@ fun RecommendWidget(
 
     when (curState) {
         is RecommendState.RecommendCount -> {
-            RecommendCountWidget(curState as RecommendState.RecommendCount)
+            RecommendCountWidget(curState as RecommendState.RecommendCount, onClick)
         }
 
         is RecommendState.OtherUserRecommend -> {
@@ -66,7 +70,10 @@ fun RecommendWidget(
  * 推荐人数
  */
 @Composable
-private fun RecommendCountWidget(recommendState: RecommendState.RecommendCount) {
+private fun RecommendCountWidget(
+    recommendState: RecommendState.RecommendCount,
+    onClick: (RecommendEntranceClickType) -> Unit = {}
+) {
     Row(
         modifier = Modifier
             .wrapContentWidth()
@@ -74,7 +81,10 @@ private fun RecommendCountWidget(recommendState: RecommendState.RecommendCount) 
             .background(
                 color = Color(0x66666666),
                 shape = RoundedCornerShape(size = 4.cdp)
-            ),
+            )
+            .clickable {
+                onClick(RecommendEntranceClickType.RecommendCount)
+            },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
@@ -111,7 +121,10 @@ private fun RecommendCountWidget(recommendState: RecommendState.RecommendCount) 
  * 其他用户推荐
  */
 @Composable
-private fun OtherUserRecommendWidget(recommendState: RecommendState.OtherUserRecommend) {
+private fun OtherUserRecommendWidget(
+    recommendState: RecommendState.OtherUserRecommend,
+    onClick: (RecommendEntranceClickType) -> Unit = {}
+) {
     Row(
         modifier = Modifier
             .height(28.cdp)
@@ -126,7 +139,10 @@ private fun OtherUserRecommendWidget(recommendState: RecommendState.OtherUserRec
                 .background(
                     color = Color.White,
                     shape = RoundedCornerShape(size = 4.cdp)
-                ),
+                )
+                .clickable {
+                    onClick(RecommendEntranceClickType.OtherRecommend)
+                },
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Spacer(modifier = Modifier.width(4.cdp))
@@ -171,7 +187,10 @@ private fun OtherUserRecommendWidget(recommendState: RecommendState.OtherUserRec
  * 自己推荐
  */
 @Composable
-private fun SelfRecommendWidget(recommendState: RecommendState.SelfRecommend) {
+private fun SelfRecommendWidget(
+    recommendState: RecommendState.SelfRecommend,
+    onClick: (RecommendEntranceClickType) -> Unit = {}
+) {
     Row(
         modifier = Modifier
             .height(28.cdp)
@@ -186,7 +205,14 @@ private fun SelfRecommendWidget(recommendState: RecommendState.SelfRecommend) {
                 .background(
                     color = Color.White,
                     shape = RoundedCornerShape(size = 4.cdp)
-                ),
+                )
+                .clickable {
+                    onClick(
+                        RecommendEntranceClickType.SelfRecommend(
+                            SelfRecommendClickType.UserAvatarBoard
+                        )
+                    )
+                },
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Spacer(modifier = Modifier.width(4.cdp))
@@ -220,7 +246,14 @@ private fun SelfRecommendWidget(recommendState: RecommendState.SelfRecommend) {
                     color = Color(0x993B3B3B),
                     shape = RoundedCornerShape(4.cdp)
                 )
-                .padding(4.cdp),
+                .padding(4.cdp)
+                .clickable {
+                    onClick(
+                        RecommendEntranceClickType.SelfRecommend(
+                            SelfRecommendClickType.EditEntrance
+                        )
+                    )
+                },
             painter = painterResource(R.drawable.home_recommend_edit),
             contentDescription = ""
         )
@@ -230,5 +263,5 @@ private fun SelfRecommendWidget(recommendState: RecommendState.SelfRecommend) {
 @Preview
 @Composable
 fun PreviewRecommendWidget() {
-    SelfRecommendWidget(RecommendState.SelfRecommend("zzzzz", ""))
+    OtherUserRecommendWidget(RecommendState.OtherUserRecommend("zzzzz", ""))
 }

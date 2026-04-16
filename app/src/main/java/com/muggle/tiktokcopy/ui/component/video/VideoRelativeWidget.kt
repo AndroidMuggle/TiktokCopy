@@ -2,6 +2,7 @@ package com.muggle.tiktokcopy.ui.component.video
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,6 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.muggle.tiktokcopy.R
+import com.muggle.tiktokcopy.business.home.bean.VideoRelativeWidgetClickType
 import com.muggle.tiktokcopy.ui.component.video.bean.VideoRelativeContentType
 import com.muggle.tiktokcopy.utils.cdp
 import com.muggle.tiktokcopy.utils.csp
@@ -43,18 +45,24 @@ import com.muggle.tiktokcopy.utils.csp
  * @desc
  */
 @Composable
-fun VideoRelativeWidget(state: VideoRelativeContentType = VideoRelativeContentType.SpecialSelect) {
+fun VideoRelativeWidget(
+    state: VideoRelativeContentType = VideoRelativeContentType.SpecialSelect,
+    onClick: (VideoRelativeWidgetClickType) -> Unit = {}
+) {
     val curState by remember {
         mutableStateOf(state)
     }
 
     when (curState) {
         is VideoRelativeContentType.ImageWithDescription -> {
-            ImageWithDescriptionWidget()
+            ImageWithDescriptionWidget(
+                curState as VideoRelativeContentType.ImageWithDescription,
+                onClick
+            )
         }
 
         is VideoRelativeContentType.Location -> {
-            LocationWidget(curState as VideoRelativeContentType.Location)
+            LocationWidget(curState as VideoRelativeContentType.Location, onClick)
         }
 
         VideoRelativeContentType.SpecialSelect -> {
@@ -64,13 +72,18 @@ fun VideoRelativeWidget(state: VideoRelativeContentType = VideoRelativeContentTy
 }
 
 @Composable
-private fun SpecialSelectWidget() {
+private fun SpecialSelectWidget(
+    onClick: (VideoRelativeWidgetClickType) -> Unit = {}
+) {
     Row(
         modifier = Modifier
             .width(108.cdp)
             .height(20.cdp)
             .clip(shape = RoundedCornerShape(4.cdp))
-            .background(color = Color.White),
+            .background(color = Color.White)
+            .clickable {
+                onClick(VideoRelativeWidgetClickType.SpecialSelect)
+            },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround
     ) {
@@ -99,25 +112,26 @@ private fun SpecialSelectWidget() {
 
 @Composable
 private fun LocationWidget(
-    location: VideoRelativeContentType.Location = VideoRelativeContentType.Location(
-        title = "北京",
-        locationName = "天安门",
-        subDescriptions = listOf(
-            "直播中",
-            "20W人想去",
-            "本地必玩榜",
-            "本地必玩榜",
-            "本地必玩榜",
-            "本地必玩榜"
-        )
-    )
+    location: VideoRelativeContentType.Location,
+    onClick: (VideoRelativeWidgetClickType) -> Unit = {}
 ) {
     Row(
         modifier = Modifier
             .widthIn(max = 268.cdp)
             .height(20.cdp)
             .clip(shape = RoundedCornerShape(4.cdp))
-            .background(color = Color(0xff424242)),
+            .background(color = Color(0xff424242))
+            .clickable {
+                onClick(
+                    VideoRelativeWidgetClickType.Location(
+                        VideoRelativeContentType.Location(
+                            title = location.title,
+                            locationName = location.locationName,
+                            subDescriptions = location.subDescriptions
+                        )
+                    )
+                )
+            },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround
     ) {
@@ -206,19 +220,8 @@ private fun LocationWidget(
 
 @Composable
 private fun ImageWithDescriptionWidget(
-    imageWithDescription: VideoRelativeContentType.ImageWithDescription = VideoRelativeContentType.ImageWithDescription(
-        imgUrl = "",
-        title = "附近",
-        typeName = "肯德基召楼星天地",
-        subDescriptions = listOf(
-            "直播中",
-            "20W人想去",
-            "本地必玩榜",
-            "本地必玩榜",
-            "本地必玩榜",
-            "本地必玩榜"
-        )
-    )
+    imageWithDescription: VideoRelativeContentType.ImageWithDescription,
+    onClick: (VideoRelativeWidgetClickType) -> Unit = {}
 ) {
     Row(
         modifier = Modifier
@@ -226,7 +229,19 @@ private fun ImageWithDescriptionWidget(
             .wrapContentHeight(align = Alignment.Top)
             .clip(shape = RoundedCornerShape(4.cdp))
             .background(color = Color(0xff424242))
-            .padding(6.cdp),
+            .padding(6.cdp)
+            .clickable {
+                onClick(
+                    VideoRelativeWidgetClickType.ImageWithDescription(
+                        VideoRelativeContentType.ImageWithDescription(
+                            imgUrl = imageWithDescription.imgUrl,
+                            title = imageWithDescription.title,
+                            typeName = imageWithDescription.typeName,
+                            subDescriptions = imageWithDescription.subDescriptions
+                        )
+                    )
+                )
+            },
         verticalAlignment = Alignment.Top,
         horizontalArrangement = Arrangement.SpaceAround
     ) {
@@ -292,5 +307,34 @@ private fun ImageWithDescriptionWidget(
 @Preview
 @Composable
 fun PreviewVideoRelativeWidget() {
-    ImageWithDescriptionWidget()
+    ImageWithDescriptionWidget(
+        VideoRelativeContentType.ImageWithDescription(
+            imgUrl = "",
+            title = "附近",
+            typeName = "肯德基召楼星天地",
+            subDescriptions = listOf(
+                "直播中",
+                "20W人想去",
+                "本地必玩榜",
+                "本地必玩榜",
+                "本地必玩榜",
+                "本地必玩榜"
+            )
+        )
+    )
+
+//    LocationWidget(
+//        VideoRelativeContentType.Location(
+//            title = "北京",
+//            locationName = "天安门",
+//            subDescriptions = listOf(
+//                "直播中",
+//                "20W人想去",
+//                "本地必玩榜",
+//                "本地必玩榜",
+//                "本地必玩榜",
+//                "本地必玩榜"
+//            )
+//        )
+//    )
 }

@@ -1,6 +1,7 @@
 package com.muggle.tiktokcopy.ui.component.video
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -15,9 +16,13 @@ import com.muggle.tiktokcopy.utils.cdp
  * @desc
  */
 @Composable
-fun DanmakuEditEntrance() {
+fun DanmakuEditEntrance(onClick: () -> Unit = {}) {
     Image(
-        modifier = Modifier.size(35.cdp),
+        modifier = Modifier
+            .size(35.cdp)
+            .clickable {
+                onClick()
+            },
         painter = painterResource(R.drawable.video_danmaku_entrance),
         contentDescription = ""
     )

@@ -5,6 +5,7 @@ import android.icu.text.SimpleDateFormat
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,6 +37,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.muggle.tiktokcopy.R
+import com.muggle.tiktokcopy.business.home.bean.AuthorWidgetClickType
+import com.muggle.tiktokcopy.business.home.intent.VideoWidgetClickAct
 import com.muggle.tiktokcopy.business.login.bean.LoginResponseBean
 import com.muggle.tiktokcopy.ui.component.video.bean.AuthorVerificationType
 import com.muggle.tiktokcopy.ui.component.video.bean.AuthorWidgetType
@@ -52,8 +55,9 @@ import java.util.Date
  */
 @Composable
 fun VideoAuthor(
-    userName: String = "",
-    authorWidgetType: AuthorWidgetType? = null
+    userName: String,
+    authorWidgetType: AuthorWidgetType? = null,
+    onClickAct: (VideoWidgetClickAct) -> Unit = {}
 ) {
     Column(modifier = Modifier.wrapContentSize()) {
         Row(
@@ -63,7 +67,11 @@ fun VideoAuthor(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                modifier = Modifier.widthIn(max = 276.cdp),
+                modifier = Modifier
+                    .widthIn(max = 276.cdp)
+                    .clickable {
+                        onClickAct(VideoWidgetClickAct.ClickAuthorName)
+                    },
                 text = "@$userName",
                 fontSize = 15.csp,
                 color = Color.White,
@@ -78,20 +86,23 @@ fun VideoAuthor(
         Spacer(modifier = Modifier.height(8.cdp))
 
         if (authorWidgetType is AuthorWidgetType.CreateTogether) {
-            CreateTogetherAuthorList(authorList = authorWidgetType.authorList)
+            CreateTogetherAuthorList(authorList = authorWidgetType.authorList, onClickAct)
         }
     }
 }
 
 @Composable
-private fun AuthorWidget(authorWidgetType: AuthorWidgetType) {
+private fun AuthorWidget(
+    authorWidgetType: AuthorWidgetType,
+    onClickAct: (VideoWidgetClickAct) -> Unit = {}
+) {
     val curType by remember {
         mutableStateOf(authorWidgetType)
     }
 
     when (curType) {
         AuthorWidgetType.Article -> {
-            ArticleWidget()
+            ArticleWidget(onClickAct)
         }
 
         is AuthorWidgetType.AuthorVerification -> {
@@ -99,7 +110,7 @@ private fun AuthorWidget(authorWidgetType: AuthorWidgetType) {
         }
 
         is AuthorWidgetType.CreateTogether -> {
-            CreateTogetherWidget(curType as AuthorWidgetType.CreateTogether)
+            CreateTogetherWidget(curType as AuthorWidgetType.CreateTogether, onClickAct)
         }
 
         AuthorWidgetType.LivePhoto -> {
@@ -107,7 +118,7 @@ private fun AuthorWidget(authorWidgetType: AuthorWidgetType) {
         }
 
         AuthorWidgetType.VideoChapter -> {
-            VideoChapterWidget()
+            VideoChapterWidget(onClickAct)
         }
 
         is AuthorWidgetType.VideoCreateDate -> {
@@ -117,11 +128,14 @@ private fun AuthorWidget(authorWidgetType: AuthorWidgetType) {
 }
 
 @Composable
-private fun ArticleWidget() {
+private fun ArticleWidget(onClickAct: (VideoWidgetClickAct) -> Unit = {}) {
     Row(
         modifier = Modifier
             .width(50.cdp)
-            .height(20.cdp),
+            .height(20.cdp)
+            .clickable {
+                onClickAct(VideoWidgetClickAct.ClickAuthorWidget(AuthorWidgetClickType.VideoChapterDetailList))
+            },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
@@ -146,12 +160,18 @@ private fun ArticleWidget() {
 
 
 @Composable
-private fun CreateTogetherWidget(createTogether: AuthorWidgetType.CreateTogether) {
+private fun CreateTogetherWidget(
+    createTogether: AuthorWidgetType.CreateTogether,
+    onClickAct: (VideoWidgetClickAct) -> Unit = {}
+) {
     Row(
         modifier = Modifier
             .wrapContentWidth()
             .wrapContentHeight()
-            .background(color = Color(0x66666666), shape = RoundedCornerShape(4.cdp)),
+            .background(color = Color(0x66666666), shape = RoundedCornerShape(4.cdp))
+            .clickable {
+                onClickAct(VideoWidgetClickAct.ClickAuthorWidget(AuthorWidgetClickType.CreateTogether))
+            },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
@@ -205,11 +225,14 @@ private fun LivePhotoWidget() {
 }
 
 @Composable
-private fun VideoChapterWidget() {
+private fun VideoChapterWidget(onClickAct: (VideoWidgetClickAct) -> Unit = {}) {
     Row(
         modifier = Modifier
             .width(52.cdp)
             .height(20.cdp)
+            .clickable {
+                onClickAct(VideoWidgetClickAct.ClickAuthorWidget(AuthorWidgetClickType.VideoChapterDetailList))
+            }
     ) {
         Spacer(modifier = Modifier.width(5.cdp))
         Image(
@@ -286,33 +309,42 @@ private fun AuthorVerificationWidget(authorVerificationType: AuthorVerificationT
 }
 
 @Composable
-private fun CreateTogetherAuthorList(authorList: List<LoginResponseBean>) {
+private fun CreateTogetherAuthorList(
+    authorList: List<LoginResponseBean>,
+    onClickAct: (VideoWidgetClickAct) -> Unit = {}
+) {
     Row(
         modifier = Modifier.wrapContentSize(),
         verticalAlignment = Alignment.Top
     ) {
         if (authorList.size <= 3) {
             authorList.forEach {
-                SingleAuthor(it)
+                SingleAuthor(it, onClickAct)
                 HorizontalDivider(3.cdp)
             }
         } else {
             authorList.take(3).forEach {
-                SingleAuthor(it)
+                SingleAuthor(it, onClickAct)
                 HorizontalDivider(3.cdp)
             }
             HorizontalDivider(8.cdp)
-            MoreAuthor()
+            MoreAuthor(onClickAct)
         }
     }
 }
 
 @Composable
-private fun SingleAuthor(author: LoginResponseBean) {
+private fun SingleAuthor(
+    author: LoginResponseBean,
+    onClickAvatar: (VideoWidgetClickAct) -> Unit = {}
+) {
     Column(
         modifier = Modifier
             .width(42.cdp)
-            .wrapContentHeight(),
+            .wrapContentHeight()
+            .clickable {
+                onClickAvatar(VideoWidgetClickAct.ClickCreateTogetherAuthorAvatar(author))
+            },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AsyncImage(
@@ -342,12 +374,17 @@ private fun SingleAuthor(author: LoginResponseBean) {
 }
 
 @Composable
-private fun MoreAuthor() {
+private fun MoreAuthor(
+    onClickAvatar: (VideoWidgetClickAct) -> Unit = {}
+) {
     Image(
         modifier = Modifier
             .size(30.cdp)
             .clip(shape = RoundedCornerShape(30.cdp))
-            .background(color = Color(0x10FFFFFF)),
+            .background(color = Color(0x10FFFFFF))
+            .clickable {
+                onClickAvatar(VideoWidgetClickAct.ClickCreateTogetherMore)
+            },
         painter = painterResource(R.drawable.video_author_more),
         contentScale = ContentScale.Crop,
         contentDescription = ""
