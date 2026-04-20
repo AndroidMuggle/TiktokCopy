@@ -1,6 +1,7 @@
 package com.muggle.tiktokcopy.ui.component.video
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.size
@@ -14,6 +15,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.muggle.tiktokcopy.R
+import com.muggle.tiktokcopy.business.home.intent.VideoWidgetClickAct
 import com.muggle.tiktokcopy.utils.cdp
 import com.muggle.tiktokcopy.utils.csp
 
@@ -24,10 +26,15 @@ import com.muggle.tiktokcopy.utils.csp
  */
 @Composable
 fun ShareWidget(
-    shareCountString: String = "0"
+    shareCountString: String = "0",
+    onClickAct: (VideoWidgetClickAct) -> Unit = {}
 ) {
     Column(
-        modifier = Modifier.size(56.cdp),
+        modifier = Modifier
+            .size(56.cdp)
+            .clickable {
+                onClickAct(VideoWidgetClickAct.ClickShareWidget)
+            },
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {

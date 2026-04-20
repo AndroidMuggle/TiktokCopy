@@ -22,6 +22,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.muggle.tiktokcopy.R
+import com.muggle.tiktokcopy.business.home.intent.VideoWidgetClickAct
 import com.muggle.tiktokcopy.ui.component.video.bean.LikeState
 import com.muggle.tiktokcopy.utils.cdp
 import com.muggle.tiktokcopy.utils.csp
@@ -34,7 +35,8 @@ import com.muggle.tiktokcopy.utils.csp
 @Composable
 fun LikeWidget(
     countString: String = "0",
-    likeState: LikeState = LikeState.Unlike
+    likeState: LikeState = LikeState.Unlike,
+    onClickAct: (VideoWidgetClickAct) -> Unit = {}
 ) {
 
     var curLikeState by remember {
@@ -82,7 +84,10 @@ fun LikeWidget(
                 Image(
                     modifier = Modifier
                         .size(40.cdp)
-                        .align(alignment = Alignment.TopCenter),
+                        .align(alignment = Alignment.TopCenter)
+                        .clickable {
+                            onClickAct(VideoWidgetClickAct.ClickLikeWidget(false))
+                        },
                     painter = painterResource(R.drawable.video_like_selected),
                     contentScale = ContentScale.Crop,
                     contentDescription = ""
@@ -95,7 +100,7 @@ fun LikeWidget(
                         .size(40.cdp)
                         .align(alignment = Alignment.TopCenter)
                         .clickable {
-                            curLikeState = LikeState.LikeChecking
+                            onClickAct(VideoWidgetClickAct.ClickLikeWidget(true))
                         },
                     painter = painterResource(R.drawable.video_like_unselect),
                     contentScale = ContentScale.Crop,

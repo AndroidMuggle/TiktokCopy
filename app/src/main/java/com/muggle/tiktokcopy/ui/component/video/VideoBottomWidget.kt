@@ -2,6 +2,7 @@ package com.muggle.tiktokcopy.ui.component.video
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -28,6 +29,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.muggle.tiktokcopy.R
+import com.muggle.tiktokcopy.business.home.bean.BottomWidgetClickType
+import com.muggle.tiktokcopy.business.home.intent.VideoWidgetClickAct
 import com.muggle.tiktokcopy.ui.component.video.bean.VideoBottomWidgetType
 import com.muggle.tiktokcopy.utils.cdp
 import com.muggle.tiktokcopy.utils.csp
@@ -38,33 +41,42 @@ import com.muggle.tiktokcopy.utils.csp
  * @desc
  */
 @Composable
-fun VideoBottomWidget(bottomWidgetType: VideoBottomWidgetType) {
+fun VideoBottomWidget(
+    bottomWidgetType: VideoBottomWidgetType,
+    onClickAct: (VideoWidgetClickAct) -> Unit = {}
+) {
     val curType by remember {
         mutableStateOf(bottomWidgetType)
     }
 
     when (curType) {
         is VideoBottomWidgetType.ListenMusic -> {
-            ListenMusicWidget(curType as VideoBottomWidgetType.ListenMusic)
+            ListenMusicWidget(curType as VideoBottomWidgetType.ListenMusic, onClickAct)
         }
 
         is VideoBottomWidgetType.RelativeSearch -> {
-            RelativeSearchWidget(curType as VideoBottomWidgetType.RelativeSearch)
+            RelativeSearchWidget(curType as VideoBottomWidgetType.RelativeSearch, onClickAct)
         }
 
         is VideoBottomWidgetType.VideoCollection -> {
-            VideoCollectionWidget(curType as VideoBottomWidgetType.VideoCollection)
+            VideoCollectionWidget(curType as VideoBottomWidgetType.VideoCollection, onClickAct)
         }
     }
 
 }
 
 @Composable
-private fun ListenMusicWidget(listenMusic: VideoBottomWidgetType.ListenMusic) {
+private fun ListenMusicWidget(
+    listenMusic: VideoBottomWidgetType.ListenMusic,
+    onClickAct: (VideoWidgetClickAct) -> Unit = {}
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .wrapContentHeight(),
+            .wrapContentHeight()
+            .clickable {
+                onClickAct(VideoWidgetClickAct.ClickVideoBottomWidget(BottomWidgetClickType.ListenMusic))
+            },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Row(
@@ -117,13 +129,19 @@ private fun ListenMusicWidget(listenMusic: VideoBottomWidgetType.ListenMusic) {
 }
 
 @Composable
-private fun RelativeSearchWidget(relativeSearch: VideoBottomWidgetType.RelativeSearch) {
+private fun RelativeSearchWidget(
+    relativeSearch: VideoBottomWidgetType.RelativeSearch,
+    onClickAct: (VideoWidgetClickAct) -> Unit = {}
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(42.cdp)
             .background(color = Color(0x66666666))
-            .padding(horizontal = 15.cdp),
+            .padding(horizontal = 15.cdp)
+            .clickable {
+                onClickAct(VideoWidgetClickAct.ClickVideoBottomWidget(BottomWidgetClickType.RelativeSearch))
+            },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -157,13 +175,19 @@ private fun RelativeSearchWidget(relativeSearch: VideoBottomWidgetType.RelativeS
 }
 
 @Composable
-private fun VideoCollectionWidget(videoCollection: VideoBottomWidgetType.VideoCollection) {
+private fun VideoCollectionWidget(
+    videoCollection: VideoBottomWidgetType.VideoCollection,
+    onClickAct: (VideoWidgetClickAct) -> Unit = {}
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(42.cdp)
             .background(color = Color(0xff111111))
-            .padding(horizontal = 15.cdp),
+            .padding(horizontal = 15.cdp)
+            .clickable {
+                onClickAct(VideoWidgetClickAct.ClickVideoBottomWidget(BottomWidgetClickType.VideoCollection))
+            },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -188,6 +212,8 @@ private fun VideoCollectionWidget(videoCollection: VideoBottomWidgetType.VideoCo
                 overflow = TextOverflow.Ellipsis
             )
         }
+
+        // TODO: 下一集展示 
         Image(
             modifier = Modifier.size(16.cdp),
             painter = painterResource(R.drawable.common_icon_right),

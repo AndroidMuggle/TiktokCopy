@@ -25,7 +25,7 @@ sealed interface VideoWidgetClickAct {
     /**
      * 点击喜欢按钮
      */
-    class ClickLikeWidget(val isCurLike: Boolean) : VideoWidgetClickAct
+    class ClickLikeWidget(val like: Boolean) : VideoWidgetClickAct
 
     /**
      * 点击视频评论
@@ -35,7 +35,7 @@ sealed interface VideoWidgetClickAct {
     /**
      * 点击添加收藏按钮
      */
-    class ClickAddToCollectWidget(val isCurCollect: Boolean) : VideoWidgetClickAct
+    class ClickAddToCollectWidget(val collect: Boolean) : VideoWidgetClickAct
 
     /**
      * 点击分享按钮

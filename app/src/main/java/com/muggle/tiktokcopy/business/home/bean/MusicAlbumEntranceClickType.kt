@@ -20,4 +20,9 @@ sealed interface MusicAlbumEntranceClickType {
      * 拍同款
      */
     object CreateSameVideo : MusicAlbumEntranceClickType
+
+    /**
+     * 听合集
+     */
+    object ListVideoCollection: MusicAlbumEntranceClickType
 }

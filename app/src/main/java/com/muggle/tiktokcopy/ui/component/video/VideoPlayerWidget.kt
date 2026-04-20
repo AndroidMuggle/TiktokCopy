@@ -49,6 +49,7 @@ import com.muggle.tiktokcopy.business.home.state.SingleVideoUiState
 import com.muggle.tiktokcopy.business.login.bean.LoginResponseBean
 import com.muggle.tiktokcopy.ui.component.video.bean.AuthorWidgetType
 import com.muggle.tiktokcopy.ui.component.video.bean.PlayerEventType
+import com.muggle.tiktokcopy.ui.component.video.bean.VideoBottomWidgetType
 import com.muggle.tiktokcopy.utils.VerticalDivider
 import com.muggle.tiktokcopy.utils.cdp
 import com.muggle.tiktokcopy.utils.csp
@@ -138,11 +139,21 @@ fun VideoPlayerWidget(
             }
             if (videoState.videoBottomWidgetType != null) {
                 VerticalDivider(8.cdp)
-                VideoBottomWidget(videoState.videoBottomWidgetType!!)
+                VideoBottomWidget(
+                    videoState.videoBottomWidgetType!!,
+                    onClickAct = {
+                        onReceiveWidgetClickAct(it)
+                    }
+                )
             }
             if (videoState.videoContentWarningType != null) {
                 VerticalDivider(8.cdp)
-                VideoContentWarningWidget(videoState.videoContentWarningType!!)
+                VideoContentWarningWidget(
+                    videoState.videoContentWarningType!!,
+                    onClickAct = {
+                        onReceiveWidgetClickAct(it)
+                    }
+                )
             }
             if (videoState.totalDurationMs > 15 * 1000) {
                 // TODO: 进度条处理，添加数据字段
@@ -158,19 +169,56 @@ fun VideoPlayerWidget(
                 .wrapContentSize()
                 .align(alignment = Alignment.BottomEnd),
         ) {
-            AuthorAvatarWidget()
+            AuthorAvatarWidget(
+                avatarUrl = videoState.author.avatar ?: "",
+                subscribeState = videoState.subscribeState,
+                onClickAct = {
+                    onReceiveWidgetClickAct(it)
+                }
+            )
             VerticalDivider(8.cdp)
-            LikeWidget()
+            LikeWidget(
+                countString = videoState.likeCountStr,
+                likeState = videoState.likeState,
+                onClickAct = {
+                    onReceiveWidgetClickAct(it)
+                })
             VerticalDivider(8.cdp)
-            CommentEntranceWidget()
+            CommentEntranceWidget(
+                commentCountStr = videoState.commentCountStr,
+                onClickAct = {
+                    onReceiveWidgetClickAct(it)
+                }
+            )
             VerticalDivider(8.cdp)
-            AddCollectWidget()
+            AddCollectWidget(
+                collectCountString = videoState.collectCountStr,
+                collectState = videoState.collectState,
+                onClickAct = {
+                    onReceiveWidgetClickAct(it)
+                }
+            )
             VerticalDivider(8.cdp)
-            ShareWidget()
+            ShareWidget(
+                shareCountString = videoState.shareCountStr,
+                onClickAct = {
+                    onReceiveWidgetClickAct(it)
+                }
+            )
             VerticalDivider(8.cdp)
-            MusicAlbumEntrance()
-            // TODO: 根据bottomWidgetType确认竖向padding
-            VerticalDivider(54.cdp)
+            MusicAlbumEntrance(
+                albumState = videoState.musicAlbumState,
+                onClickAct = {
+                    onReceiveWidgetClickAct(it)
+                }
+            )
+            VerticalDivider(
+                if (videoState.videoBottomWidgetType is VideoBottomWidgetType.ListenMusic) {
+                    0.cdp
+                } else {
+                    54.cdp
+                }
+            )
         }
     }
 }

@@ -31,6 +31,7 @@ data class SingleVideoUiState(
     val likeState: LikeState = LikeState.Unlike,
     val commentCountStr: String = "0",
     val isCommentBoardShowing: Boolean = false,
+    val collectCountStr: String = "",
     val collectState: CollectState = CollectState.Idle,
     val shareCountStr: String = "0",
     val shareBoardShowing: Boolean = false,

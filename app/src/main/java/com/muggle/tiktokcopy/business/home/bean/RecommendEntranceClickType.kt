@@ -14,7 +14,7 @@ sealed interface RecommendEntranceClickType {
     /**
      * 点击推荐给朋友
      */
-    class SelfRecommend(selfRecommendClickType: SelfRecommendClickType) : RecommendEntranceClickType
+    class SelfRecommend(val selfRecommendClickType: SelfRecommendClickType) : RecommendEntranceClickType
 
     /**
      * 其他人点击推荐

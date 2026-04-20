@@ -1,10 +1,10 @@
 package com.muggle.tiktokcopy.ui.component.video
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -22,6 +22,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.muggle.tiktokcopy.R
+import com.muggle.tiktokcopy.business.home.bean.VideoContentWarningWidgetClickType
+import com.muggle.tiktokcopy.business.home.intent.VideoWidgetClickAct
 import com.muggle.tiktokcopy.ui.component.video.bean.VideoContentWarningType
 import com.muggle.tiktokcopy.utils.cdp
 import com.muggle.tiktokcopy.utils.csp
@@ -32,29 +34,42 @@ import com.muggle.tiktokcopy.utils.csp
  * @desc
  */
 @Composable
-fun VideoContentWarningWidget(type: VideoContentWarningType) {
+fun VideoContentWarningWidget(
+    type: VideoContentWarningType,
+    onClickAct: (VideoWidgetClickAct) -> Unit = {}
+) {
     val curState by remember {
         mutableStateOf(type)
     }
 
     when (curState) {
         is VideoContentWarningType.AuthorWarning -> {
-            AuthorWarning(curState as VideoContentWarningType.AuthorWarning)
+            AuthorWarning(curState as VideoContentWarningType.AuthorWarning, onClickAct)
         }
 
         is VideoContentWarningType.ContentWarning -> {
-            ContentWarningWidget(curState as VideoContentWarningType.ContentWarning)
+            ContentWarningWidget(curState as VideoContentWarningType.ContentWarning, onClickAct)
         }
     }
 }
 
 @Composable
-private fun AuthorWarning(authorWarning: VideoContentWarningType.AuthorWarning) {
+private fun AuthorWarning(
+    authorWarning: VideoContentWarningType.AuthorWarning,
+    onClickAct: (VideoWidgetClickAct) -> Unit = {}
+) {
     Row(
         modifier = Modifier
             .wrapContentWidth()
             .wrapContentHeight()
-            .padding(start = 11.cdp),
+            .padding(start = 11.cdp)
+            .clickable {
+                onClickAct(
+                    VideoWidgetClickAct.ClickVideoContentWarningWidget(
+                        VideoContentWarningWidgetClickType.AuthorWarning
+                    )
+                )
+            },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
@@ -82,12 +97,22 @@ private fun AuthorWarning(authorWarning: VideoContentWarningType.AuthorWarning) 
 }
 
 @Composable
-private fun ContentWarningWidget(contentWarning: VideoContentWarningType.ContentWarning) {
+private fun ContentWarningWidget(
+    contentWarning: VideoContentWarningType.ContentWarning,
+    onClickAct: (VideoWidgetClickAct) -> Unit = {}
+) {
     Row(
         modifier = Modifier
             .wrapContentWidth()
             .wrapContentHeight()
-            .padding(start = 11.cdp),
+            .padding(start = 11.cdp)
+            .clickable {
+                onClickAct(
+                    VideoWidgetClickAct.ClickVideoContentWarningWidget(
+                        VideoContentWarningWidgetClickType.ContentWarning
+                    )
+                )
+            },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {

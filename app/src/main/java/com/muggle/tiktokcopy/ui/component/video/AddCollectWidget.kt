@@ -1,9 +1,7 @@
 package com.muggle.tiktokcopy.ui.component.video
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandIn
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -24,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import com.muggle.tiktokcopy.R
+import com.muggle.tiktokcopy.business.home.intent.VideoWidgetClickAct
 import com.muggle.tiktokcopy.ui.component.video.bean.CollectState
 import com.muggle.tiktokcopy.utils.cdp
 import com.muggle.tiktokcopy.utils.csp
@@ -36,7 +35,8 @@ import com.muggle.tiktokcopy.utils.csp
 @Composable
 fun AddCollectWidget(
     collectCountString: String = "0",
-    collectState: CollectState = CollectState.Idle
+    collectState: CollectState = CollectState.Idle,
+    onClickAct: (VideoWidgetClickAct) -> Unit = {}
 ) {
     var curCollectState by remember {
         mutableStateOf(collectState)
@@ -52,7 +52,6 @@ fun AddCollectWidget(
                         .size(40.cdp)
                         .align(alignment = Alignment.TopCenter)
                         .clickable {
-                            curCollectState = CollectState.CollectChecking
                         },
                     painter = painterResource(R.drawable.video_add_to_collect_selected),
                     contentScale = ContentScale.Crop,
@@ -92,7 +91,7 @@ fun AddCollectWidget(
                         .size(40.cdp)
                         .align(alignment = Alignment.TopCenter)
                         .clickable {
-                            curCollectState = CollectState.CollectChecking
+                            onClickAct(VideoWidgetClickAct.ClickAddToCollectWidget(false))
                         },
                     painter = painterResource(R.drawable.video_add_to_collect_selected),
                     contentScale = ContentScale.Crop,
@@ -106,7 +105,7 @@ fun AddCollectWidget(
                         .size(40.cdp)
                         .align(alignment = Alignment.TopCenter)
                         .clickable {
-                            curCollectState = CollectState.CollectChecking
+                            onClickAct(VideoWidgetClickAct.ClickAddToCollectWidget(true))
                         },
                     painter = painterResource(R.drawable.video_add_to_collect),
                     contentScale = ContentScale.Crop,

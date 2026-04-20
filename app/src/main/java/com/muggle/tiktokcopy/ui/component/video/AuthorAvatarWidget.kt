@@ -29,6 +29,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.muggle.tiktokcopy.R
+import com.muggle.tiktokcopy.business.home.bean.VideoAuthorAvatarClickType
+import com.muggle.tiktokcopy.business.home.intent.VideoWidgetClickAct
 import com.muggle.tiktokcopy.ui.component.video.bean.SubscribeState
 import com.muggle.tiktokcopy.utils.cdp
 
@@ -40,7 +42,8 @@ import com.muggle.tiktokcopy.utils.cdp
 @Composable
 fun AuthorAvatarWidget(
     avatarUrl: String = "",
-    subscribeState: SubscribeState = SubscribeState.Unsubscribe
+    subscribeState: SubscribeState = SubscribeState.Unsubscribe,
+    onClickAct: (VideoWidgetClickAct) -> Unit = {}
 ) {
 
     var curSubscribeState by remember {
@@ -91,6 +94,13 @@ fun AuthorAvatarWidget(
                             .clip(CircleShape)
                             .background(color = Color.White)
                             .padding(3.cdp)
+                            .clickable {
+                                onClickAct(
+                                    VideoWidgetClickAct.ClickAuthorAvatar(
+                                        VideoAuthorAvatarClickType.SendMessage
+                                    )
+                                )
+                            }
                             .align(alignment = Alignment.BottomCenter),
                         painter = painterResource(R.drawable.video_send_message),
                         contentScale = ContentScale.Crop,
@@ -146,7 +156,11 @@ fun AuthorAvatarWidget(
                             .size(20.cdp)
                             .align(alignment = Alignment.BottomCenter)
                             .clickable {
-                                curSubscribeState = SubscribeState.SubscribeChecked
+                                onClickAct(
+                                    VideoWidgetClickAct.ClickAuthorAvatar(
+                                        VideoAuthorAvatarClickType.Subscribe
+                                    )
+                                )
                             },
                         painter = painterResource(R.drawable.video_subscribe_author),
                         contentDescription = ""
@@ -179,6 +193,11 @@ fun AuthorAvatarWidget(
                             .background(color = Color.White, shape = CircleShape)
                             .align(alignment = Alignment.BottomCenter)
                             .clickable {
+                                onClickAct(
+                                    VideoWidgetClickAct.ClickAuthorAvatar(
+                                        VideoAuthorAvatarClickType.AuthorDetail
+                                    )
+                                )
                             },
                         painter = painterResource(R.drawable.video_subscribe_check),
                         contentDescription = ""

@@ -2,6 +2,7 @@ package com.muggle.tiktokcopy.ui.component.video
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
@@ -26,6 +27,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.muggle.tiktokcopy.R
+import com.muggle.tiktokcopy.business.home.bean.MusicAlbumEntranceClickType
+import com.muggle.tiktokcopy.business.home.intent.VideoWidgetClickAct
 import com.muggle.tiktokcopy.ui.component.video.bean.VideoAlbumState
 import com.muggle.tiktokcopy.utils.cdp
 import com.muggle.tiktokcopy.utils.csp
@@ -37,7 +40,8 @@ import com.muggle.tiktokcopy.utils.csp
  */
 @Composable
 fun MusicAlbumEntrance(
-    albumState: VideoAlbumState = VideoAlbumState.ListenVideo
+    albumState: VideoAlbumState = VideoAlbumState.ListenVideo,
+    onClickAct: (VideoWidgetClickAct) -> Unit = {}
 ) {
     val curState by remember {
         mutableStateOf(albumState)
@@ -52,7 +56,14 @@ fun MusicAlbumEntrance(
                 AsyncImage(
                     modifier = Modifier
                         .size(56.cdp)
-                        .clip(shape = CircleShape),
+                        .clip(shape = CircleShape)
+                        .clickable {
+                            onClickAct(
+                                VideoWidgetClickAct.ClickMusicAlbumEntrance(
+                                    MusicAlbumEntranceClickType.MusicDetail
+                                )
+                            )
+                        },
                     model = ImageRequest.Builder(LocalContext.current)
                         .data("")
                         .build(),
@@ -69,7 +80,14 @@ fun MusicAlbumEntrance(
                     modifier = Modifier
                         .size(56.cdp)
                         .align(alignment = Alignment.TopCenter)
-                        .clip(shape = CircleShape),
+                        .clip(shape = CircleShape)
+                        .clickable {
+                            onClickAct(
+                                VideoWidgetClickAct.ClickMusicAlbumEntrance(
+                                    MusicAlbumEntranceClickType.CreateSameVideo
+                                )
+                            )
+                        },
                     model = ImageRequest.Builder(LocalContext.current)
                         .data("")
                         .build(),
@@ -101,7 +119,14 @@ fun MusicAlbumEntrance(
 
                 Image(
                     modifier = Modifier
-                        .size(42.cdp),
+                        .size(42.cdp)
+                        .clickable {
+                            onClickAct(
+                                VideoWidgetClickAct.ClickMusicAlbumEntrance(
+                                    MusicAlbumEntranceClickType.ListenVideo
+                                )
+                            )
+                        },
                     painter = painterResource(R.drawable.video_listen_collection),
                     contentDescription = ""
                 )
@@ -120,7 +145,14 @@ fun MusicAlbumEntrance(
             VideoAlbumState.ListenVideoCollection -> {
                 Image(
                     modifier = Modifier
-                        .size(42.cdp),
+                        .size(42.cdp)
+                        .clickable {
+                            onClickAct(
+                                VideoWidgetClickAct.ClickMusicAlbumEntrance(
+                                    MusicAlbumEntranceClickType.ListVideoCollection
+                                )
+                            )
+                        },
                     painter = painterResource(R.drawable.video_listen_collection),
                     contentDescription = ""
                 )
