@@ -39,7 +39,7 @@ import com.muggle.tiktokcopy.business.home.intent.BottomNavigatorClickAct
 import com.muggle.tiktokcopy.business.home.state.BottomNavUiState
 import com.muggle.tiktokcopy.business.home.vm.BottomNavigatorVm
 import com.muggle.tiktokcopy.ui.component.common.constants.AppConst
-import com.muggle.tiktokcopy.ui.screen.HomePage
+import com.muggle.tiktokcopy.ui.screen.bean.HomePage
 import com.muggle.tiktokcopy.utils.cdp
 import com.muggle.tiktokcopy.utils.csp
 

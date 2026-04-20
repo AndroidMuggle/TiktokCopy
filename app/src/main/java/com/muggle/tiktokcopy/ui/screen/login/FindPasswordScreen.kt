@@ -1,4 +1,4 @@
-package com.muggle.tiktokcopy.business.login
+package com.muggle.tiktokcopy.ui.screen.login
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,7 +30,7 @@ import com.muggle.tiktokcopy.utils.cdp
 import com.muggle.tiktokcopy.utils.csp
 
 @Composable
-fun FindPasswordPage(findPasswordPageVm: FindPasswordPageVm = hiltViewModel()) {
+fun FindPasswordScreen(findPasswordPageVm: FindPasswordPageVm = hiltViewModel()) {
 
     val curState by remember {
         findPasswordPageVm.findPasswordUiState
@@ -97,6 +97,6 @@ fun FindPasswordPage(findPasswordPageVm: FindPasswordPageVm = hiltViewModel()) {
 
 @Preview
 @Composable
-fun PreviewFindPasswordPage() {
-    FindPasswordPage()
+fun PreviewFindPasswordScreen() {
+    FindPasswordScreen()
 }

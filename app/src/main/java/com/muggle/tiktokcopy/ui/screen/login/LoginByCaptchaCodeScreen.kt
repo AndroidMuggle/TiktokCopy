@@ -1,4 +1,4 @@
-package com.muggle.tiktokcopy.business.login
+package com.muggle.tiktokcopy.ui.screen.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -36,7 +36,7 @@ import com.muggle.tiktokcopy.utils.cdp
 import com.muggle.tiktokcopy.utils.csp
 
 @Composable
-fun LoginByCaptchaCodePage(loginByCaptchaCodeVm: LoginByCaptchaCodeVm = hiltViewModel()) {
+fun LoginByCaptchaCodeScreen(loginByCaptchaCodeVm: LoginByCaptchaCodeVm = hiltViewModel()) {
 
     val curState by remember {
         loginByCaptchaCodeVm.loginByCaptchaCodeUiState
@@ -147,5 +147,5 @@ fun SwitchToPasswordWidget(onClickLoginByPassword: () -> Unit = {}) {
 @Preview
 @Composable
 fun PreviewLoginByCaptchaCode() {
-    LoginByCaptchaCodePage()
+    LoginByCaptchaCodeScreen()
 }

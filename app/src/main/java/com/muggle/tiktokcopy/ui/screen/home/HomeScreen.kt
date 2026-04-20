@@ -1,4 +1,4 @@
-package com.muggle.tiktokcopy.ui.screen
+package com.muggle.tiktokcopy.ui.screen.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

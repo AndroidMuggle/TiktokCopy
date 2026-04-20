@@ -1,4 +1,4 @@
-package com.muggle.tiktokcopy.ui.screen
+package com.muggle.tiktokcopy.ui.screen.bean
 
 import kotlinx.serialization.Serializable
 

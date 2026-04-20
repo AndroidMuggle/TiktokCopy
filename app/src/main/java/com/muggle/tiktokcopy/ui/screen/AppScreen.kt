@@ -13,6 +13,16 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.muggle.tiktokcopy.ui.component.nav.BottomNavigator
+import com.muggle.tiktokcopy.ui.screen.bean.CreateVideoPage
+import com.muggle.tiktokcopy.ui.screen.bean.FriendPage
+import com.muggle.tiktokcopy.ui.screen.bean.HomePage
+import com.muggle.tiktokcopy.ui.screen.bean.MessagePage
+import com.muggle.tiktokcopy.ui.screen.bean.MinePage
+import com.muggle.tiktokcopy.ui.screen.home.CreateVideoScreen
+import com.muggle.tiktokcopy.ui.screen.home.FriendScreen
+import com.muggle.tiktokcopy.ui.screen.home.HomeScreen
+import com.muggle.tiktokcopy.ui.screen.home.MessageScreen
+import com.muggle.tiktokcopy.ui.screen.home.MineScreen
 import com.muggle.tiktokcopy.utils.cdp
 
 /**

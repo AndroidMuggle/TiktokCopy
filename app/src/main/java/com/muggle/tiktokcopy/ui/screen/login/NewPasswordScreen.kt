@@ -1,4 +1,4 @@
-package com.muggle.tiktokcopy.business.login
+package com.muggle.tiktokcopy.ui.screen.login
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -42,7 +42,7 @@ import com.muggle.tiktokcopy.utils.cdp
 import com.muggle.tiktokcopy.utils.csp
 
 @Composable
-fun NewPasswordPage(
+fun NewPasswordScreen(
     newPasswordVm: NewPasswordVm = hiltViewModel(),
 ) {
 
@@ -140,7 +140,7 @@ fun NewPasswordPage(
 
 @Preview
 @Composable
-fun PreviewNewPasswordPage() {
-    NewPasswordPage()
+fun PreviewNewPasswordScreen() {
+    NewPasswordScreen()
 }
 

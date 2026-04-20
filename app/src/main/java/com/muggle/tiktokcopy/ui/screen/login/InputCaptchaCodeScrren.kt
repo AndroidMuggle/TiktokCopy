@@ -1,4 +1,4 @@
-package com.muggle.tiktokcopy.business.login
+package com.muggle.tiktokcopy.ui.screen.login
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -43,7 +43,7 @@ import kotlinx.coroutines.delay
  * 输入验证码界面
  */
 @Composable
-fun InputCaptchaCodePage(inputCaptchaCodeVm: InputCaptchaCodeVm = hiltViewModel()) {
+fun InputCaptchaCodeScreen(inputCaptchaCodeVm: InputCaptchaCodeVm = hiltViewModel()) {
 
     val curState by remember {
         inputCaptchaCodeVm.inputCaptchaCodeUiState
@@ -201,6 +201,6 @@ fun SendMessageHint(phoneNumber: String = "") {
 
 @Preview
 @Composable
-fun PreviewInputCaptchaCodePage() {
-    InputCaptchaCodePage()
+fun PreviewInputCaptchaCodeScreen() {
+    InputCaptchaCodeScreen()
 }
