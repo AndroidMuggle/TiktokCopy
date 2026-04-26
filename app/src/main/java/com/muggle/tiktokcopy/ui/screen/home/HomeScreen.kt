@@ -1,7 +1,10 @@
 package com.muggle.tiktokcopy.ui.screen.home
 
+import android.util.Log
+import androidx.annotation.OptIn
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,11 +33,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavHostController
 import com.muggle.tiktokcopy.R
 import com.muggle.tiktokcopy.business.home.intent.ScrollTabClickAct
@@ -44,11 +46,13 @@ import com.muggle.tiktokcopy.business.home.vm.HomeScreenVm
 import com.muggle.tiktokcopy.business.home.vm.RecommendVideoVm
 import com.muggle.tiktokcopy.ui.component.video.ScrollableTabList
 import com.muggle.tiktokcopy.ui.component.video.VideoPlayerWidget
+import com.muggle.tiktokcopy.ui.component.video.bean.PlayerEventType
 import com.muggle.tiktokcopy.ui.component.video.bean.TabItemState
 import com.muggle.tiktokcopy.ui.screen.bean.HomeScreenTabType
 import com.muggle.tiktokcopy.utils.HorizontalDivider
 import com.muggle.tiktokcopy.utils.cdp
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 /**
@@ -73,6 +77,12 @@ fun HomeScreen(
         },
         onLongClickTab = {
             homeScreenVm.onReceiveScrollTabClickAct(ScrollTabClickAct.LongClickTab)
+        },
+        onClickSearch = {
+            homeScreenVm.onReceiveSearchClickAct()
+        },
+        onClickMoreMenu = {
+            homeScreenVm.onReceiveMoreMenuClickAct()
         }
     )
 }
@@ -82,7 +92,9 @@ internal fun HomeScreen(
     homeScreenUiState: HomeScreenUiState,
     onSelectTabChange: (Int) -> Unit = {},
     onRefreshTab: (Int) -> Unit = {},
-    onLongClickTab: () -> Unit = {}
+    onLongClickTab: () -> Unit = {},
+    onClickSearch: () -> Unit = {},
+    onClickMoreMenu: () -> Unit = {},
 ) {
     val curState by remember {
         mutableStateOf(homeScreenUiState)
@@ -146,11 +158,15 @@ internal fun HomeScreen(
                 .align(alignment = Alignment.TopCenter),
             horizontalArrangement = Arrangement.Absolute.Center
         ) {
+            // TODO 消息计数红点
             Image(
                 modifier = Modifier
                     .height(27.cdp)
                     .padding(top = 4.cdp)
-                    .wrapContentWidth(),
+                    .wrapContentWidth()
+                    .clickable {
+                        onClickMoreMenu()
+                    },
                 painter = painterResource(R.drawable.video_more_menu),
                 contentDescription = ""
             )
@@ -173,7 +189,10 @@ internal fun HomeScreen(
                 modifier = Modifier
                     .height(27.cdp)
                     .padding(top = 4.cdp)
-                    .wrapContentWidth(),
+                    .wrapContentWidth()
+                    .clickable {
+                        onClickSearch()
+                    },
                 painter = painterResource(R.drawable.video_search),
                 contentDescription = ""
             )
@@ -235,12 +254,13 @@ private fun PagerContent(
 /**
  * 推荐tab
  */
+@OptIn(UnstableApi::class)
 @Composable
 private fun RecommendTab(
     recommendVideoVm: RecommendVideoVm = hiltViewModel()
 ) {
 
-    val ctx = LocalContext.current
+    Log.i(TAG, "RecommendTab: compose start")
 
     val curState by recommendVideoVm.recommendTabVideoUiState.collectAsStateWithLifecycle()
 
@@ -249,31 +269,36 @@ private fun RecommendTab(
             curState.videoUiStateList.size
         }
     }
-    val pagerState = rememberPagerState(0) { pageCount }
 
-    val player = remember {
-        ExoPlayer.Builder(ctx).build()
+    val videoUiState by remember {
+        derivedStateOf {
+            curState.videoUiStateList[curState.selectIndex]
+        }
     }
 
-    LaunchedEffect(pagerState) {
+    val pagerState = rememberPagerState(curState.selectIndex) { pageCount }
+
+    LaunchedEffect(Unit) {
         snapshotFlow {
-            pagerState.currentPage
-        }.collect {
-            // TODO: 添加切换视频的逻辑
-        }
+            pagerState.settledPage
+        }.distinctUntilChanged()
+            .collect {
+                Log.i(TAG, "RecommendTab: pagerState.settledPage = ${pagerState.settledPage}")
+                recommendVideoVm.onReceivePlayerEvent(PlayerEventType.CurrentPageChange(it))
+            }
     }
 
     VerticalPager(
         modifier = Modifier
             .height(760.cdp)
             .fillMaxWidth()
-            .background(color = Color.Red),
-        state = pagerState
+            .background(color = Color.Black),
+        state = pagerState,
     ) {
+        Log.i(TAG, "RecommendTab: VerticalPager compose start it = $it")
         VideoPlayerWidget(
-            player = player,
             contentScale = ContentScale.FillWidth,
-            singleVideoUiState = curState.videoUiStateList[pagerState.currentPage],
+            singleVideoUiState = videoUiState,
             onPlayerCallback = {
                 recommendVideoVm.onReceivePlayerEvent(it)
             },
@@ -467,3 +492,5 @@ fun getTabItemList(): SnapshotStateList<SingleTabUiState> {
         )
     }
 }
+
+private const val TAG = "HomeScreen"

@@ -1,6 +1,7 @@
 package com.muggle.tiktokcopy.ui.component.video
 
 import android.text.TextUtils
+import android.util.Log
 import androidx.annotation.OptIn
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -24,23 +25,24 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
+import androidx.media3.common.Player.REPEAT_MODE_ALL
 import androidx.media3.common.Timeline
 import androidx.media3.common.VideoSize
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.DefaultRenderersFactory
+import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.compose.ContentFrame
 import coil3.compose.AsyncImage
 import com.muggle.tiktokcopy.R
@@ -61,16 +63,13 @@ import com.muggle.tiktokcopy.utils.csp
  */
 @Composable
 fun VideoPlayerWidget(
-    player: Player,
     contentScale: ContentScale,
     singleVideoUiState: SingleVideoUiState,
     onPlayerCallback: (PlayerEventType) -> Unit = {},
     onReceiveWidgetClickAct: (VideoWidgetClickAct) -> Unit = {}
 ) {
 
-    val videoState by remember {
-        mutableStateOf(singleVideoUiState)
-    }
+    Log.i(TAG, "VideoPlayerWidget compose start: singleVideoUiState = $singleVideoUiState")
 
     Box(
         modifier = Modifier
@@ -78,11 +77,12 @@ fun VideoPlayerWidget(
             .height(760.cdp)
     ) {
         VideoPlayer(
-            player = player,
             contentScale = contentScale,
-            videoUrl = videoState.videoUrl,
-            videoCoverUrl = videoState.videoCoverUrl,
+            videoUrl = singleVideoUiState.videoUrl,
+            videoCoverUrl = singleVideoUiState.videoCoverUrl,
+            playing = singleVideoUiState.isPlaying,
             onPlayerCallback = {
+                Log.i(TAG, "VideoPlayerWidget: onPlayerCallback it = $it")
                 onPlayerCallback(it)
             }
         )
@@ -131,31 +131,31 @@ fun VideoPlayerWidget(
                         onReceiveWidgetClickAct(it)
                     }
                 )
-                if (!TextUtils.isEmpty(videoState.videoContentDesc)) {
+                if (!TextUtils.isEmpty(singleVideoUiState.videoContentDesc)) {
                     // TODO 点击事件
                     VerticalDivider(8.cdp)
-                    VideoContentDesc(videoState.videoContentDesc)
+                    VideoContentDesc(singleVideoUiState.videoContentDesc)
                 }
             }
-            if (videoState.videoBottomWidgetType != null) {
+            if (singleVideoUiState.videoBottomWidgetType != null) {
                 VerticalDivider(8.cdp)
                 VideoBottomWidget(
-                    videoState.videoBottomWidgetType!!,
+                    singleVideoUiState.videoBottomWidgetType!!,
                     onClickAct = {
                         onReceiveWidgetClickAct(it)
                     }
                 )
             }
-            if (videoState.videoContentWarningType != null) {
+            if (singleVideoUiState.videoContentWarningType != null) {
                 VerticalDivider(8.cdp)
                 VideoContentWarningWidget(
-                    videoState.videoContentWarningType!!,
+                    singleVideoUiState.videoContentWarningType!!,
                     onClickAct = {
                         onReceiveWidgetClickAct(it)
                     }
                 )
             }
-            if (videoState.totalDurationMs > 15 * 1000) {
+            if (singleVideoUiState.totalDurationMs > 15 * 1000) {
                 // TODO: 进度条处理，添加数据字段
                 VerticalDivider(8.cdp)
                 VideoProgressWidget(chapterSecList = listOf(5, 26, 78, 93))
@@ -170,50 +170,50 @@ fun VideoPlayerWidget(
                 .align(alignment = Alignment.BottomEnd),
         ) {
             AuthorAvatarWidget(
-                avatarUrl = videoState.author.avatar ?: "",
-                subscribeState = videoState.subscribeState,
+                avatarUrl = singleVideoUiState.author?.avatar ?: "",
+                subscribeState = singleVideoUiState.subscribeState,
                 onClickAct = {
                     onReceiveWidgetClickAct(it)
                 }
             )
             VerticalDivider(8.cdp)
             LikeWidget(
-                countString = videoState.likeCountStr,
-                likeState = videoState.likeState,
+                countString = singleVideoUiState.likeCountStr,
+                likeState = singleVideoUiState.likeState,
                 onClickAct = {
                     onReceiveWidgetClickAct(it)
                 })
             VerticalDivider(8.cdp)
             CommentEntranceWidget(
-                commentCountStr = videoState.commentCountStr,
+                commentCountStr = singleVideoUiState.commentCountStr,
                 onClickAct = {
                     onReceiveWidgetClickAct(it)
                 }
             )
             VerticalDivider(8.cdp)
             AddCollectWidget(
-                collectCountString = videoState.collectCountStr,
-                collectState = videoState.collectState,
+                collectCountString = singleVideoUiState.collectCountStr,
+                collectState = singleVideoUiState.collectState,
                 onClickAct = {
                     onReceiveWidgetClickAct(it)
                 }
             )
             VerticalDivider(8.cdp)
             ShareWidget(
-                shareCountString = videoState.shareCountStr,
+                shareCountString = singleVideoUiState.shareCountStr,
                 onClickAct = {
                     onReceiveWidgetClickAct(it)
                 }
             )
             VerticalDivider(8.cdp)
             MusicAlbumEntrance(
-                albumState = videoState.musicAlbumState,
+                albumState = singleVideoUiState.musicAlbumState,
                 onClickAct = {
                     onReceiveWidgetClickAct(it)
                 }
             )
             VerticalDivider(
-                if (videoState.videoBottomWidgetType is VideoBottomWidgetType.ListenMusic) {
+                if (singleVideoUiState.videoBottomWidgetType is VideoBottomWidgetType.ListenMusic) {
                     0.cdp
                 } else {
                     54.cdp
@@ -226,14 +226,25 @@ fun VideoPlayerWidget(
 @OptIn(UnstableApi::class)
 @Composable
 private fun BoxScope.VideoPlayer(
-    player: Player,
     contentScale: ContentScale,
     videoUrl: String = "",
     videoCoverUrl: String = "",
+    playing: Boolean = false,
     onPlayerCallback: (PlayerEventType) -> Unit = {}
 ) {
+    Log.i(TAG, "VideoPlayer compose start: playing = $playing")
 
-    val playerListener = remember {
+    val ctx = LocalContext.current
+
+    val player = remember {
+        ExoPlayer.Builder(ctx).setRenderersFactory(
+            DefaultRenderersFactory(ctx).apply {
+                setEnableDecoderFallback(true)
+            }
+        ).build()
+    }
+
+    val curPlayerListener = remember {
         object : Player.Listener {
             override fun onEvents(
                 player: Player,
@@ -246,10 +257,14 @@ private fun BoxScope.VideoPlayer(
             override fun onPlaybackStateChanged(playbackState: Int) {
                 super.onPlaybackStateChanged(playbackState)
                 onPlayerCallback(PlayerEventType.PlayBackStateChange(playbackState))
+                if (playbackState == Player.STATE_READY) {
+                    player.playWhenReady = true
+                }
             }
 
             override fun onIsPlayingChanged(isPlaying: Boolean) {
                 super.onIsPlayingChanged(isPlaying)
+                Log.i(TAG, "onIsPlayingChanged: isPlaying = $isPlaying")
                 onPlayerCallback(PlayerEventType.IsPlayingChanged(isPlaying))
             }
 
@@ -298,7 +313,7 @@ private fun BoxScope.VideoPlayer(
 
             override fun onIsLoadingChanged(isLoading: Boolean) {
                 super.onIsLoadingChanged(isLoading)
-                onPlayerCallback(PlayerEventType.IsPlayingChanged(isLoading))
+                onPlayerCallback(PlayerEventType.IsLoadingChanged(isLoading))
             }
 
             override fun onPlayerErrorChanged(error: PlaybackException?) {
@@ -328,22 +343,19 @@ private fun BoxScope.VideoPlayer(
         }
     }
 
-    val curPlayerListener = remember {
-        playerListener
-    }
-
-    var isPlaying by remember {
-        mutableStateOf(false)
-    }
-
-    DisposableEffect(player) {
+    DisposableEffect(Unit) {
         player.addListener(curPlayerListener)
         onDispose {
+            Log.i(TAG, "VideoPlayer: onDispose")
+            player.stop()
             player.removeListener(curPlayerListener)
+            player.release()
         }
     }
 
-    LaunchedEffect(videoUrl) {
+    LaunchedEffect(Unit) {
+        Log.i(TAG, "VideoPlayer: init MediaItem,videoUrl = $videoUrl")
+        player.clearMediaItems()
         player.setMediaItem(MediaItem.fromUri(videoUrl))
         player.prepare()
     }
@@ -357,8 +369,8 @@ private fun BoxScope.VideoPlayer(
             .fillMaxWidth()
             .height(760.cdp)
             .clickable {
-                isPlaying = !isPlaying
-                if (isPlaying) {
+                Log.i(TAG, "VideoPlayer: click playing = $playing")
+                if (playing) {
                     player.pause()
                 } else {
                     player.play()
@@ -367,7 +379,9 @@ private fun BoxScope.VideoPlayer(
     ) {
         ContentFrame(
             modifier = Modifier.fillMaxSize(),
-            player = player,
+            player = player.apply {
+                repeatMode = REPEAT_MODE_ALL
+            },
             contentScale = contentScale,
             shutter = {
                 AsyncImage(
@@ -379,14 +393,14 @@ private fun BoxScope.VideoPlayer(
             }
         )
 
-        if (!isPlaying) {
+        if (!playing) {
             Image(
                 modifier = Modifier
                     .align(alignment = Alignment.Center)
                     .size(66.cdp),
                 painter = painterResource(R.drawable.video_play_icon),
                 contentDescription = "",
-                alpha = 0.2f
+                alpha = 0.8f
             )
         }
 
@@ -395,7 +409,7 @@ private fun BoxScope.VideoPlayer(
                 .wrapContentSize()
                 .align(Alignment.TopCenter)
         ) {
-            Spacer(modifier = Modifier.height(476.cdp))
+            Spacer(modifier = Modifier.height(506.cdp))
 
             Row(
                 modifier = Modifier
@@ -486,3 +500,5 @@ private fun createAuthorList(): List<LoginResponseBean> {
         )
     }
 }
+
+private const val TAG = "VideoPlayerWidget"

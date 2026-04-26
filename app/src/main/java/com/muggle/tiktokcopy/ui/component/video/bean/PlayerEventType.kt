@@ -90,4 +90,7 @@ sealed interface PlayerEventType {
      *
      */
     object RenderedFirstFrame : PlayerEventType
+
+
+    class CurrentPageChange(val index: Int) : PlayerEventType
 }

@@ -1,5 +1,6 @@
 package com.muggle.tiktokcopy.business.home.vm
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.muggle.tiktokcopy.business.home.intent.VideoPlayAct
 import com.muggle.tiktokcopy.business.home.intent.VideoWidgetClickAct
@@ -9,6 +10,7 @@ import com.muggle.tiktokcopy.ui.component.video.bean.PlayerEventType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 /**
@@ -24,103 +26,116 @@ class RecommendVideoVm @Inject constructor(private val repo: HomeScreenRepo) : V
     fun onReceiveVideoPlayAct(videoPlayAct: VideoPlayAct) {
         when (videoPlayAct) {
             is VideoPlayAct.ChangeControlLayerVisibility -> {
-                TODO()
+                //TODO()
             }
 
             is VideoPlayAct.ChangePlaySpeed -> {
-                TODO()
+                //TODO()
             }
 
             is VideoPlayAct.ChangeScreenIntensity -> {
-                TODO()
+                //TODO()
             }
 
             is VideoPlayAct.ChangeVolumeValue -> {
-                TODO()
+                //TODO()
             }
 
             VideoPlayAct.ClickAutoPlayNext -> {
-                TODO()
+                //TODO()
             }
 
             is VideoPlayAct.ClickAutoRotate -> {
-                TODO()
+                //TODO()
             }
 
             VideoPlayAct.ClickBackendAudioSetting -> {
-                TODO()
+                //TODO()
             }
 
             VideoPlayAct.ClickBackendWindowSetting -> {
-                TODO()
+                //TODO()
             }
 
             VideoPlayAct.ClickCacheVideo -> {
-                TODO()
+                //TODO()
             }
 
             VideoPlayAct.ClickCloseTimer -> {
-                TODO()
+                //TODO()
             }
 
             VideoPlayAct.ClickDanmakuSetting -> {
-                TODO()
+                //TODO()
             }
 
             is VideoPlayAct.ClickDanmakuSwitch -> {
-                TODO()
+                //TODO()
             }
 
             VideoPlayAct.ClickFeedback -> {
-                TODO()
+                //TODO()
             }
 
             VideoPlayAct.ClickMore -> {
-                TODO()
+                //TODO()
             }
 
             VideoPlayAct.ClickOpenOnOtherDevice -> {
-                TODO()
+                //TODO()
             }
 
             VideoPlayAct.ClickPauseWhenFinish -> {
-                TODO()
+                //TODO()
             }
 
             VideoPlayAct.ClickReplayOnFinish -> {
-                TODO()
+                //TODO()
             }
 
             is VideoPlayAct.ClickSendDanmaku -> {
-                TODO()
+                //TODO()
             }
 
             VideoPlayAct.ClickSpeedText -> {
-                TODO()
+                //TODO()
             }
 
             VideoPlayAct.ClickTvMirror -> {
-                TODO()
+                //TODO()
             }
 
             VideoPlayAct.ClickUninterest -> {
-                TODO()
+                //TODO()
             }
 
             VideoPlayAct.ClickWatchLater -> {
-                TODO()
+                //TODO()
             }
 
             VideoPlayAct.PauseVideo -> {
-                TODO()
+                _recommendTabVideoUiState.update {
+                    it.copy(
+                        videoUiStateList = it.videoUiStateList.apply {
+                            set(it.selectIndex, get(it.selectIndex).copy(isPlaying = false))
+                        }
+                    )
+                }
+                Log.i(TAG, "onReceiveVideoPlayAct: ")
             }
 
             VideoPlayAct.PlayVideo -> {
-                TODO()
+                _recommendTabVideoUiState.update {
+                    it.copy(
+                        videoUiStateList = it.videoUiStateList.apply {
+                            set(it.selectIndex, get(it.selectIndex).copy(isPlaying = true))
+                        }
+                    )
+                }
             }
 
             is VideoPlayAct.SwitchOrientation -> {
-                TODO()
+                //TODO()
             }
         }
     }
@@ -128,126 +143,173 @@ class RecommendVideoVm @Inject constructor(private val repo: HomeScreenRepo) : V
     fun onReceiveWidgetClickAct(videoWidgetClickAct: VideoWidgetClickAct) {
         when (videoWidgetClickAct) {
             is VideoWidgetClickAct.ClickAddToCollectWidget -> {
-                TODO()
+                //TODO()
             }
 
             is VideoWidgetClickAct.ClickAuthorAvatar -> {
-                TODO()
+                //TODO()
             }
 
             VideoWidgetClickAct.ClickAuthorName -> {
-                TODO()
+                //TODO()
             }
 
             is VideoWidgetClickAct.ClickAuthorWidget -> {
-                TODO()
+                //TODO()
             }
 
             is VideoWidgetClickAct.ClickCreateTogetherAuthorAvatar -> {
-                TODO()
+                //TODO()
             }
 
             VideoWidgetClickAct.ClickCreateTogetherMore -> {
-                TODO()
+                //TODO()
             }
 
             VideoWidgetClickAct.ClickDanmakuEditEntrance -> {
-                TODO()
+                //TODO()
             }
 
             VideoWidgetClickAct.ClickDrawerMenu -> {
-                TODO()
+                //TODO()
             }
 
             is VideoWidgetClickAct.ClickLikeWidget -> {
-                TODO()
+                //TODO()
             }
 
             is VideoWidgetClickAct.ClickMusicAlbumEntrance -> {
-                TODO()
+                //TODO()
             }
 
             is VideoWidgetClickAct.ClickRecommendEntrance -> {
-                TODO()
+                //TODO()
             }
 
             VideoWidgetClickAct.ClickSearchIcon -> {
-                TODO()
+                //TODO()
             }
 
             VideoWidgetClickAct.ClickShareWidget -> {
-                TODO()
+                //TODO()
             }
 
             is VideoWidgetClickAct.ClickVideoBottomWidget -> {
-                TODO()
+                //TODO()
             }
 
             VideoWidgetClickAct.ClickVideoCommentEntrance -> {
-                TODO()
+                //TODO()
             }
 
             is VideoWidgetClickAct.ClickVideoContentWarningWidget -> {
-                TODO()
+                //TODO()
             }
 
             is VideoWidgetClickAct.ClickVideoRelativeWidget -> {
-                TODO()
+                //TODO()
             }
 
             is VideoWidgetClickAct.LongClickVideoProgressWidget -> {
-                TODO()
+                //TODO()
             }
         }
     }
 
     fun onReceivePlayerEvent(playerEventType: PlayerEventType) {
+        Log.i(TAG, "onReceivePlayerEvent: playerEventType = $playerEventType")
         when (playerEventType) {
             is PlayerEventType.DeviceVolumeChanged -> {
-                TODO()
+                //TODO()
             }
+
             is PlayerEventType.Event -> {
-                TODO()
+                //TODO()
             }
+
             is PlayerEventType.IsLoadingChanged -> {
-                TODO()
+                //TODO()
             }
+
             is PlayerEventType.IsPlayingChanged -> {
-                TODO()
+                _recommendTabVideoUiState.update {
+                    it.copy(
+                        videoUiStateList = it.videoUiStateList.apply {
+                            set(
+                                it.selectIndex,
+                                get(it.selectIndex).copy(isPlaying = playerEventType.isPlaying)
+                            )
+                        }
+                    )
+                }
+                Log.i(
+                    TAG,
+                    "onReceivePlayerEvent: videoUiStateList[0] = ${_recommendTabVideoUiState.value.videoUiStateList[0]}"
+                )
             }
+
             is PlayerEventType.PlayBackStateChange -> {
-                TODO()
+                //TODO()
             }
+
             is PlayerEventType.PlayWhenReadyChanged -> {
-                TODO()
+                //TODO()
             }
+
             is PlayerEventType.PlayerError -> {
-                TODO()
+                //TODO()
             }
+
             is PlayerEventType.PlayerErrorChanged -> {
-                TODO()
+                //TODO()
             }
+
             is PlayerEventType.PositionDiscontinuity -> {
-                TODO()
+                //TODO()
             }
+
             PlayerEventType.RenderedFirstFrame -> {
-                TODO()
+                //TODO()
             }
+
             is PlayerEventType.RepeatModeChanged -> {
-                TODO()
+                //TODO()
             }
+
             is PlayerEventType.SurfaceSizeChanged -> {
-                TODO()
+//                //TODO()
             }
+
             is PlayerEventType.TimelineChanged -> {
-                TODO()
+                //TODO()
             }
+
             is PlayerEventType.VideoSizeChanged -> {
-                TODO()
+                //TODO()
             }
+
             is PlayerEventType.VolumeChanged -> {
-                TODO()
+                //TODO()
+            }
+
+            is PlayerEventType.CurrentPageChange -> {
+                _recommendTabVideoUiState.update {
+                    it.copy(
+                        selectIndex = playerEventType.index,
+//                        videoUiStateList = it.videoUiStateList.apply {
+//                            set(
+//                                playerEventType.index,
+//                                get(playerEventType.index).copy(isPlaying = false)
+//                            )
+//                        }
+                    )
+                }
+                Log.i(TAG, "onReceivePlayerEvent: playerEventType.index = ${playerEventType.index}")
             }
         }
+    }
+
+    companion object {
+        private const val TAG = "RecommendVideoVm"
     }
 }

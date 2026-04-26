@@ -2,8 +2,6 @@ package com.muggle.tiktokcopy.business.home.vm
 
 import androidx.lifecycle.ViewModel
 import com.muggle.tiktokcopy.business.home.intent.ScrollTabClickAct
-import com.muggle.tiktokcopy.business.home.intent.VideoPlayAct
-import com.muggle.tiktokcopy.business.home.intent.VideoWidgetClickAct
 import com.muggle.tiktokcopy.business.home.repo.HomeScreenRepo
 import com.muggle.tiktokcopy.business.home.state.HomeScreenUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -48,5 +46,13 @@ class HomeScreenVm @Inject constructor(private val repo: HomeScreenRepo) : ViewM
                 TODO()
             }
         }
+    }
+
+    fun onReceiveSearchClickAct() {
+        // TODO:
+    }
+
+    fun onReceiveMoreMenuClickAct() {
+        // TODO:
     }
 }
