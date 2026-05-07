@@ -295,8 +295,12 @@ private fun RecommendTab(
             .background(color = Color.Black),
         state = pagerState,
     ) {
-        Log.i(TAG, "RecommendTab: VerticalPager compose start it = $it")
+        Log.i(
+            TAG,
+            "RecommendTab: VerticalPager compose start it = $it,settledPage = ${pagerState.settledPage},selectIndex = ${curState.selectIndex}"
+        )
         VideoPlayerWidget(
+            autoPlay = it == curState.selectIndex,
             contentScale = ContentScale.FillWidth,
             singleVideoUiState = videoUiState,
             onPlayerCallback = {

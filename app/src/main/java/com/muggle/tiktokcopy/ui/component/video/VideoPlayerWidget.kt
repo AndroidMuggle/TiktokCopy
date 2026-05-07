@@ -25,7 +25,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,6 +38,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
@@ -63,13 +70,18 @@ import com.muggle.tiktokcopy.utils.csp
  */
 @Composable
 fun VideoPlayerWidget(
-    contentScale: ContentScale,
+    autoPlay: Boolean = false,
+    contentScale: ContentScale = ContentScale.FillWidth,
     singleVideoUiState: SingleVideoUiState,
     onPlayerCallback: (PlayerEventType) -> Unit = {},
     onReceiveWidgetClickAct: (VideoWidgetClickAct) -> Unit = {}
 ) {
 
-    Log.i(TAG, "VideoPlayerWidget compose start: singleVideoUiState = $singleVideoUiState")
+    Log.i(
+        TAG,
+        "VideoPlayerWidget compose start: singleVideoUiState = $singleVideoUiState," +
+                "autoPlay = $autoPlay"
+    )
 
     Box(
         modifier = Modifier
@@ -77,6 +89,7 @@ fun VideoPlayerWidget(
             .height(760.cdp)
     ) {
         VideoPlayer(
+            autoPlay = autoPlay,
             contentScale = contentScale,
             videoUrl = singleVideoUiState.videoUrl,
             videoCoverUrl = singleVideoUiState.videoCoverUrl,
@@ -226,22 +239,44 @@ fun VideoPlayerWidget(
 @OptIn(UnstableApi::class)
 @Composable
 private fun BoxScope.VideoPlayer(
-    contentScale: ContentScale,
+    autoPlay: Boolean = false,
+    contentScale: ContentScale = ContentScale.FillWidth,
     videoUrl: String = "",
     videoCoverUrl: String = "",
     playing: Boolean = false,
     onPlayerCallback: (PlayerEventType) -> Unit = {}
 ) {
-    Log.i(TAG, "VideoPlayer compose start: playing = $playing")
+    Log.i(TAG, "VideoPlayer compose start: playing = $playing,autoPlay = $autoPlay")
 
     val ctx = LocalContext.current
+
+    val lifecycleOwer = LocalLifecycleOwner.current
 
     val player = remember {
         ExoPlayer.Builder(ctx).setRenderersFactory(
             DefaultRenderersFactory(ctx).apply {
                 setEnableDecoderFallback(true)
             }
-        ).build()
+        ).build().apply {
+//            playWhenReady = autoPlay
+        }
+    }
+
+    val isAutoPlay by remember {
+        derivedStateOf {
+            autoPlay
+        }
+    }
+
+    var isPlayerReady by remember {
+        mutableStateOf(false)
+    }
+
+    LaunchedEffect(lifecycleOwer, isAutoPlay, isPlayerReady) {
+        Log.i(TAG, "VideoPlayer: init MediaItem,videoUrl = $videoUrl")
+        player.clearMediaItems()
+        player.setMediaItem(MediaItem.fromUri(videoUrl))
+        player.prepare()
     }
 
     val curPlayerListener = remember {
@@ -258,7 +293,13 @@ private fun BoxScope.VideoPlayer(
                 super.onPlaybackStateChanged(playbackState)
                 onPlayerCallback(PlayerEventType.PlayBackStateChange(playbackState))
                 if (playbackState == Player.STATE_READY) {
-                    player.playWhenReady = true
+                    isPlayerReady = true
+                    if (lifecycleOwer.lifecycle.currentState.isAtLeast(
+                            Lifecycle.State.RESUMED
+                        ) && isAutoPlay
+                    ) {
+                        player.playWhenReady = true
+                    }
                 }
             }
 
@@ -344,24 +385,46 @@ private fun BoxScope.VideoPlayer(
     }
 
     DisposableEffect(Unit) {
+        Log.i(TAG, "VideoPlayer: init MediaItem,videoUrl = $videoUrl")
+
         player.addListener(curPlayerListener)
+
+        player.clearMediaItems()
+        player.setMediaItem(MediaItem.fromUri(videoUrl))
+        player.prepare()
+
+        val lifecycleObserver = LifecycleEventObserver { source, event ->
+            Log.i(TAG, "VideoPlayer: source = $source,event = $event")
+            when (event) {
+                Lifecycle.Event.ON_RESUME -> {
+                    if (isPlayerReady && autoPlay) {
+                        player.prepare()
+                        player.playWhenReady = true
+                    }
+                }
+
+                Lifecycle.Event.ON_PAUSE -> {
+                    player.pause()
+                    player.playWhenReady = false
+                }
+
+                else -> {
+                    Log.i(TAG, "VideoPlayer: event = $event")
+                }
+            }
+        }
+
+        lifecycleOwer.lifecycle.addObserver(lifecycleObserver)
+
         onDispose {
             Log.i(TAG, "VideoPlayer: onDispose")
             player.stop()
             player.removeListener(curPlayerListener)
-            player.release()
+            if (!player.isReleased) {
+                player.release()
+            }
+            lifecycleOwer.lifecycle.removeObserver(lifecycleObserver)
         }
-    }
-
-    LaunchedEffect(Unit) {
-        Log.i(TAG, "VideoPlayer: init MediaItem,videoUrl = $videoUrl")
-        player.clearMediaItems()
-        player.setMediaItem(MediaItem.fromUri(videoUrl))
-        player.prepare()
-    }
-
-    LaunchedEffect(Unit) {
-
     }
 
     Box(

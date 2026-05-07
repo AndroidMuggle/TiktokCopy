@@ -294,14 +294,16 @@ class RecommendVideoVm @Inject constructor(private val repo: HomeScreenRepo) : V
 
             is PlayerEventType.CurrentPageChange -> {
                 _recommendTabVideoUiState.update {
+                    val oldIndex = it.selectIndex
                     it.copy(
                         selectIndex = playerEventType.index,
-//                        videoUiStateList = it.videoUiStateList.apply {
-//                            set(
-//                                playerEventType.index,
-//                                get(playerEventType.index).copy(isPlaying = false)
-//                            )
-//                        }
+                        videoUiStateList = it.videoUiStateList.apply {
+                            set(oldIndex, get(playerEventType.index).copy(isPlaying = false))
+                            set(
+                                playerEventType.index,
+                                get(playerEventType.index).copy(isPlaying = false)
+                            )
+                        }
                     )
                 }
                 Log.i(TAG, "onReceivePlayerEvent: playerEventType.index = ${playerEventType.index}")
