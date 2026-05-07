@@ -25,10 +25,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -262,17 +262,14 @@ private fun BoxScope.VideoPlayer(
         }
     }
 
-    val isAutoPlay by remember {
-        derivedStateOf {
-            autoPlay
-        }
-    }
+    val isAutoPlay by rememberUpdatedState(autoPlay)
+
 
     var isPlayerReady by remember {
         mutableStateOf(false)
     }
 
-    LaunchedEffect(lifecycleOwer, isAutoPlay, isPlayerReady) {
+    LaunchedEffect(isAutoPlay) {
         Log.i(TAG, "VideoPlayer: init MediaItem,videoUrl = $videoUrl")
         player.clearMediaItems()
         player.setMediaItem(MediaItem.fromUri(videoUrl))
