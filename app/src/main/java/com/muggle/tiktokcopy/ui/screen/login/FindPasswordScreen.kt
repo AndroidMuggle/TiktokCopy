@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.muggle.tiktokcopy.R
 import com.muggle.tiktokcopy.business.login.intent.FindPasswordEvent
 import com.muggle.tiktokcopy.business.login.vm.FindPasswordPageVm
@@ -32,9 +33,7 @@ import com.muggle.tiktokcopy.utils.csp
 @Composable
 fun FindPasswordScreen(findPasswordPageVm: FindPasswordPageVm = hiltViewModel()) {
 
-    val curState by remember {
-        findPasswordPageVm.findPasswordUiState
-    }
+    val curState by findPasswordPageVm.findPasswordUiState.collectAsStateWithLifecycle()
 
     val isConfirmBtnEnable by remember {
         derivedStateOf {

@@ -9,39 +9,49 @@ import com.muggle.tiktokcopy.business.login.intent.LoginByPasswordEvent
 import com.muggle.tiktokcopy.business.login.repo.LoginRepo
 import com.muggle.tiktokcopy.business.login.state.LoginByPasswordUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginByPasswordVm @Inject constructor(private val repo: LoginRepo) : ViewModel() {
 
-    private var _loginByPasswordUiState = mutableStateOf<LoginByPasswordUiState>(LoginByPasswordUiState())
-    val loginByPasswordUiState: State<LoginByPasswordUiState> = _loginByPasswordUiState
+    private var _loginByPasswordUiState = MutableStateFlow(LoginByPasswordUiState())
+    val loginByPasswordUiState: StateFlow<LoginByPasswordUiState> = _loginByPasswordUiState
 
 
     fun onReceiveEvent(event: LoginByPasswordEvent) {
         when (event) {
             is LoginByPasswordEvent.ClearPhoneNumber -> {
-                _loginByPasswordUiState.value = _loginByPasswordUiState.value.copy(curPhoneNumber = "")
+                _loginByPasswordUiState.update {
+                    it.copy(curPhoneNumber = "")
+                }
             }
 
             is LoginByPasswordEvent.InputPhoneNumber -> {
-                _loginByPasswordUiState.value =
-                    _loginByPasswordUiState.value.copy(curPhoneNumber = event.phoneNumber)
+                _loginByPasswordUiState.update {
+                    it.copy(curPhoneNumber = event.phoneNumber)
+                }
             }
 
             is LoginByPasswordEvent.ClearPassword -> {
-                _loginByPasswordUiState.value = _loginByPasswordUiState.value.copy(curPassword = "")
+                _loginByPasswordUiState.update {
+                    it.copy(curPassword = "")
+                }
             }
 
             is LoginByPasswordEvent.InputPassword -> {
-                _loginByPasswordUiState.value =
-                    _loginByPasswordUiState.value.copy(curPassword = event.password)
+                _loginByPasswordUiState.update {
+                    it.copy(curPassword = event.password)
+                }
             }
 
             is LoginByPasswordEvent.ClickChangePasswordVisibility -> {
-                _loginByPasswordUiState.value =
-                    _loginByPasswordUiState.value.copy(isPasswordVisible = event.isPasswordVisible)
+                _loginByPasswordUiState.update {
+                    it.copy(isPasswordVisible = event.isPasswordVisible)
+                }
             }
 
             is LoginByPasswordEvent.ClickCaptchaLogin -> {
@@ -68,8 +78,9 @@ class LoginByPasswordVm @Inject constructor(private val repo: LoginRepo) : ViewM
             }
 
             is LoginByPasswordEvent.ClickConfirmPrivacy -> {
-                _loginByPasswordUiState.value =
-                    _loginByPasswordUiState.value.copy(isPrivacySelected = event.isSelected)
+                _loginByPasswordUiState.update {
+                    it.copy(isPrivacySelected = event.isSelected)
+                }
             }
 
             is LoginByPasswordEvent.ClickBackBtn -> {

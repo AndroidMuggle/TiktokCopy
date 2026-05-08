@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.muggle.tiktokcopy.R
 import com.muggle.tiktokcopy.business.login.intent.InputCaptchaCodeEvent
 import com.muggle.tiktokcopy.business.login.vm.InputCaptchaCodeVm
@@ -45,9 +46,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun InputCaptchaCodeScreen(inputCaptchaCodeVm: InputCaptchaCodeVm = hiltViewModel()) {
 
-    val curState by remember {
-        inputCaptchaCodeVm.inputCaptchaCodeUiState
-    }
+    val curState by inputCaptchaCodeVm.inputCaptchaCodeUiState.collectAsStateWithLifecycle()
 
     val isConfirmEnable by remember {
         derivedStateOf { curState.isConfirmBtnEnable }

@@ -1,18 +1,19 @@
 package com.muggle.tiktokcopy.business.login.vm
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.muggle.tiktokcopy.business.login.intent.FindPasswordEvent
 import com.muggle.tiktokcopy.business.login.repo.LoginRepo
 import com.muggle.tiktokcopy.business.login.state.FindPasswordUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
 class FindPasswordPageVm @Inject constructor(val repo: LoginRepo) : ViewModel() {
-    private val _findPasswordUiState = mutableStateOf(FindPasswordUiState())
-    val findPasswordUiState: State<FindPasswordUiState> = _findPasswordUiState
+    private val _findPasswordUiState = MutableStateFlow(FindPasswordUiState())
+    val findPasswordUiState: StateFlow<FindPasswordUiState> = _findPasswordUiState
 
     fun onReceiveEvent(event: FindPasswordEvent) {
         when (event) {
@@ -25,8 +26,9 @@ class FindPasswordPageVm @Inject constructor(val repo: LoginRepo) : ViewModel() 
             }
 
             is FindPasswordEvent.ClickPrivacyBtn -> {
-                _findPasswordUiState.value =
-                    _findPasswordUiState.value.copy(isPrivacySelect = event.isSelect)
+                _findPasswordUiState.update {
+                    it.copy(isPrivacySelect = event.isSelect)
+                }
             }
 
             FindPasswordEvent.ClickResendBtn -> {
@@ -34,7 +36,9 @@ class FindPasswordPageVm @Inject constructor(val repo: LoginRepo) : ViewModel() 
             }
 
             is FindPasswordEvent.InputCaptchaCode -> {
-                _findPasswordUiState.value = _findPasswordUiState.value.copy(captchaCode = event.code)
+                _findPasswordUiState.update {
+                    it.copy(captchaCode = event.code)
+                }
             }
         }
     }

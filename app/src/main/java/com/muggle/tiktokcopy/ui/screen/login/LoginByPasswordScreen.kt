@@ -28,6 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.muggle.tiktokcopy.R
 import com.muggle.tiktokcopy.business.login.intent.LoginByPasswordEvent
 import com.muggle.tiktokcopy.business.login.vm.LoginByPasswordVm
@@ -42,9 +43,7 @@ import com.muggle.tiktokcopy.utils.csp
 @Composable
 fun LoginByPasswordScreen(loginByPasswordVm: LoginByPasswordVm = hiltViewModel()) {
 
-    val curState by remember {
-        loginByPasswordVm.loginByPasswordUiState
-    }
+    val curState by loginByPasswordVm.loginByPasswordUiState.collectAsStateWithLifecycle()
 
     val isConfirmBtnEnable by remember {
         derivedStateOf { curState.isConfirmEnable }

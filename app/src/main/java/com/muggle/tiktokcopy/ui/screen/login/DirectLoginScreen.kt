@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.muggle.tiktokcopy.R
@@ -43,9 +44,7 @@ import com.muggle.tiktokcopy.utils.csp
 @Composable
 fun DirectLoginScreen(directLoginVm: DirectLoginVm = hiltViewModel()) {
 
-    val curState by remember {
-        directLoginVm.directLoginUiState
-    }
+    val curState by directLoginVm.directLoginUiState.collectAsStateWithLifecycle()
 
     val isConfirmBtnEnable by remember {
         derivedStateOf { curState.isConfirmBtnEnable }
@@ -90,9 +89,7 @@ fun DirectLoginScreen(directLoginVm: DirectLoginVm = hiltViewModel()) {
                 .align(Alignment.CenterHorizontally),
             model = ImageRequest.Builder(LocalContext.current)
                 .data(
-                    if (curState.userAvatar.isNotEmpty()) {
-                        curState.userAvatar
-                    } else {
+                    curState.userAvatar.ifEmpty {
                         R.drawable.common_checked
                     }
                 )

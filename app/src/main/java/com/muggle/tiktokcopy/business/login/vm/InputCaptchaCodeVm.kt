@@ -1,12 +1,13 @@
 package com.muggle.tiktokcopy.business.login.vm
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.muggle.tiktokcopy.business.login.intent.InputCaptchaCodeEvent
 import com.muggle.tiktokcopy.business.login.repo.LoginRepo
 import com.muggle.tiktokcopy.business.login.state.InputCaptchaCodeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 /**
@@ -16,8 +17,8 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class InputCaptchaCodeVm @Inject constructor(private val repo: LoginRepo) : ViewModel() {
-    private val _inputCaptchaCodeUiState = mutableStateOf(InputCaptchaCodeUiState())
-    val inputCaptchaCodeUiState: State<InputCaptchaCodeUiState> = _inputCaptchaCodeUiState
+    private val _inputCaptchaCodeUiState = MutableStateFlow(InputCaptchaCodeUiState())
+    val inputCaptchaCodeUiState: StateFlow<InputCaptchaCodeUiState> = _inputCaptchaCodeUiState
 
     fun onReceiveEvent(event: InputCaptchaCodeEvent) {
         when (event) {
@@ -42,8 +43,9 @@ class InputCaptchaCodeVm @Inject constructor(private val repo: LoginRepo) : View
             }
 
             is InputCaptchaCodeEvent.InputCaptchaCode -> {
-                _inputCaptchaCodeUiState.value =
-                    _inputCaptchaCodeUiState.value.copy(captchaCode = event.code)
+                _inputCaptchaCodeUiState.update {
+                    it.copy(captchaCode = event.code)
+                }
             }
         }
     }

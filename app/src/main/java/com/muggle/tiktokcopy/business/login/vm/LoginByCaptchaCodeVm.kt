@@ -1,12 +1,13 @@
 package com.muggle.tiktokcopy.business.login.vm
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.muggle.tiktokcopy.business.login.intent.LoginByCaptchaCodeEvent
 import com.muggle.tiktokcopy.business.login.repo.LoginRepo
 import com.muggle.tiktokcopy.business.login.state.LoginByCaptchaCodeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 /**
@@ -17,8 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginByCaptchaCodeVm @Inject constructor(private val repo: LoginRepo) : ViewModel() {
 
-    private val _loginByCaptchaCodeUiState = mutableStateOf(LoginByCaptchaCodeUiState())
-    val loginByCaptchaCodeUiState: State<LoginByCaptchaCodeUiState> = _loginByCaptchaCodeUiState
+    private val _loginByCaptchaCodeUiState = MutableStateFlow(LoginByCaptchaCodeUiState())
+    val loginByCaptchaCodeUiState: StateFlow<LoginByCaptchaCodeUiState> = _loginByCaptchaCodeUiState
 
     fun onReceiveEvent(event: LoginByCaptchaCodeEvent) {
         when (event) {
@@ -43,13 +44,15 @@ class LoginByCaptchaCodeVm @Inject constructor(private val repo: LoginRepo) : Vi
             }
 
             is LoginByCaptchaCodeEvent.ClickPrivacySelect -> {
-                _loginByCaptchaCodeUiState.value =
-                    _loginByCaptchaCodeUiState.value.copy(isPrivacySelect = event.isSelect)
+                _loginByCaptchaCodeUiState.update {
+                    it.copy(isPrivacySelect = event.isSelect)
+                }
             }
 
             is LoginByCaptchaCodeEvent.InputPhoneNumber -> {
-                _loginByCaptchaCodeUiState.value =
-                    _loginByCaptchaCodeUiState.value.copy(phoneNumber = event.phoneNumber)
+                _loginByCaptchaCodeUiState.update {
+                    it.copy(phoneNumber = event.phoneNumber)
+                }
             }
         }
     }
