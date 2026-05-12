@@ -38,6 +38,7 @@ data class SingleVideoUiState(
     val musicAlbumState: VideoAlbumState = VideoAlbumState.AlbumImage,
     val isShowDanmakuEntrance: Boolean = false,
     // todo 弹幕库列表
+    val isScrolling: Boolean = false,
     val recommendState: RecommendState? = null,
     val videoRelativeContentType: VideoRelativeContentType? = null,
     val authorWidgetType: AuthorWidgetType? = null,
@@ -56,11 +57,12 @@ data class SingleVideoUiState(
 
 data class RecommendTabVideoUiState(
     val videoUiStateList: SnapshotStateList<SingleVideoUiState> = mutableStateListOf<SingleVideoUiState>().apply {
-        add(SingleVideoUiState(videoUrl = "https://vdept3.bdstatic.com/mda-sd1s1rn16s4r67xd/cae_h264/1775154451958807049/mda-sd1s1rn16s4r67xd.mp4?v_from_s=hkapp-haokan-nanjing&auth_key=1778181969-0-0-2be2b326e672261d9fdcea1c2b00560b&bcevod_channel=searchbox_feed&cr=0&cd=0&pd=1&pt=3&logid=1569278085&vid=132199266457344010&klogid=1569278085&abtest="))
-        add(SingleVideoUiState(videoUrl = "https://vdept3.bdstatic.com/mda-sd1s1rn16s4r67xd/cae_h264/1775154451958807049/mda-sd1s1rn16s4r67xd.mp4?v_from_s=hkapp-haokan-nanjing&auth_key=1778181969-0-0-2be2b326e672261d9fdcea1c2b00560b&bcevod_channel=searchbox_feed&cr=0&cd=0&pd=1&pt=3&logid=1569278085&vid=132199266457344010&klogid=1569278085&abtest="))
-        add(SingleVideoUiState(videoUrl = "https://vdept3.bdstatic.com/mda-sd1s1rn16s4r67xd/cae_h264/1775154451958807049/mda-sd1s1rn16s4r67xd.mp4?v_from_s=hkapp-haokan-nanjing&auth_key=1778181969-0-0-2be2b326e672261d9fdcea1c2b00560b&bcevod_channel=searchbox_feed&cr=0&cd=0&pd=1&pt=3&logid=1569278085&vid=132199266457344010&klogid=1569278085&abtest="))
-        add(SingleVideoUiState(videoUrl = "https://vdept3.bdstatic.com/mda-sd1s1rn16s4r67xd/cae_h264/1775154451958807049/mda-sd1s1rn16s4r67xd.mp4?v_from_s=hkapp-haokan-nanjing&auth_key=1778181969-0-0-2be2b326e672261d9fdcea1c2b00560b&bcevod_channel=searchbox_feed&cr=0&cd=0&pd=1&pt=3&logid=1569278085&vid=132199266457344010&klogid=1569278085&abtest="))
-        add(SingleVideoUiState(videoUrl = "https://vdept3.bdstatic.com/mda-sd1s1rn16s4r67xd/cae_h264/1775154451958807049/mda-sd1s1rn16s4r67xd.mp4?v_from_s=hkapp-haokan-nanjing&auth_key=1778181969-0-0-2be2b326e672261d9fdcea1c2b00560b&bcevod_channel=searchbox_feed&cr=0&cd=0&pd=1&pt=3&logid=1569278085&vid=132199266457344010&klogid=1569278085&abtest="))
+        add(SingleVideoUiState(videoUrl = "https://vdept3.bdstatic.com/mda-se2jsc3izkie1t01/cae_h264/1777860671947539991/mda-se2jsc3izkie1t01.mp4?v_from_s=hkapp-haokan-nanjing&auth_key=1778612268-0-0-0c09d8d9c209c57ad95cae1627ce6a4e&bcevod_channel=searchbox_feed&cr=0&cd=0&pd=1&pt=3&logid=3468101386&vid=12390597084454875989&klogid=3468101386&abtest="))
+        add(SingleVideoUiState(videoUrl = "https://vdept3.bdstatic.com/mda-se2jsc3izkie1t01/cae_h264/1777860671947539991/mda-se2jsc3izkie1t01.mp4?v_from_s=hkapp-haokan-nanjing&auth_key=1778612268-0-0-0c09d8d9c209c57ad95cae1627ce6a4e&bcevod_channel=searchbox_feed&cr=0&cd=0&pd=1&pt=3&logid=3468101386&vid=12390597084454875989&klogid=3468101386&abtest="))
+        add(SingleVideoUiState(videoUrl = "https://vdept3.bdstatic.com/mda-se2jsc3izkie1t01/cae_h264/1777860671947539991/mda-se2jsc3izkie1t01.mp4?v_from_s=hkapp-haokan-nanjing&auth_key=1778612268-0-0-0c09d8d9c209c57ad95cae1627ce6a4e&bcevod_channel=searchbox_feed&cr=0&cd=0&pd=1&pt=3&logid=3468101386&vid=12390597084454875989&klogid=3468101386&abtest="))
+        add(SingleVideoUiState(videoUrl = "https://vdept3.bdstatic.com/mda-se2jsc3izkie1t01/cae_h264/1777860671947539991/mda-se2jsc3izkie1t01.mp4?v_from_s=hkapp-haokan-nanjing&auth_key=1778612268-0-0-0c09d8d9c209c57ad95cae1627ce6a4e&bcevod_channel=searchbox_feed&cr=0&cd=0&pd=1&pt=3&logid=3468101386&vid=12390597084454875989&klogid=3468101386&abtest="))
+        add(SingleVideoUiState(videoUrl = "https://vdept3.bdstatic.com/mda-se2jsc3izkie1t01/cae_h264/1777860671947539991/mda-se2jsc3izkie1t01.mp4?v_from_s=hkapp-haokan-nanjing&auth_key=1778612268-0-0-0c09d8d9c209c57ad95cae1627ce6a4e&bcevod_channel=searchbox_feed&cr=0&cd=0&pd=1&pt=3&logid=3468101386&vid=12390597084454875989&klogid=3468101386&abtest="))
+        add(SingleVideoUiState(videoUrl = "https://vdept3.bdstatic.com/mda-se2jsc3izkie1t01/cae_h264/1777860671947539991/mda-se2jsc3izkie1t01.mp4?v_from_s=hkapp-haokan-nanjing&auth_key=1778612268-0-0-0c09d8d9c209c57ad95cae1627ce6a4e&bcevod_channel=searchbox_feed&cr=0&cd=0&pd=1&pt=3&logid=3468101386&vid=12390597084454875989&klogid=3468101386&abtest="))
     },
     val selectIndex: Int = 0
 )

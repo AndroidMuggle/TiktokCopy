@@ -25,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +33,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -83,6 +85,14 @@ fun VideoPlayerWidget(
                 "autoPlay = $autoPlay"
     )
 
+    val curState by rememberUpdatedState(singleVideoUiState)
+
+    val isScrolling by remember {
+        derivedStateOf {
+            curState.isScrolling
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -104,6 +114,13 @@ fun VideoPlayerWidget(
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .align(alignment = Alignment.BottomStart)
+                .alpha(
+                    if (isScrolling) {
+                        0.2f
+                    } else {
+                        1f
+                    }
+                )
         ) {
             Column(
                 modifier = Modifier
@@ -180,7 +197,14 @@ fun VideoPlayerWidget(
         Column(
             modifier = Modifier
                 .wrapContentSize()
-                .align(alignment = Alignment.BottomEnd),
+                .align(alignment = Alignment.BottomEnd)
+                .alpha(
+                    if (isScrolling) {
+                        0.2f
+                    } else {
+                        1f
+                    }
+                ),
         ) {
             AuthorAvatarWidget(
                 avatarUrl = singleVideoUiState.author?.avatar ?: "",
@@ -385,10 +409,6 @@ private fun BoxScope.VideoPlayer(
         Log.i(TAG, "VideoPlayer: init MediaItem,videoUrl = $videoUrl")
 
         player.addListener(curPlayerListener)
-
-        player.clearMediaItems()
-        player.setMediaItem(MediaItem.fromUri(videoUrl))
-        player.prepare()
 
         val lifecycleObserver = LifecycleEventObserver { source, event ->
             Log.i(TAG, "VideoPlayer: source = $source,event = $event")

@@ -288,19 +288,31 @@ private fun RecommendTab(
             }
     }
 
+    LaunchedEffect(Unit) {
+        snapshotFlow {
+            pagerState.isScrollInProgress
+        }.distinctUntilChanged()
+            .collect {
+                Log.i(TAG, "RecommendTab: currentPageOffsetFraction = $it")
+                recommendVideoVm.onReceivePlayerEvent(PlayerEventType.CurrentPageOffsetFraction(it))
+            }
+    }
+
     VerticalPager(
         modifier = Modifier
             .height(760.cdp)
             .fillMaxWidth()
             .background(color = Color.Black),
         state = pagerState,
-    ) {
+    ) { pageIndex ->
         Log.i(
             TAG,
-            "RecommendTab: VerticalPager compose start it = $it,settledPage = ${pagerState.settledPage},selectIndex = ${curState.selectIndex}"
+            "RecommendTab: VerticalPager compose start pageIndex = $pageIndex," +
+                    "settledPage = ${pagerState.settledPage}," +
+                    "selectIndex = ${curState.selectIndex}"
         )
         VideoPlayerWidget(
-            autoPlay = it == curState.selectIndex,
+            autoPlay = pageIndex == curState.selectIndex,
             contentScale = ContentScale.FillWidth,
             singleVideoUiState = videoUiState,
             onPlayerCallback = {

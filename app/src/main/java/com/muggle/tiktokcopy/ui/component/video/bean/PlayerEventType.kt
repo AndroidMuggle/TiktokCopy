@@ -91,6 +91,13 @@ sealed interface PlayerEventType {
      */
     object RenderedFirstFrame : PlayerEventType
 
-
+    /**
+     * 当前视频变化
+     */
     class CurrentPageChange(val index: Int) : PlayerEventType
+
+    /**
+     * 当前pager的offset
+     */
+    class CurrentPageOffsetFraction(val isScrolling: Boolean) : PlayerEventType
 }

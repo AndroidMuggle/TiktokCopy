@@ -308,6 +308,17 @@ class RecommendVideoVm @Inject constructor(private val repo: HomeScreenRepo) : V
                 }
                 Log.i(TAG, "onReceivePlayerEvent: playerEventType.index = ${playerEventType.index}")
             }
+
+            is PlayerEventType.CurrentPageOffsetFraction -> {
+                _recommendTabVideoUiState.update {
+                    it.copy(videoUiStateList = it.videoUiStateList.apply {
+                        set(
+                            it.selectIndex,
+                            get(it.selectIndex).copy(isScrolling = playerEventType.isScrolling)
+                        )
+                    })
+                }
+            }
         }
     }
 
